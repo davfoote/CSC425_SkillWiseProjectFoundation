@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import './App.css';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import SignupForm from './components/auth/SignupForm';
@@ -27,9 +27,16 @@ const ProtectedRoute = ({ children }) => {
 // Main App Component
 const AppContent = () => {
   const { isAuthenticated, login } = useAuth();
+  const navigate = useNavigate();
 
   const handleLoginSuccess = (loginData) => {
+    console.log('Login success callback triggered:', loginData);
     login(loginData.user, loginData.token);
+    
+    // Force navigation to dashboard
+    setTimeout(() => {
+      navigate('/dashboard');
+    }, 100);
   };
 
   return (
