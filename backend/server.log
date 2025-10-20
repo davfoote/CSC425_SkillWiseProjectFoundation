@@ -1,0 +1,90 @@
+
+> skillwise-backend@1.0.0 start
+> node server.js
+
+[2025-10-20 08:33:23.991 -0500] [32mINFO[39m (skillwise-api): [36m🚀 SkillWise API Server running on port 3001[39m
+[2025-10-20 08:33:23.991 -0500] [32mINFO[39m (skillwise-api): [36m📊 Health check available at http://localhost:3001/healthz[39m
+[2025-10-20 08:33:23.991 -0500] [32mINFO[39m (skillwise-api): [36m🌐 API endpoints available at http://localhost:3001/api[39m
+[2025-10-20 08:33:23.991 -0500] [32mINFO[39m (skillwise-api): [36m🔒 Environment: development[39m
+Registration attempt for: test@example.com
+Creating user: test@example.com
+prisma:info Starting a sqlite pool with 29 connections.
+prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`email`, `main`.`users`.`firstName`, `main`.`users`.`lastName`, `main`.`users`.`password`, `main`.`users`.`createdAt`, `main`.`users`.`updatedAt` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+Error creating user: User already exists with this email
+Registration error: Error: User already exists with this email
+    at Object.createUser (/Users/emiliakubik/code/CSC425_SkillWiseProjectFoundation/backend/src/services/userService.js:17:15)
+    at async Object.register (/Users/emiliakubik/code/CSC425_SkillWiseProjectFoundation/backend/src/controllers/authController.js:74:20)
+[2025-10-20 08:33:31.931 -0500] [32mINFO[39m (skillwise-api): [36mrequest completed[39m
+    req: {
+      "method": "GET",
+      "url": "/api",
+      "headers": {
+        "content-type": "application/json"
+      }
+    }
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 5
+[2025-10-20 08:33:31.941 -0500] [32mINFO[39m (skillwise-api): [36mrequest completed[39m
+    req: {
+      "method": "POST",
+      "url": "/api/auth/signup",
+      "headers": {
+        "content-type": "application/json"
+      }
+    }
+    res: {
+      "statusCode": 409
+    }
+    responseTime: 7
+Registration attempt for: test@example.com
+Creating user: test@example.com
+prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`email`, `main`.`users`.`firstName`, `main`.`users`.`lastName`, `main`.`users`.`password`, `main`.`users`.`createdAt`, `main`.`users`.`updatedAt` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+Error creating user: User already exists with this email
+Registration error: Error: User already exists with this email
+    at Object.createUser (/Users/emiliakubik/code/CSC425_SkillWiseProjectFoundation/backend/src/services/userService.js:17:15)
+    at async Object.register (/Users/emiliakubik/code/CSC425_SkillWiseProjectFoundation/backend/src/controllers/authController.js:74:20)
+Login attempt for: test@example.com
+prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`email`, `main`.`users`.`firstName`, `main`.`users`.`lastName`, `main`.`users`.`password`, `main`.`users`.`createdAt`, `main`.`users`.`updatedAt` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+Verifying password...
+Password verification result: true
+Login successful for user: 1
+[2025-10-20 08:33:44.495 -0500] [32mINFO[39m (skillwise-api): [36mrequest completed[39m
+    req: {
+      "method": "GET",
+      "url": "/api",
+      "headers": {
+        "content-type": "application/json"
+      }
+    }
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 0
+[2025-10-20 08:33:44.499 -0500] [32mINFO[39m (skillwise-api): [36mrequest completed[39m
+    req: {
+      "method": "POST",
+      "url": "/api/auth/signup",
+      "headers": {
+        "content-type": "application/json"
+      }
+    }
+    res: {
+      "statusCode": 409
+    }
+    responseTime: 2
+[2025-10-20 08:33:44.560 -0500] [32mINFO[39m (skillwise-api): [36mrequest completed[39m
+    req: {
+      "method": "POST",
+      "url": "/api/auth/login",
+      "headers": {
+        "content-type": "application/json"
+      }
+    }
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 61
+[2025-10-20 08:35:19.412 -0500] [32mINFO[39m (skillwise-api): [36m📴 Received SIGTERM. Starting graceful shutdown...[39m
+[2025-10-20 08:35:19.412 -0500] [32mINFO[39m (skillwise-api): [36m✅ Server closed successfully[39m

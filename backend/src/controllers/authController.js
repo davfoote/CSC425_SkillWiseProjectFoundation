@@ -1,75 +1,139 @@
 // TODO: Implement authentication controller with login, register, logout, refresh token endpoints
 
+// Authentication controller with proper database integration
+const jwt = require('jsonwebtoken');
+const userService = require('../services/userService');
+
 const authController = {
-  // TODO: Add login endpoint
+  // Login endpoint with database lookup and password verification
   login: async (req, res, next) => {
-    // Implementation needed
-    res.status(501).json({ 
-      message: 'Login endpoint not implemented yet',
-      timestamp: new Date().toISOString()
-    });
-  },
-
-  // TODO: Add register endpoint  
-  register: async (req, res, next) => {
-    // Implementation needed
-    res.status(501).json({ 
-      message: 'Register endpoint not implemented yet',
-      timestamp: new Date().toISOString()
-    });
-  },
-
-  // Add signup endpoint (for frontend compatibility)
-  signup: async (req, res, next) => {
     try {
-      const { firstName, lastName, email, password } = req.validated.body;
+      const { email, password } = req.validated.body;
       
-      // TODO: In a real app, you would:
-      // 1. Check if user already exists
-      // 2. Hash the password
-      // 3. Save to database
-      // 4. Generate JWT token
-      // 5. Send welcome email
+      console.log('Login attempt for:', email);
       
-      // For now, just simulate successful signup
-      console.log('Signup attempt:', { firstName, lastName, email });
+      // Find user in database
+      const user = await userService.findUserByEmail(email);
       
-      // Simulate some async processing time
-      await new Promise(resolve => setTimeout(resolve, 500));
+      if (!user) {
+        return res.status(401).json({
+          message: 'Invalid email or password',
+          timestamp: new Date().toISOString()
+        });
+      }
       
-      res.status(201).json({
-        message: 'Account created successfully',
-        user: {
-          id: Date.now(), // Temporary ID
-          firstName,
-          lastName,
-          email,
-          createdAt: new Date().toISOString()
+      // Verify password
+      const isValidPassword = await userService.verifyPassword(password, user.password);
+      
+      if (!isValidPassword) {
+        return res.status(401).json({
+          message: 'Invalid email or password',
+          timestamp: new Date().toISOString()
+        });
+      }
+      
+      // Generate JWT token
+      const token = jwt.sign(
+        { 
+          userId: user.id, 
+          email: user.email 
         },
+        process.env.JWT_SECRET || 'dev-secret-key',
+        { expiresIn: '24h' }
+      );
+      
+      console.log('Login successful for user:', user.id);
+      
+      // Return user data (without password) and token
+      const { password: _, ...userWithoutPassword } = user;
+      
+      res.status(200).json({
+        message: 'Login successful',
+        token,
+        user: userWithoutPassword,
         timestamp: new Date().toISOString()
       });
       
     } catch (error) {
-      console.error('Signup error:', error);
+      console.error('Login error:', error);
       res.status(500).json({
-        message: 'Internal server error during signup',
+        message: 'Internal server error during login',
         timestamp: new Date().toISOString()
       });
     }
   },
 
-  // TODO: Add logout endpoint
+  // Register/Signup endpoint that saves to database
+  register: async (req, res, next) => {
+    try {
+      const { firstName, lastName, email, password } = req.validated.body;
+      
+      console.log('Registration attempt for:', email);
+      
+      // Create user in database with hashed password
+      const user = await userService.createUser({
+        firstName,
+        lastName,
+        email,
+        password
+      });
+      
+      console.log('User registered successfully:', user.id);
+      
+      res.status(201).json({
+        message: 'Account created successfully',
+        user,
+        timestamp: new Date().toISOString()
+      });
+      
+    } catch (error) {
+      console.error('Registration error:', error);
+      
+      if (error.message === 'User already exists with this email') {
+        return res.status(409).json({
+          message: 'An account with this email already exists',
+          timestamp: new Date().toISOString()
+        });
+      }
+      
+      res.status(500).json({
+        message: 'Internal server error during registration',
+        timestamp: new Date().toISOString()
+      });
+    }
+  },
+
+  // Signup endpoint (alias for register for frontend compatibility)
+  signup: async (req, res, next) => {
+    return authController.register(req, res, next);
+  },
+
+  // Logout endpoint (for JWT, this is mainly client-side)
   logout: async (req, res, next) => {
-    // Implementation needed
-    res.status(501).json({ 
-      message: 'Logout endpoint not implemented yet',
-      timestamp: new Date().toISOString()
-    });
+    try {
+      // With JWT, logout is primarily handled on the client side
+      // by removing the token from localStorage
+      // In a production app, you might want to blacklist tokens
+      
+      console.log('Logout request received');
+      
+      res.status(200).json({
+        message: 'Logout successful',
+        timestamp: new Date().toISOString()
+      });
+      
+    } catch (error) {
+      console.error('Logout error:', error);
+      res.status(500).json({
+        message: 'Internal server error during logout',
+        timestamp: new Date().toISOString()
+      });
+    }
   },
 
   // TODO: Add refresh token endpoint
   refreshToken: async (req, res, next) => {
-    // Implementation needed
+    // Implementation needed for refresh tokens
     res.status(501).json({ 
       message: 'Refresh token endpoint not implemented yet',
       timestamp: new Date().toISOString()

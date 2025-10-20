@@ -16,6 +16,7 @@
     "build": "echo 'No build step required for Node.js'"
   },
   "dependencies": {
+    "@prisma/client": "^6.17.1",
     "@sentry/node": "^7.120.4",
     "axios": "^1.12.2",
     "bcryptjs": "^2.4.3",
@@ -31,6 +32,7 @@
     "pino": "^8.21.0",
     "pino-http": "^8.6.1",
     "pino-pretty": "^10.3.1",
+    "prisma": "^6.17.1",
     "redis": "^4.7.1",
     "zod": "^3.25.76"
   },
