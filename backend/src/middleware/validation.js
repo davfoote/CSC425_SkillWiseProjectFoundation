@@ -85,6 +85,7 @@ const validate = (schema) => {
 // TODO: Specific validation middleware functions
 const loginValidation = validate(loginSchema);
 const registerValidation = validate(registerSchema);
+const signupValidation = validate(registerSchema); // Use same schema as register
 const goalValidation = validate(goalSchema);
 const challengeValidation = validate(challengeSchema);
 
@@ -92,6 +93,7 @@ module.exports = {
   validate,
   loginValidation,
   registerValidation,
+  signupValidation,
   goalValidation,
   challengeValidation,
   // Export schemas for testing

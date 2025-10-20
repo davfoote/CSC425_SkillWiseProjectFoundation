@@ -17,8 +17,9 @@
 const express = require('express');
 const router = express.Router();
 
-// TODO: Import route modules as they are implemented
-// const authRoutes = require('./auth');
+// Import route modules
+const authRoutes = require('./auth');
+// TODO: Import other route modules as they are implemented
 // const userRoutes = require('./users');
 // const goalRoutes = require('./goals');
 // const challengeRoutes = require('./challenges');
@@ -51,12 +52,9 @@ router.get('/', (req, res) => {
   });
 });
 
-    }
-  });
-});
-
-// TODO: Mount API routes as they are implemented
-// router.use('/auth', authRoutes);
+// Mount API routes
+router.use('/auth', authRoutes);
+// TODO: Mount other API routes as they are implemented
 // router.use('/users', userRoutes);
 // router.use('/goals', goalRoutes);
 // router.use('/challenges', challengeRoutes);
