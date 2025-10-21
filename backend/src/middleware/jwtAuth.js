@@ -130,7 +130,11 @@ const generateAccessToken = (user) => {
  */
 const generateRefreshToken = () => {
   return jwt.sign(
-    { type: 'refresh' },
+    { 
+      type: 'refresh',
+      timestamp: Date.now(),
+      random: Math.random()
+    },
     process.env.JWT_REFRESH_SECRET || 'dev-refresh-secret-key',
     { expiresIn: '7d' } // Long-lived refresh token
   );

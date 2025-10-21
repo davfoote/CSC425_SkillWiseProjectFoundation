@@ -1,77 +1,68 @@
-// TODO: Test environment setup and configuration
-const { Pool } = require('pg');
+const { PrismaClient } = require('../src/generated/prisma');
 
 // Test database configuration
-const testDbConfig = {
-  connectionString: process.env.TEST_DATABASE_URL || 
-    'postgresql://skillwise_user:skillwise_pass@localhost:5432/skillwise_test_db',
-  // Reduce connections for test environment
-  max: 5,
-  idleTimeoutMillis: 10000,
-  connectionTimeoutMillis: 1000,
-};
-
-const testPool = new Pool(testDbConfig);
+const testPrisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.TEST_DATABASE_URL || 
+        'postgresql://skillwise_user:skillwise123@localhost:5432/skillwise_test_db'
+    }
+  }
+});
 
 // Global test setup
 beforeAll(async () => {
-  // Set test environment
+  // Set test environment variables
   process.env.NODE_ENV = 'test';
   process.env.JWT_SECRET = 'test-jwt-secret-key-for-testing-only';
   process.env.JWT_REFRESH_SECRET = 'test-refresh-secret-key-for-testing-only';
+  process.env.DATABASE_URL = 'postgresql://skillwise_user:skillwise123@localhost:5432/skillwise_test_db';
   
   // Test database connection
   try {
-    await testPool.query('SELECT 1');
+    await testPrisma.$connect();
     console.log('✅ Test database connected');
+    
+    // Run migrations on test database
+    const { execSync } = require('child_process');
+    execSync('npx prisma migrate deploy', { 
+      env: { ...process.env, DATABASE_URL: process.env.DATABASE_URL },
+      stdio: 'inherit'
+    });
+    console.log('✅ Test database migrations applied');
+    
   } catch (err) {
-    console.error('❌ Test database connection failed:', err.message);
+    console.error('❌ Test database setup failed:', err.message);
     throw err;
   }
 });
 
-// Global test cleanup
-afterAll(async () => {
+// Clean up database after each test
+afterEach(async () => {
   try {
-    // Clean up test data if needed
-    // await testPool.query('TRUNCATE TABLE users CASCADE');
+    // Use transaction to ensure proper cleanup order
+    await testPrisma.$transaction(async (prisma) => {
+      // Delete refresh tokens first (due to foreign key constraint)
+      await prisma.refreshToken.deleteMany({});
+      
+      // Delete users
+      await prisma.user.deleteMany({});
+    });
     
-    // Close database connections
-    await testPool.end();
-    console.log('✅ Test database cleanup completed');
-  } catch (err) {
-    console.error('❌ Test cleanup failed:', err.message);
+    console.log('✅ Test database cleaned');
+  } catch (error) {
+    console.error('❌ Error cleaning test database:', error);
   }
 });
 
-// Helper function to clear test data between tests
-const clearTestData = async () => {
-  const tables = [
-    'user_achievements',
-    'achievements', 
-    'leaderboard',
-    'progress_events',
-    'peer_reviews',
-    'ai_feedback',
-    'submissions',
-    'challenges',
-    'goals',
-    'refresh_tokens',
-    'users'
-  ];
-
-  for (const table of tables) {
-    try {
-      await testPool.query(`TRUNCATE TABLE ${table} RESTART IDENTITY CASCADE`);
-    } catch (err) {
-      // Table might not exist, continue
-      console.warn(`Warning: Could not truncate table ${table}:`, err.message);
-    }
+// Global test teardown
+afterAll(async () => {
+  try {
+    await testPrisma.$disconnect();
+    console.log('✅ Test database disconnected');
+  } catch (err) {
+    console.error('❌ Test database disconnect failed:', err.message);
   }
-};
+});
 
-// Export test utilities
-module.exports = {
-  testPool,
-  clearTestData
-};
+module.exports = { testPrisma };

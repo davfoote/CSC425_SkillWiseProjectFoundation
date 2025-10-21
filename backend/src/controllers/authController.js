@@ -36,6 +36,11 @@ const authController = {
       const accessToken = generateAccessToken(user);
       const refreshToken = generateRefreshToken();
       
+      // Clean up any existing refresh tokens for this user (prevent duplicates)
+      await prisma.refreshToken.deleteMany({
+        where: { userId: user.id }
+      });
+      
       // Store refresh token in database
       const expiresAt = new Date();
       expiresAt.setDate(expiresAt.getDate() + 7); // 7 days from now
