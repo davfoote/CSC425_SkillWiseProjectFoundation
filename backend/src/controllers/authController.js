@@ -23,7 +23,7 @@ const authController = {
       }
       
       // Verify password
-      const isValidPassword = await userService.verifyPassword(password, user.password);
+      const isValidPassword = await userService.verifyPassword(password, user.password_hash);
       
       if (!isValidPassword) {
         return res.status(401).json({
@@ -65,8 +65,8 @@ const authController = {
       
       console.log('Login successful for user:', user.id);
       
-      // Return user data (without password) and token for backward compatibility
-      const { password: _, ...userWithoutPassword } = user;
+      // Return user data (without password_hash) and token for backward compatibility
+      const { password_hash: _, ...userWithoutPassword } = user;
       
       res.status(200).json({
         message: 'Login successful',

@@ -29,7 +29,7 @@ const userService = {
           email,
           firstName,
           lastName,
-          password: hashedPassword,
+          password_hash: hashedPassword,
         },
         select: {
           id: true,
@@ -37,7 +37,7 @@ const userService = {
           firstName: true,
           lastName: true,
           createdAt: true,
-          // Don't return password
+          // Don't return password_hash
         }
       });
       

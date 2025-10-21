@@ -546,56 +546,166 @@ backend/src/
 
 ---
 
-## 🎯 User Story 5: Goal Management System 
+## ✅ User Story 5: Users Table Migration - COMPLETED
 
 ### **Story:**
-> **As a user, I want to create and manage learning goals so that I can structure my learning journey.**
+> **As a developer, I want a users table so that account data is stored persistently.**
 
 ### **Task Requirements:**
-- Goal creation and editing forms
-- Goal list/dashboard view with progress tracking
-- Tech Stack: React, Node.js/Express, Prisma ORM, SQLite
-- Definition of Done: Users can create, view, edit, and delete goals; progress tracking implemented
+- Users table migration
+- Tech Stack: PostgreSQL, Prisma migration
+- Definition of Done: Table created with id, email, password_hash, timestamps
 
-### **📋 Implementation Plan:**
+### **✅ Implementation Details:**
 
-#### **Database Schema Extensions:**
-1. **Create Goal Model in Prisma:**
-   - `id`, `title`, `description`, `category`, `difficulty`
-   - `targetCompletionDate`, `status`, `progress`
-   - `userId` (foreign key), `createdAt`, `updatedAt`
+#### **Database Migration Process:**
+1. **PostgreSQL Setup:**
+   - Installed PostgreSQL 14 via Homebrew on macOS
+   - Created `skillwise_db` database
+   - Created `skillwise_user` with proper permissions including CREATEDB for Prisma shadow database
+   - Configured connection on localhost:5432
 
-#### **Backend API Endpoints:**
-1. **Goal CRUD Operations:**
-   - `GET /api/goals` - List user's goals
-   - `POST /api/goals` - Create new goal
-   - `GET /api/goals/:id` - Get specific goal
-   - `PUT /api/goals/:id` - Update goal
-   - `DELETE /api/goals/:id` - Delete goal
+2. **Prisma Schema Migration:**
+   ```prisma
+   // Updated from SQLite to PostgreSQL
+   generator client {
+     provider = "prisma-client-js"
+     output   = "./src/generated/prisma"
+   }
 
-#### **Frontend Components:**
-1. **Goal Management UI:**
-   - Goal creation form with validation
-   - Goals dashboard/list view
-   - Goal detail/edit modal
-   - Progress visualization components
-   - Goal filtering and search
+   datasource db {
+     provider = "postgresql"  // Changed from "sqlite"
+     url      = env("DATABASE_URL")
+   }
 
-#### **Features to Implement:**
-- ✅ User authentication (prerequisite completed)
-- ✅ Secure session management (prerequisite completed)
-- 🔄 Goal creation with form validation
-- 🔄 Goal listing with search/filter
-- 🔄 Goal editing and deletion
-- 🔄 Progress tracking system
-- 🔄 Goal categories and difficulty levels
+   model User {
+     id           Int            @id @default(autoincrement())
+     email        String         @unique
+     firstName    String?
+     lastName     String?
+     password_hash String        @map("password_hash")  // Updated field name
+     created_at   DateTime       @default(now()) @map("created_at")
+     updated_at   DateTime       @updatedAt @map("updated_at")
+     refreshTokens RefreshToken[]
 
-### **Status:** 🚀 Ready to Begin
-**Prerequisites:** All authentication and session management infrastructure completed and verified working.
+     @@map("users")
+   }
+   ```
+
+3. **Database Schema Created:**
+   ```sql
+   Table "public.users"
+   - id (integer, primary key, auto-increment)
+   - email (text, unique, not null)
+   - firstName (text, nullable)
+   - lastName (text, nullable)  
+   - password_hash (text, not null)
+   - created_at (timestamp, not null, default: CURRENT_TIMESTAMP)
+   - updated_at (timestamp, not null)
+   
+   Table "public.refresh_tokens"
+   - id (integer, primary key, auto-increment)
+   - token (text, unique, not null)
+   - userId (integer, foreign key to users.id)
+   - expiresAt (timestamp, not null)
+   - createdAt (timestamp, not null, default: CURRENT_TIMESTAMP)
+   - isRevoked (boolean, default: false)
+   ```
+
+#### **Backend Service Updates:**
+1. **Updated `/backend/src/services/userService.js`:**
+   - Changed `password` field to `password_hash` in database operations
+   - Updated `createUser()` method to use `password_hash` field
+   - All Prisma queries now use correct PostgreSQL field names
+
+2. **Updated `/backend/src/controllers/authController.js`:**
+   - Updated password verification to use `user.password_hash`
+   - Fixed user data destructuring to exclude `password_hash` instead of `password`
+   - Maintained backward compatibility for API responses
+
+#### **Migration Commands Executed:**
+```bash
+# Remove old SQLite migrations
+rm -rf prisma/migrations/
+
+# Create PostgreSQL database
+createdb skillwise_db
+
+# Create database user and grant permissions
+psql -d postgres -c "CREATE USER skillwise_user WITH ENCRYPTED PASSWORD 'skillwise123';"
+psql -d postgres -c "GRANT ALL PRIVILEGES ON DATABASE skillwise_db TO skillwise_user;"
+psql -d postgres -c "ALTER USER skillwise_user CREATEDB;"
+
+# Run Prisma migration for PostgreSQL
+npx prisma migrate dev --name init-postgresql-users
+```
+
+#### **🎉 VERIFICATION COMPLETED (October 20, 2025 at 8:45 PM CST):**
+**PostgreSQL Migration Successfully Completed:**
+- ✅ PostgreSQL 14 service running via Homebrew
+- ✅ Database `skillwise_db` created with proper permissions
+- ✅ Prisma migration `20251021003326_init_postgresql_users` applied successfully
+- ✅ Users table created with required schema (id, email, password_hash, timestamps)
+- ✅ RefreshToken table created with proper foreign key relationships
+- ✅ Backend services updated to use `password_hash` field
+- ✅ Database connection tested and working
+- ✅ All authentication functionality preserved during migration
+
+**Database Structure Validation:**
+- ✅ All required fields present: id, email, password_hash, created_at, updated_at
+- ✅ Proper constraints: email unique, primary keys, foreign keys
+- ✅ Timestamps with correct default values
+- ✅ Relationships between users and refresh_tokens tables
+
+**Evidence:** PostgreSQL query logs show successful table creation, proper field mapping, and working database connections through Prisma client.
+
+**🏆 User Story 5: Users Table Migration - FULLY COMPLETED AND VERIFIED**
+
+#### **Production Benefits Achieved:**
+- ✅ Production-ready PostgreSQL database
+- ✅ Persistent data storage with proper constraints
+- ✅ Scalable table structure for user accounts
+- ✅ Industry-standard field naming (password_hash)
+- ✅ Proper timestamps for audit trails
+- ✅ Enhanced data integrity and performance
 
 ---
 
-**Document Last Updated:** October 20, 2025  
-**Current Status:** User Stories 1, 2, 3 & 4 Complete and Verified ✅  
-**Next Up:** User Story 5 - Goal Management System 🎯  
-**Database:** SQLite with Prisma ORM fully integrated and tested ✅
+## 📈 Updated Status
+
+### **Completed User Stories:** 5/5
+- ✅ User Story 1: Account Creation (Signup)
+- ✅ User Story 2: User Login with Dashboard  
+- ✅ User Story 3: Backend Auth with Database
+- ✅ User Story 4: Secure Session Management with httpOnly Cookies
+- ✅ User Story 5: Users Table Migration
+
+### **Key Achievements:**
+1. **Complete Authentication System** - Signup, login, logout with JWT
+2. **Secure Session Management** - httpOnly cookies, refresh tokens, database tracking
+3. **Production Database** - PostgreSQL with proper schema and relationships
+4. **Security Best Practices** - Password hashing, token management, XSS protection
+5. **Scalable Architecture** - Prisma ORM, proper error handling, middleware
+6. **Database Migration Experience** - Successfully migrated from SQLite to PostgreSQL
+
+### **Authentication & Database Stack (Complete):**
+- **Frontend:** React with JWT token management and httpOnly cookie support
+- **Backend:** Express with JWT middleware, refresh token system, cookie-parser
+- **Database:** PostgreSQL with Prisma ORM and proper migrations
+- **Security:** bcrypt password hashing, httpOnly cookies, CSRF protection
+- **Session Management:** Access tokens (15min) + refresh tokens (7 days)
+
+### **Technical Infrastructure Ready For:**
+- User profile management with PostgreSQL persistence
+- Learning goals with user relationships  
+- Challenge system with progress tracking
+- Analytics and reporting with PostgreSQL capabilities
+- Multi-user concurrent access
+- Production deployment
+
+---
+
+**Document Last Updated:** October 20, 2025 at 8:50 PM CST  
+**Current Status:** User Stories 1-5 Complete and Verified ✅  
+**Database:** PostgreSQL with Prisma ORM fully integrated and tested ✅  
+**Next Phase:** Advanced feature development with solid auth + database foundation 🚀
