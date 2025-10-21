@@ -1,19 +1,28 @@
-// TODO: Implement user routes
+// User routes with JWT authentication
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const auth = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/jwtAuth');
 
-// TODO: Add GET /profile route
-router.get('/profile', auth, userController.getProfile);
+// GET /profile route - Get current user profile
+router.get('/profile', authenticateToken, userController.getProfile);
 
-// TODO: Add PUT /profile route
-router.put('/profile', auth, userController.updateProfile);
+// PUT /profile route - Update user profile
+router.put('/profile', authenticateToken, userController.updateProfile);
 
-// TODO: Add GET /statistics route
-router.get('/statistics', auth, userController.getStatistics);
+// GET /statistics route - Get user statistics
+router.get('/statistics', authenticateToken, userController.getStatistics);
 
-// TODO: Add DELETE /account route
-router.delete('/account', auth, userController.deleteAccount);
+// DELETE /account route - Delete user account
+router.delete('/account', authenticateToken, userController.deleteAccount);
+
+// GET /me route - Get current user data (simple endpoint for testing)
+router.get('/me', authenticateToken, (req, res) => {
+  res.json({
+    success: true,
+    user: req.user,
+    timestamp: new Date().toISOString()
+  });
+});
 
 module.exports = router;

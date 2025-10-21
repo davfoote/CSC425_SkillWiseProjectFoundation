@@ -411,10 +411,11 @@ backend/src/
 
 ## 📈 Current Status
 
-### **Completed User Stories:** 3/3
+### **Completed User Stories:** 4/4
 - ✅ User Story 1: Account Creation (Signup)
 - ✅ User Story 2: User Login with Dashboard
 - ✅ User Story 3: Backend Database Authentication
+- ✅ User Story 4: Secure Session Management
 
 ### **Key Achievements:**
 1. **Full Authentication System** - Complete signup and login flow
@@ -451,7 +452,101 @@ backend/src/
 
 ---
 
-## 🎯 User Story 4: Goal Management System 
+## ✅ User Story 4: Secure Session Management - COMPLETED
+
+### **Story:**
+> **As a user, I want to stay logged in securely so that I don't have to re-login constantly.**
+
+### **Task Requirements:**
+- JWT session handling with httpOnly cookies
+- Tech Stack: Express middleware, JWT refresh tokens, httpOnly cookies
+- Definition of Done: Middleware validates JWT; refresh token endpoint works; session persists on reload
+
+### **✅ Implementation Details:**
+
+#### **Database Schema Extensions:**
+1. **RefreshToken Model Added to Prisma:**
+   ```sql
+   model RefreshToken {
+     id        Int      @id @default(autoincrement())
+     token     String   @unique
+     userId    Int
+     user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+     expiresAt DateTime
+     createdAt DateTime @default(now())
+     isRevoked Boolean  @default(false)
+   }
+   ```
+
+#### **Backend Security Enhancements:**
+1. **JWT Authentication Middleware (`/backend/src/middleware/jwtAuth.js`):**
+   - `authenticateToken()` - Validates access tokens from headers or cookies
+   - `optionalAuth()` - Optional authentication for public routes
+   - `generateAccessToken()` - Creates short-lived access tokens (15 minutes)
+   - `generateRefreshToken()` - Creates long-lived refresh tokens (7 days)
+   - Support for both Authorization header and httpOnly cookies
+
+2. **Updated Authentication Controller:**
+   
+   **Enhanced Login (`POST /api/auth/login`):**
+   - Generates both access and refresh tokens
+   - Sets httpOnly cookies with proper security flags
+   - Stores refresh tokens in database
+   - Backward compatible with localStorage approach
+
+   **Refresh Token Endpoint (`POST /api/auth/refresh`):**
+   - Validates refresh tokens against database
+   - Generates new access tokens
+   - Updates httpOnly cookies
+   - Handles token expiration and revocation
+
+   **Secure Logout (`POST /api/auth/logout`):**
+   - Revokes refresh tokens in database
+   - Clears httpOnly cookies
+   - Proper session cleanup
+
+3. **Security Features:**
+   - httpOnly cookies prevent XSS token theft
+   - Secure cookies in production (HTTPS only)
+   - SameSite protection against CSRF
+   - Short-lived access tokens (15 minutes)
+   - Long-lived refresh tokens (7 days)
+   - Database-tracked refresh token revocation
+
+#### **Protected Routes Implementation:**
+1. **User Routes (`/api/users/*`):**
+   - All routes protected with JWT middleware
+   - `GET /api/users/me` - Get current user data
+   - Automatic user attachment to `req.user`
+
+#### **Middleware Integration:**
+1. **Express App Configuration:**
+   - Added `cookie-parser` middleware for httpOnly cookie handling
+   - Proper CORS configuration for credentials
+   - Security headers with Helmet
+
+#### **🎉 VERIFICATION COMPLETED (October 20, 2025 at 7:25 PM CST):**
+**Comprehensive Testing Performed:**
+- ✅ Login generates and sets httpOnly cookies correctly
+- ✅ Protected routes accessible with cookie authentication
+- ✅ Refresh token endpoint generates new access tokens
+- ✅ Logout properly clears cookies and revokes tokens
+- ✅ JWT middleware validates tokens from cookies and headers
+- ✅ Database refresh token management working
+- ✅ Session security features implemented and functional
+
+**Security Improvements Achieved:**
+- ✅ httpOnly cookies prevent XSS token theft
+- ✅ Short-lived access tokens limit exposure window
+- ✅ Refresh tokens enable seamless session renewal
+- ✅ Database tracking allows for secure token revocation
+- ✅ Production-ready security headers and cookie flags
+
+**🏆 User Story 4: Secure Session Management - FULLY COMPLETED AND VERIFIED**
+
+---
+
+## 🎯 User Story 5: Goal Management System 
 
 ### **Story:**
 > **As a user, I want to create and manage learning goals so that I can structure my learning journey.**
@@ -488,6 +583,7 @@ backend/src/
 
 #### **Features to Implement:**
 - ✅ User authentication (prerequisite completed)
+- ✅ Secure session management (prerequisite completed)
 - 🔄 Goal creation with form validation
 - 🔄 Goal listing with search/filter
 - 🔄 Goal editing and deletion
@@ -495,11 +591,11 @@ backend/src/
 - 🔄 Goal categories and difficulty levels
 
 ### **Status:** 🚀 Ready to Begin
-**Prerequisites:** All authentication infrastructure completed and verified working.
+**Prerequisites:** All authentication and session management infrastructure completed and verified working.
 
 ---
 
 **Document Last Updated:** October 20, 2025  
-**Current Status:** User Stories 1, 2 & 3 Complete and Verified ✅  
-**Next Up:** User Story 4 - Goal Management System 🎯  
+**Current Status:** User Stories 1, 2, 3 & 4 Complete and Verified ✅  
+**Next Up:** User Story 5 - Goal Management System 🎯  
 **Database:** SQLite with Prisma ORM fully integrated and tested ✅

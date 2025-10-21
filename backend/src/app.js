@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const pino = require('pino');
 const pinoHttp = require('pino-http');
+const cookieParser = require('cookie-parser');
 
 // Import middleware
 const errorHandler = require('./middleware/errorHandler');
@@ -93,6 +94,9 @@ app.use(express.urlencoded({
   extended: true,
   limit: '10mb'
 }));
+
+// Cookie parsing middleware for httpOnly cookies
+app.use(cookieParser());
 
 // Health check endpoint
 app.get('/healthz', (req, res) => {

@@ -1,11 +1,11 @@
-// TODO: Implement authentication controller with login, register, logout, refresh token endpoints
-
-// Authentication controller with proper database integration
-const jwt = require('jsonwebtoken');
+// Authentication controller with secure session management
 const userService = require('../services/userService');
+const { generateAccessToken, generateRefreshToken } = require('../middleware/jwtAuth');
+const prisma = require('../database/prisma');
+const jwt = require('jsonwebtoken');
 
 const authController = {
-  // Login endpoint with database lookup and password verification
+  // Login endpoint with secure session management
   login: async (req, res, next) => {
     try {
       const { email, password } = req.validated.body;
@@ -31,25 +31,46 @@ const authController = {
           timestamp: new Date().toISOString()
         });
       }
+
+      // Generate tokens
+      const accessToken = generateAccessToken(user);
+      const refreshToken = generateRefreshToken();
       
-      // Generate JWT token
-      const token = jwt.sign(
-        { 
-          userId: user.id, 
-          email: user.email 
-        },
-        process.env.JWT_SECRET || 'dev-secret-key',
-        { expiresIn: '24h' }
-      );
+      // Store refresh token in database
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + 7); // 7 days from now
+      
+      await prisma.refreshToken.create({
+        data: {
+          token: refreshToken,
+          userId: user.id,
+          expiresAt: expiresAt
+        }
+      });
+
+      // Set httpOnly cookies
+      res.cookie('accessToken', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 15 * 60 * 1000 // 15 minutes
+      });
+
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+      });
       
       console.log('Login successful for user:', user.id);
       
-      // Return user data (without password) and token
+      // Return user data (without password) and token for backward compatibility
       const { password: _, ...userWithoutPassword } = user;
       
       res.status(200).json({
         message: 'Login successful',
-        token,
+        token: accessToken, // For backward compatibility with frontend
         user: userWithoutPassword,
         timestamp: new Date().toISOString()
       });
@@ -108,14 +129,28 @@ const authController = {
     return authController.register(req, res, next);
   },
 
-  // Logout endpoint (for JWT, this is mainly client-side)
+  // Logout endpoint with secure session cleanup
   logout: async (req, res, next) => {
     try {
-      // With JWT, logout is primarily handled on the client side
-      // by removing the token from localStorage
-      // In a production app, you might want to blacklist tokens
+      const refreshToken = req.cookies.refreshToken;
       
-      console.log('Logout request received');
+      // Revoke refresh token if it exists
+      if (refreshToken) {
+        try {
+          await prisma.refreshToken.updateMany({
+            where: { token: refreshToken },
+            data: { isRevoked: true }
+          });
+        } catch (error) {
+          console.error('Error revoking refresh token:', error);
+        }
+      }
+
+      // Clear httpOnly cookies
+      res.clearCookie('accessToken');
+      res.clearCookie('refreshToken');
+      
+      console.log('Logout successful - tokens cleared');
       
       res.status(200).json({
         message: 'Logout successful',
@@ -131,13 +166,57 @@ const authController = {
     }
   },
 
-  // TODO: Add refresh token endpoint
+  // Refresh token endpoint for generating new access tokens
   refreshToken: async (req, res, next) => {
-    // Implementation needed for refresh tokens
-    res.status(501).json({ 
-      message: 'Refresh token endpoint not implemented yet',
-      timestamp: new Date().toISOString()
-    });
+    try {
+      const refreshToken = req.cookies.refreshToken;
+      
+      if (!refreshToken) {
+        return res.status(401).json({
+          message: 'Refresh token required',
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      // Verify refresh token in database
+      const storedToken = await prisma.refreshToken.findUnique({
+        where: { token: refreshToken },
+        include: { user: true }
+      });
+
+      if (!storedToken || storedToken.isRevoked || storedToken.expiresAt < new Date()) {
+        return res.status(401).json({
+          message: 'Invalid or expired refresh token',
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      // Generate new access token
+      const accessToken = generateAccessToken(storedToken.user);
+
+      // Set new access token cookie
+      res.cookie('accessToken', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 15 * 60 * 1000 // 15 minutes
+      });
+
+      console.log('Access token refreshed for user:', storedToken.user.id);
+
+      res.status(200).json({
+        message: 'Token refreshed successfully',
+        token: accessToken, // For backward compatibility
+        timestamp: new Date().toISOString()
+      });
+
+    } catch (error) {
+      console.error('Refresh token error:', error);
+      res.status(500).json({
+        message: 'Internal server error during token refresh',
+        timestamp: new Date().toISOString()
+      });
+    }
   }
 };
 
