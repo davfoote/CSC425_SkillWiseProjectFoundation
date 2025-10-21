@@ -4,7 +4,11 @@ import './App.css';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import SignupForm from './components/auth/SignupForm';
 import LoginForm from './components/auth/LoginForm';
-import Dashboard from './components/dashboard/Dashboard';
+import DashboardShell from './components/dashboard/DashboardShell';
+import Goals from './components/goals/Goals';
+import Challenges from './components/challenges/Challenges';
+import Progress from './components/progress/Progress';
+import Profile from './components/profile/Profile';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -90,7 +94,43 @@ const AppContent = () => {
           path="/dashboard" 
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <DashboardShell />
+            </ProtectedRoute>
+          } 
+        />
+        
+        <Route 
+          path="/goals" 
+          element={
+            <ProtectedRoute>
+              <Goals />
+            </ProtectedRoute>
+          } 
+        />
+        
+        <Route 
+          path="/challenges" 
+          element={
+            <ProtectedRoute>
+              <Challenges />
+            </ProtectedRoute>
+          } 
+        />
+        
+        <Route 
+          path="/progress" 
+          element={
+            <ProtectedRoute>
+              <Progress />
+            </ProtectedRoute>
+          } 
+        />
+        
+        <Route 
+          path="/profile" 
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           } 
         />
