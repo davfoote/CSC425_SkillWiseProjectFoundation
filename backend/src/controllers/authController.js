@@ -1,7 +1,7 @@
 // Authentication controller with secure session management
 const userService = require('../services/userService');
 const { generateAccessToken, generateRefreshToken } = require('../middleware/jwtAuth');
-const prisma = require('../database/prisma');
+const db = require('../database/connection');
 const jwt = require('jsonwebtoken');
 
 const authController = {

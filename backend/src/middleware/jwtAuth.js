@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const prisma = require('../database/prisma');
+const db = require('../database/connection');
 const { AppError } = require('./errorHandler');
 
 /**
