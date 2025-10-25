@@ -2,5 +2,35 @@
   "dependencies": {
     "@sentry/react": "^10.22.0",
     "dotenv": "^17.2.3"
-  }
+  },
+  "name": "csc425_skillwiseprojectfoundation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "devDependencies": {
+    "husky": "^8.0.0",
+    "lint-staged": "^14.0.0",
+    "eslint": "^8.42.0",
+    "prettier": "^2.8.8"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:all": "docker-compose up -d && echo Dev up",
+    "down": "docker-compose down -v",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davfoote/CSC425_SkillWiseProjectFoundation.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/davfoote/CSC425_SkillWiseProjectFoundation/issues"
+  },
+  "homepage": "https://github.com/davfoote/CSC425_SkillWiseProjectFoundation#readme"
 }
