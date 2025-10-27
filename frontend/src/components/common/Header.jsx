@@ -1,6 +1,16 @@
-// TODO: Header component placeholder
+// TODO: Flesh out header styles and responsive behavior
 import React from 'react';
+import Navigation from './Navigation';
 
-export default function Header() {
-  return <header><h2>Header</h2></header>;
-}
+const Header = ({ title = 'SkillWise' }) => {
+  return (
+    <header className="app-header">
+      <div className="container">
+        <h1 className="app-title">{title}</h1>
+        <Navigation />
+      </div>
+    </header>
+  );
+};
+
+export default Header;

@@ -1,0 +1,489 @@
+openapi: 3.0.3
+info:
+  title: SkillWise API
+  version: 1.0.0
+  description: |
+    SkillWise backend API specification (minimal). This file documents the primary
+    endpoints for authentication, users, goals, challenges, progress, submissions,
+    peer review and leaderboard. Endpoints that set/require a refresh token assume
+    the refresh token is sent/received via an httpOnly cookie; access tokens are
+    returned in JSON for client use.
+servers:
+  - url: http://localhost:5000/api
+    description: Local development server (adjust port as needed)
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        details:
+          type: object
+
+    Credentials:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+
+    AuthResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: Short-lived JWT access token
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        created_at:
+          type: string
+          format: date-time
+
+    NewUser:
+      allOf:
+        - $ref: '#/components/schemas/User'
+        - type: object
+          required: [email, password]
+          properties:
+            password:
+              type: string
+
+    Goal:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        user_id:
+          type: integer
+        due_date:
+          type: string
+          format: date
+
+    Challenge:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        starts_at:
+          type: string
+          format: date-time
+        ends_at:
+          type: string
+          format: date-time
+
+    Progress:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        goal_id:
+          type: integer
+        percent_complete:
+          type: number
+          format: float
+        updated_at:
+          type: string
+          format: date-time
+
+    Submission:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        challenge_id:
+          type: integer
+        content:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    PeerReview:
+      type: object
+      properties:
+        id:
+          type: integer
+        submission_id:
+          type: integer
+        reviewer_id:
+          type: integer
+        score:
+          type: integer
+        comment:
+          type: string
+
+    AIFeedback:
+      type: object
+      properties:
+        id:
+          type: integer
+        submission_id:
+          type: integer
+        feedback:
+          type: string
+
+paths:
+  /healthz:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  /auth/login:
+    post:
+      summary: Login with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+      responses:
+        '200':
+          description: Returns access token and sets refresh cookie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/refresh:
+    post:
+      summary: Exchange refresh cookie for new access token
+      responses:
+        '200':
+          description: New access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Refresh token missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/logout:
+    post:
+      summary: Logout (clear refresh cookie)
+      responses:
+        '204':
+          description: Logged out
+
+  /users:
+    get:
+      summary: List users (admin)
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Array of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+    post:
+      summary: Create a new user (signup)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /users/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Get user by id
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Not found
+
+    put:
+      summary: Update user
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Updated user
+
+    delete:
+      summary: Delete user
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Deleted
+
+  /goals:
+    get:
+      summary: List goals (optionally filter by user)
+      parameters:
+        - in: query
+          name: user_id
+          schema:
+            type: integer
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of goals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Goal'
+
+    post:
+      summary: Create a goal
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Goal'
+      responses:
+        '201':
+          description: Goal created
+
+  /goals/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Get a goal
+      responses:
+        '200':
+          description: Goal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Goal'
+
+    put:
+      summary: Update a goal
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Goal'
+      responses:
+        '200':
+          description: Updated goal
+
+    delete:
+      summary: Delete a goal
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Deleted
+
+  /challenges:
+    get:
+      summary: List public challenges
+      responses:
+        '200':
+          description: Challenges
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Challenge'
+
+    post:
+      summary: Create a challenge
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Challenge'
+      responses:
+        '201':
+          description: Created
+
+  /progress:
+    post:
+      summary: Record progress for a goal
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Progress'
+      responses:
+        '201':
+          description: Progress recorded
+
+  /submissions:
+    post:
+      summary: Submit work for a challenge
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Submission'
+      responses:
+        '201':
+          description: Submission created
+
+  /submissions/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Get submission and optionally AI feedback
+      responses:
+        '200':
+          description: Submission
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'
+
+  /peer-review:
+    post:
+      summary: Submit a peer review for a submission
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PeerReview'
+      responses:
+        '201':
+          description: Peer review created
+
+  /ai/feedback/{submissionId}:
+    get:
+      summary: Get AI feedback for a submission
+      parameters:
+        - name: submissionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: AI feedback
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AIFeedback'
+
+  /leaderboard:
+    get:
+      summary: Get leaderboard data
+      responses:
+        '200':
+          description: Leaderboard
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    user_id:
+                      type: integer
+                    score:
+                      type: number
+
+security:
+  - bearerAuth: []

@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "title": "30-day Coding",
+    "description": "Code daily for 30 days",
+    "starts_at": "2025-10-01T00:00:00Z",
+    "ends_at": "2025-10-30T23:59:59Z"
+  },
+  {
+    "id": 2,
+    "title": "Bug Hunt",
+    "description": "Fix 10 bugs",
+    "starts_at": "2025-11-01T00:00:00Z",
+    "ends_at": "2025-11-30T23:59:59Z"
+  }
+]

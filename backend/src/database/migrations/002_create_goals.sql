@@ -1,7 +1,8 @@
--- TODO: create refresh_tokens table
-CREATE TABLE IF NOT EXISTS refresh_tokens (
+-- TODO: create goals table
+CREATE TABLE IF NOT EXISTS goals (
   id SERIAL PRIMARY KEY,
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-  token TEXT NOT NULL,
+  title TEXT NOT NULL,
+  description TEXT,
   created_at TIMESTAMP DEFAULT NOW()
 );

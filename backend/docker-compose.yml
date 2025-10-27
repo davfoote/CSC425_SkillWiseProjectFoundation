@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  backend:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+      - DATABASE_URL=postgres://skillwise:skillwise@db:5432/skillwise_dev
+    volumes:
+      - ./:/usr/src/app
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=skillwise
+      - POSTGRES_PASSWORD=skillwise
+      - POSTGRES_DB=skillwise_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:
