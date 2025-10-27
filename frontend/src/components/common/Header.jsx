@@ -1,5 +1,5 @@
 // TODO: Implement main navigation header component
-import React from 'react';
+// React import not required with new JSX transform
 
 const Header = () => {
   // TODO: Add navigation menu, user profile dropdown, notifications

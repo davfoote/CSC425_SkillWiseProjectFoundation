@@ -1,5 +1,5 @@
 // TODO: Implement login page with form handling
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import LoginForm from '../components/auth/LoginForm';
@@ -19,12 +19,12 @@ const LoginPage = () => {
     try {
       setIsLoading(true);
       setError('');
-      
+
       const result = await login({
         email: formData.email,
-        password: formData.password
+        password: formData.password,
       });
-      
+
       if (result.success) {
         navigate(from, { replace: true });
       } else {
@@ -68,7 +68,7 @@ const LoginPage = () => {
                 Sign up here
               </Link>
             </p>
-            
+
             <p>
               <Link to="/forgot-password" className="auth-link">
                 Forgot your password?

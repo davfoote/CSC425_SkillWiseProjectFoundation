@@ -1,0 +1,13 @@
+{
+  "extends": ["react-app", "react-app/jest"],
+  "settings": {
+    "react": {
+      "version": "detect",
+      "pragma": "React",
+      "jsxRuntime": "automatic"
+    }
+  },
+  "rules": {
+    "no-unused-vars": ["error", { "varsIgnorePattern": "^React$" }]
+  }
+}

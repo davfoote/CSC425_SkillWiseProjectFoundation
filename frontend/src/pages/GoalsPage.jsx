@@ -1,10 +1,10 @@
 // TODO: Implement goals management page
-import React, { useState } from 'react';
+import { useState } from 'react';
 import GoalCard from '../components/goals/GoalCard';
 
 const GoalsPage = () => {
-  const [goals, setGoals] = useState([]);
-  
+  const [goals] = useState([]);
+
   // TODO: Add goal creation, filtering, search, sorting
   return (
     <div className="goals-page">

@@ -1,22 +1,31 @@
-// TODO: Implement challenge routes
+// src/routes/challengeRoutes.js
 const express = require('express');
 const router = express.Router();
 const challengeController = require('../controllers/challengeController');
 const auth = require('../middleware/auth');
 
-// TODO: Add GET / route for all challenges
+// Local restrictTo helper to avoid reliance on exported middleware shape during
+// test runs. Keeps route-level authorization explicit and test-friendly.
+const restrictTo = (...roles) => (req, res, next) => {
+  if (!req.user || !roles.includes(req.user.role)) {
+    return res.status(403).json({ error: 'You do not have permission to perform this action.' });
+  }
+  return next();
+};
+
+// Get all challenges
 router.get('/', auth, challengeController.getChallenges);
 
-// TODO: Add GET /:id route for single challenge
+// Get a single challenge by ID
 router.get('/:id', auth, challengeController.getChallengeById);
 
-// TODO: Add POST / route for creating challenge (admin only)
-router.post('/', auth, challengeController.createChallenge);
+// Create a new challenge (admin only)
+router.post('/', auth, restrictTo('admin'), challengeController.createChallenge);
 
-// TODO: Add PUT /:id route for updating challenge (admin only)
-router.put('/:id', auth, challengeController.updateChallenge);
+// Update an existing challenge (admin only)
+router.put('/:id', auth, restrictTo('admin'), challengeController.updateChallenge);
 
-// TODO: Add DELETE /:id route for deleting challenge (admin only)
-router.delete('/:id', auth, challengeController.deleteChallenge);
+// Delete a challenge (admin only)
+router.delete('/:id', auth, restrictTo('admin'), challengeController.deleteChallenge);
 
 module.exports = router;

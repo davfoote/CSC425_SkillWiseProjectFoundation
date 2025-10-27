@@ -1,19 +1,19 @@
-// TODO: Implement progress routes
+// src/routes/progressRoutes.js
 const express = require('express');
 const router = express.Router();
 const progressController = require('../controllers/progressController');
 const auth = require('../middleware/auth');
 
-// TODO: Add GET / route for user progress
+// Get user progress overview
 router.get('/', auth, progressController.getProgress);
 
-// TODO: Add POST /event route for tracking progress events
+// Record a new progress event (e.g., challenge completed, points earned)
 router.post('/event', auth, progressController.updateProgress);
 
-// TODO: Add GET /analytics route for progress analytics
+// Get progress analytics and performance stats
 router.get('/analytics', auth, progressController.getAnalytics);
 
-// TODO: Add GET /milestones route for milestone tracking
+// Get user milestones and achievements
 router.get('/milestones', auth, progressController.getMilestones);
 
 module.exports = router;

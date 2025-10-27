@@ -1,5 +1,5 @@
 // TODO: Implement challenge card component
-import React from 'react';
+// React import not required with new JSX transform
 
 const ChallengeCard = ({ challenge }) => {
   // TODO: Add difficulty indicators, estimated time, tags, actions
@@ -12,16 +12,16 @@ const ChallengeCard = ({ challenge }) => {
           <span className="points">+{challenge?.points || 10} pts</span>
         </div>
       </div>
-      
+
       <div className="challenge-content">
         <p>{challenge?.description || 'Challenge description goes here...'}</p>
-        
+
         {challenge?.estimatedTime && (
           <div className="estimated-time">
             <span>⏱️ {challenge.estimatedTime} min</span>
           </div>
         )}
-        
+
         {challenge?.tags && (
           <div className="challenge-tags">
             {challenge.tags.map((tag, index) => (

@@ -1,9 +1,19 @@
-// TODO: Test environment setup and configuration
+// Test environment setup and configuration
+const path = require('path');
+const dotenv = require('dotenv');
+// Load test-specific env file if present (backend/.env.test) to avoid shell quoting issues on Windows
+dotenv.config({ path: path.join(__dirname, '..', '.env.test') });
 const { Pool } = require('pg');
+
+// If TEST_DATABASE_URL is provided, mirror it to DATABASE_URL early so modules that create DB pools
+// (which run at require-time) use the test connection string.
+if (process.env.TEST_DATABASE_URL && !process.env.DATABASE_URL) {
+  process.env.DATABASE_URL = process.env.TEST_DATABASE_URL;
+}
 
 // Test database configuration
 const testDbConfig = {
-  connectionString: process.env.TEST_DATABASE_URL || 
+  connectionString: process.env.TEST_DATABASE_URL ||
     'postgresql://skillwise_user:skillwise_pass@localhost:5432/skillwise_test_db',
   // Reduce connections for test environment
   max: 5,
@@ -19,7 +29,12 @@ beforeAll(async () => {
   process.env.NODE_ENV = 'test';
   process.env.JWT_SECRET = 'test-jwt-secret-key-for-testing-only';
   process.env.JWT_REFRESH_SECRET = 'test-refresh-secret-key-for-testing-only';
-  
+
+  // If a TEST_DATABASE_URL is provided, mirror it to DATABASE_URL so the app's DB connection uses it
+  if (process.env.TEST_DATABASE_URL && !process.env.DATABASE_URL) {
+    process.env.DATABASE_URL = process.env.TEST_DATABASE_URL;
+  }
+
   // Test database connection
   try {
     await testPool.query('SELECT 1');
@@ -35,7 +50,7 @@ afterAll(async () => {
   try {
     // Clean up test data if needed
     // await testPool.query('TRUNCATE TABLE users CASCADE');
-    
+
     // Close database connections
     await testPool.end();
     console.log('✅ Test database cleanup completed');
@@ -48,7 +63,7 @@ afterAll(async () => {
 const clearTestData = async () => {
   const tables = [
     'user_achievements',
-    'achievements', 
+    'achievements',
     'leaderboard',
     'progress_events',
     'peer_reviews',
@@ -57,7 +72,7 @@ const clearTestData = async () => {
     'challenges',
     'goals',
     'refresh_tokens',
-    'users'
+    'users',
   ];
 
   for (const table of tables) {
@@ -73,5 +88,5 @@ const clearTestData = async () => {
 // Export test utilities
 module.exports = {
   testPool,
-  clearTestData
+  clearTestData,
 };

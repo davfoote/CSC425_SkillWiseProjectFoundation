@@ -1,44 +1,61 @@
 #!/usr/bin/env node
-// TODO: Implement deployment script
 
-const { exec } = require('child_process');
+require('dotenv').config();
+const { spawn } = require('child_process');
 const path = require('path');
 
-async function deploy() {
-  try {
-    console.log('Starting deployment process...');
-    
-    // TODO: Run tests
-    console.log('Running tests...');
-    
-    // TODO: Build application
-    console.log('Building application...');
-    
-    // TODO: Run migrations
-    console.log('Running database migrations...');
-    
-    // TODO: Deploy to production
-    console.log('Deploying to production...');
-    
-    console.log('Deployment completed successfully!');
-  } catch (error) {
-    console.error('Deployment failed:', error);
-    process.exit(1);
-  }
-}
+const CWD = path.resolve(__dirname, '..');
 
-function runCommand(command) {
+function sh (cmd) {
   return new Promise((resolve, reject) => {
-    exec(command, (error, stdout, stderr) => {
-      if (error) {
-        reject(error);
-      } else {
-        console.log(stdout);
-        if (stderr) console.warn(stderr);
-        resolve(stdout);
-      }
+    const child = spawn(cmd, {
+      cwd: CWD,
+      shell: true,
+      stdio: 'inherit',
+      env: { ...process.env },
+    });
+    child.on('exit', (code) => {
+      if (code === 0) return resolve();
+      reject(new Error(`Command failed (${code}): ${cmd}`));
     });
   });
+}
+
+async function deploy () {
+  try {
+    console.log('Starting deployment process...');
+
+    console.log('Installing dependencies...');
+    await sh('npm install');
+
+    console.log('Running tests...');
+    await sh('npm test');
+
+    console.log('Running linter...');
+    await sh('npm run lint');
+
+    console.log('Building application...');
+    await sh('npm run build');
+
+    console.log('Running database migrations...');
+    await sh('npm run migrate');
+
+    console.log('Deployment completed successfully.');
+    const port = process.env.PORT || 3001;
+
+    console.log(`\nTo start the server in production mode:
+NODE_ENV=production npm start
+
+On Windows PowerShell:
+$env:NODE_ENV="production"; npm start
+
+Verify:
+http://localhost:${port}/healthz
+http://localhost:${port}/api`);
+  } catch (err) {
+    console.error('Deployment failed:', err.message);
+    process.exit(1);
+  }
 }
 
 if (require.main === module) {

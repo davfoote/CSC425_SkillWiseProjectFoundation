@@ -13,6 +13,8 @@
     "lint:fix": "eslint . --ext .js --fix",
     "migrate": "node scripts/migrate.js",
     "seed": "node scripts/seed.js",
+    "backup": "node scripts/backup.js",
+    "deploy": "node scripts/deploy.js",
     "build": "echo 'No build step required for Node.js'"
   },
   "dependencies": {
@@ -41,6 +43,10 @@
     "eslint": "^8.55.0",
     "@types/jest": "^29.5.8",
     "@eslint/js": "^8.55.0"
+  },
+  "jest": {
+    "setupFilesAfterEnv": ["<rootDir>/tests/setupTestEnvironment.js"],
+    "testEnvironment": "node"
   },
   "keywords": [
     "api",

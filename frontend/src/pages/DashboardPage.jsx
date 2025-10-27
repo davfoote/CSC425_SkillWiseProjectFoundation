@@ -1,5 +1,5 @@
 // TODO: Implement dashboard page with navigation
-import React from 'react';
+// React import not required with new JSX transform
 import { Link, useLocation } from 'react-router-dom';
 import DashboardOverview from '../components/dashboard/DashboardOverview';
 import { useAuth } from '../hooks/useAuth';
@@ -26,12 +26,12 @@ const DashboardPage = () => {
             <h2>SkillWise</h2>
             <p>Welcome, {user?.firstName || 'Student'}!</p>
           </div>
-          
+
           <nav className="sidebar-navigation">
             <ul>
               {navigationItems.map((item) => (
                 <li key={item.path}>
-                  <Link 
+                  <Link
                     to={item.path}
                     className={`nav-link ${location.pathname === item.path ? 'active' : ''}`}
                   >
@@ -49,7 +49,7 @@ const DashboardPage = () => {
             <h1>Dashboard</h1>
             <p>Track your learning progress and achievements</p>
           </div>
-          
+
           <DashboardOverview />
         </main>
       </div>

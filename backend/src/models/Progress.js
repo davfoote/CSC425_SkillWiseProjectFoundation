@@ -1,96 +1,156 @@
+// src/models/Progress.js
 const db = require('../database/connection');
 
 class Progress {
-  static async findByUserId(userId) {
+  /** Get all progress events for a specific user */
+  static async findByUserId (userId) {
     try {
-      const query = 'SELECT * FROM progress WHERE user_id = $1 ORDER BY created_at DESC';
-      const result = await db.query(query, [userId]);
+      const sql = `
+        SELECT
+          id, user_id, challenge_id, event_type,
+          points_earned, timestamp_occurred, metadata,
+          created_at, updated_at
+        FROM progress_events
+        WHERE user_id = $1
+        ORDER BY timestamp_occurred DESC
+      `;
+      const result = await db.query(sql, [userId]);
       return result.rows;
     } catch (error) {
       throw new Error(`Error finding progress for user: ${error.message}`);
     }
   }
 
-  static async findByUserAndChallenge(userId, challengeId) {
+  /** Find events for a given user + challenge combo */
+  static async findByUserAndChallenge (userId, challengeId) {
     try {
-      const query = 'SELECT * FROM progress WHERE user_id = $1 AND challenge_id = $2';
-      const result = await db.query(query, [userId, challengeId]);
-      return result.rows[0];
+      const sql = `
+        SELECT
+          id, user_id, challenge_id, event_type,
+          points_earned, timestamp_occurred, metadata,
+          created_at, updated_at
+        FROM progress_events
+        WHERE user_id = $1 AND challenge_id = $2
+        ORDER BY timestamp_occurred DESC
+      `;
+      const result = await db.query(sql, [userId, challengeId]);
+      return result.rows;
     } catch (error) {
-      throw new Error(`Error finding progress: ${error.message}`);
+      throw new Error(`Error finding progress for challenge: ${error.message}`);
     }
   }
 
-  static async getUserStats(userId) {
+  /** Aggregate statistics for a user (from user_statistics) */
+  static async getUserStats (userId) {
     try {
-      const query = `
-        SELECT 
-          COUNT(*) as total_attempts,
-          COUNT(CASE WHEN completed = true THEN 1 END) as completed_challenges,
-          SUM(points_earned) as total_points,
-          AVG(CASE WHEN completed = true THEN score END) as average_score
-        FROM progress 
+      const sql = `
+        SELECT
+          total_points,
+          total_challenges_completed,
+          average_score,
+          learning_streak_days,
+          total_learning_time_minutes,
+          updated_at AS last_updated
+        FROM user_statistics
         WHERE user_id = $1
       `;
-      const result = await db.query(query, [userId]);
-      return result.rows[0];
+      const result = await db.query(sql, [userId]);
+      return result.rows[0] || {
+        total_points: 0,
+        total_challenges_completed: 0,
+        average_score: 0,
+        learning_streak_days: 0,
+        total_learning_time_minutes: 0,
+      };
     } catch (error) {
       throw new Error(`Error getting user stats: ${error.message}`);
     }
   }
 
-  static async create(progressData) {
+  /** Insert a new progress event */
+  static async create (data) {
     try {
-      const { user_id, challenge_id, score, completed, points_earned, time_spent } = progressData;
-      const query = `
-        INSERT INTO progress (user_id, challenge_id, score, completed, points_earned, time_spent, created_at, updated_at)
-        VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
+      const {
+        userId,
+        challengeId = null,
+        eventType,
+        pointsEarned = 0,
+        metadata = {},
+      } = data;
+
+      const sql = `
+        INSERT INTO progress_events (
+          user_id, challenge_id, event_type,
+          points_earned, metadata, timestamp_occurred,
+          created_at, updated_at
+        )
+        VALUES ($1, $2, $3, $4, $5, NOW(), NOW(), NOW())
         RETURNING *
       `;
-      const result = await db.query(query, [user_id, challenge_id, score, completed, points_earned, time_spent]);
+      const params = [userId, challengeId, eventType, pointsEarned, metadata];
+      const result = await db.query(sql, params);
       return result.rows[0];
     } catch (error) {
-      throw new Error(`Error creating progress: ${error.message}`);
+      throw new Error(`Error creating progress event: ${error.message}`);
     }
   }
 
-  static async update(progressId, updateData) {
+  /** Update an existing event (optional) */
+  static async update (eventId, data) {
     try {
-      const { score, completed, points_earned, time_spent } = updateData;
-      const query = `
-        UPDATE progress 
-        SET score = COALESCE($2, score),
-            completed = COALESCE($3, completed),
-            points_earned = COALESCE($4, points_earned),
-            time_spent = COALESCE($5, time_spent),
+      const sets = [];
+      const params = [eventId];
+      let i = 1;
+
+      const map = {
+        eventType: 'event_type',
+        pointsEarned: 'points_earned',
+        metadata: 'metadata',
+      };
+
+      Object.entries(map).forEach(([key, col]) => {
+        if (Object.prototype.hasOwnProperty.call(data, key)) {
+          params.push(data[key]);
+          sets.push(`${col} = $${++i}`);
+        }
+      });
+
+      if (sets.length === 0) return null;
+
+      const sql = `
+        UPDATE progress_events
+        SET ${sets.join(', ')},
             updated_at = NOW()
         WHERE id = $1
         RETURNING *
       `;
-      const result = await db.query(query, [progressId, score, completed, points_earned, time_spent]);
+      const result = await db.query(sql, params);
       return result.rows[0];
     } catch (error) {
-      throw new Error(`Error updating progress: ${error.message}`);
+      throw new Error(`Error updating progress event: ${error.message}`);
     }
   }
 
-  static async getLeaderboardData(limit = 10) {
+  /** Get leaderboard-like data (summarized from user_statistics) */
+  static async getLeaderboardData (limit = 10) {
     try {
-      const query = `
-        SELECT 
+      const sql = `
+        SELECT
           u.id,
-          u.username,
           u.first_name,
           u.last_name,
-          SUM(p.points_earned) as total_points,
-          COUNT(CASE WHEN p.completed = true THEN 1 END) as challenges_completed
+          us.total_points,
+          us.total_challenges_completed,
+          us.average_score
         FROM users u
-        LEFT JOIN progress p ON u.id = p.user_id
-        GROUP BY u.id, u.username, u.first_name, u.last_name
-        ORDER BY total_points DESC, challenges_completed DESC
+        LEFT JOIN user_statistics us ON us.user_id = u.id
+        WHERE u.is_active = true
+        ORDER BY us.total_points DESC NULLS LAST,
+                 us.total_challenges_completed DESC NULLS LAST,
+                 us.average_score DESC NULLS LAST
         LIMIT $1
       `;
-      const result = await db.query(query, [limit]);
+      const result = await db.query(sql, [limit]);
       return result.rows;
     } catch (error) {
       throw new Error(`Error getting leaderboard data: ${error.message}`);
