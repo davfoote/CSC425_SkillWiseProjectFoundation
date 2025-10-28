@@ -1,0 +1,84 @@
+
+> skillwise-backend@1.0.0 start
+> node server.js
+
+[2025-10-20 19:25:30.784 -0500] [32mINFO[39m (skillwise-api): [36m🚀 SkillWise API Server running on port 3001[39m
+[2025-10-20 19:25:30.785 -0500] [32mINFO[39m (skillwise-api): [36m📊 Health check available at http://localhost:3001/healthz[39m
+[2025-10-20 19:25:30.785 -0500] [32mINFO[39m (skillwise-api): [36m🌐 API endpoints available at http://localhost:3001/api[39m
+[2025-10-20 19:25:30.785 -0500] [32mINFO[39m (skillwise-api): [36m🔒 Environment: development[39m
+Login attempt for: test@exampe.com
+prisma:info Starting a sqlite pool with 29 connections.
+prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`email`, `main`.`users`.`firstName`, `main`.`users`.`lastName`, `main`.`users`.`password`, `main`.`users`.`createdAt`, `main`.`users`.`updatedAt` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+Verifying password...
+Password verification result: true
+prisma:query INSERT INTO `main`.`refresh_tokens` (`token`, `userId`, `expiresAt`, `createdAt`, `isRevoked`) VALUES (?,?,?,?,?) RETURNING `id` AS `id`, `token` AS `token`, `userId` AS `userId`, `expiresAt` AS `expiresAt`, `createdAt` AS `createdAt`, `isRevoked` AS `isRevoked`
+Login successful for user: 2
+prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`email`, `main`.`users`.`firstName`, `main`.`users`.`lastName`, `main`.`users`.`createdAt`, `main`.`users`.`updatedAt` FROM `main`.`users` WHERE (`main`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`refresh_tokens`.`id`, `main`.`refresh_tokens`.`token`, `main`.`refresh_tokens`.`userId`, `main`.`refresh_tokens`.`expiresAt`, `main`.`refresh_tokens`.`createdAt`, `main`.`refresh_tokens`.`isRevoked` FROM `main`.`refresh_tokens` WHERE (`main`.`refresh_tokens`.`token` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`email`, `main`.`users`.`firstName`, `main`.`users`.`lastName`, `main`.`users`.`password`, `main`.`users`.`createdAt`, `main`.`users`.`updatedAt` FROM `main`.`users` WHERE `main`.`users`.`id` IN (?) LIMIT ? OFFSET ?
+Access token refreshed for user: 2
+prisma:query BEGIN IMMEDIATE
+prisma:query UPDATE `main`.`refresh_tokens` SET `isRevoked` = ? WHERE `main`.`refresh_tokens`.`token` = ?
+prisma:query COMMIT
+Logout successful - tokens cleared
+prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`email`, `main`.`users`.`firstName`, `main`.`users`.`lastName`, `main`.`users`.`createdAt`, `main`.`users`.`updatedAt` FROM `main`.`users` WHERE (`main`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+[2025-10-20 19:25:38.909 -0500] [32mINFO[39m (skillwise-api): [36mrequest completed[39m
+    req: {
+      "method": "POST",
+      "url": "/api/auth/login",
+      "headers": {
+        "content-type": "application/json"
+      }
+    }
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 79
+[2025-10-20 19:25:38.912 -0500] [32mINFO[39m (skillwise-api): [36mrequest completed[39m
+    req: {
+      "method": "GET",
+      "url": "/api/users/me",
+      "headers": {
+        "content-type": "application/json"
+      }
+    }
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 2
+[2025-10-20 19:25:38.914 -0500] [32mINFO[39m (skillwise-api): [36mrequest completed[39m
+    req: {
+      "method": "POST",
+      "url": "/api/auth/refresh",
+      "headers": {
+        "content-type": "application/json"
+      }
+    }
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1
+[2025-10-20 19:25:38.916 -0500] [32mINFO[39m (skillwise-api): [36mrequest completed[39m
+    req: {
+      "method": "POST",
+      "url": "/api/auth/logout",
+      "headers": {
+        "content-type": "application/json"
+      }
+    }
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1
+[2025-10-20 19:25:38.918 -0500] [32mINFO[39m (skillwise-api): [36mrequest completed[39m
+    req: {
+      "method": "GET",
+      "url": "/api/users/me",
+      "headers": {
+        "content-type": "application/json"
+      }
+    }
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1
