@@ -37,21 +37,16 @@ const authController = {
       const refreshToken = generateRefreshToken();
       
       // Clean up any existing refresh tokens for this user (prevent duplicates)
-      await prisma.refreshToken.deleteMany({
-        where: { userId: user.id }
-      });
+      await db.query('DELETE FROM refresh_tokens WHERE user_id = $1', [user.id]);
       
       // Store refresh token in database
       const expiresAt = new Date();
       expiresAt.setDate(expiresAt.getDate() + 7); // 7 days from now
       
-      await prisma.refreshToken.create({
-        data: {
-          token: refreshToken,
-          userId: user.id,
-          expiresAt: expiresAt
-        }
-      });
+      await db.query(
+        'INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES ($1, $2, $3)',
+        [refreshToken, user.id, expiresAt]
+      );
 
       // Set httpOnly cookies
       res.cookie('accessToken', accessToken, {
@@ -142,10 +137,10 @@ const authController = {
       // Revoke refresh token if it exists
       if (refreshToken) {
         try {
-          await prisma.refreshToken.updateMany({
-            where: { token: refreshToken },
-            data: { isRevoked: true }
-          });
+          await db.query(
+            'UPDATE refresh_tokens SET is_revoked = true WHERE token = $1',
+            [refreshToken]
+          );
         } catch (error) {
           console.error('Error revoking refresh token:', error);
         }
@@ -184,12 +179,16 @@ const authController = {
       }
 
       // Verify refresh token in database
-      const storedToken = await prisma.refreshToken.findUnique({
-        where: { token: refreshToken },
-        include: { user: true }
-      });
+      const tokenQuery = `
+        SELECT rt.*, u.id, u.email, u.first_name, u.last_name, u.created_at, u.updated_at
+        FROM refresh_tokens rt
+        JOIN users u ON rt.user_id = u.id
+        WHERE rt.token = $1
+      `;
+      const result = await db.query(tokenQuery, [refreshToken]);
+      const storedToken = result.rows[0];
 
-      if (!storedToken || storedToken.isRevoked || storedToken.expiresAt < new Date()) {
+      if (!storedToken || storedToken.is_revoked || storedToken.expires_at < new Date()) {
         return res.status(401).json({
           message: 'Invalid or expired refresh token',
           timestamp: new Date().toISOString()
@@ -197,7 +196,15 @@ const authController = {
       }
 
       // Generate new access token
-      const accessToken = generateAccessToken(storedToken.user);
+      const user = {
+        id: storedToken.id,
+        email: storedToken.email,
+        first_name: storedToken.first_name,
+        last_name: storedToken.last_name,
+        created_at: storedToken.created_at,
+        updated_at: storedToken.updated_at
+      };
+      const accessToken = generateAccessToken(user);
 
       // Set new access token cookie
       res.cookie('accessToken', accessToken, {

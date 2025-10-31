@@ -9,11 +9,10 @@ const userService = {
       console.log('Creating user:', email);
       
       // Check if user already exists
-      const existingUser = await prisma.user.findUnique({
-        where: { email }
-      });
+      const existingUserQuery = 'SELECT id FROM users WHERE email = $1';
+      const existingUserResult = await db.query(existingUserQuery, [email]);
       
-      if (existingUser) {
+      if (existingUserResult.rows.length > 0) {
         throw new Error('User already exists with this email');
       }
       
@@ -24,22 +23,27 @@ const userService = {
       console.log('Password hashed successfully');
       
       // Create user in database
-      const user = await prisma.user.create({
-        data: {
-          email,
-          firstName,
-          lastName,
-          password_hash: hashedPassword,
-        },
-        select: {
-          id: true,
-          email: true,
-          firstName: true,
-          lastName: true,
-          createdAt: true,
-          // Don't return password_hash
-        }
-      });
+      const createUserQuery = `
+        INSERT INTO users (email, first_name, last_name, password_hash, created_at, updated_at)
+        VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        RETURNING id, email, first_name, last_name, created_at, updated_at
+      `;
+      
+      const userResult = await db.query(createUserQuery, [
+        email, 
+        firstName, 
+        lastName, 
+        hashedPassword
+      ]);
+      
+      const user = {
+        id: userResult.rows[0].id,
+        email: userResult.rows[0].email,
+        firstName: userResult.rows[0].first_name,
+        lastName: userResult.rows[0].last_name,
+        created_at: userResult.rows[0].created_at,
+        updated_at: userResult.rows[0].updated_at
+      };
       
       console.log('User created successfully:', user.id);
       return user;
@@ -53,9 +57,23 @@ const userService = {
   // Find user by email
   async findUserByEmail(email) {
     try {
-      const user = await prisma.user.findUnique({
-        where: { email }
-      });
+      const query = 'SELECT id, email, first_name, last_name, password_hash, created_at, updated_at FROM users WHERE email = $1';
+      const result = await db.query(query, [email]);
+      
+      if (result.rows.length === 0) {
+        return null;
+      }
+      
+      const user = {
+        id: result.rows[0].id,
+        email: result.rows[0].email,
+        first_name: result.rows[0].first_name,
+        last_name: result.rows[0].last_name,
+        password_hash: result.rows[0].password_hash,
+        created_at: result.rows[0].created_at,
+        updated_at: result.rows[0].updated_at
+      };
+      
       return user;
     } catch (error) {
       console.error('Error finding user:', error.message);
@@ -79,17 +97,22 @@ const userService = {
   // Get user by ID (for JWT verification)
   async getUserById(userId) {
     try {
-      const user = await prisma.user.findUnique({
-        where: { id: parseInt(userId) },
-        select: {
-          id: true,
-          email: true,
-          firstName: true,
-          lastName: true,
-          createdAt: true,
-          // Don't return password
-        }
-      });
+      const query = 'SELECT id, email, first_name, last_name, created_at, updated_at FROM users WHERE id = $1';
+      const result = await db.query(query, [parseInt(userId)]);
+      
+      if (result.rows.length === 0) {
+        return null;
+      }
+      
+      const user = {
+        id: result.rows[0].id,
+        email: result.rows[0].email,
+        firstName: result.rows[0].first_name,
+        lastName: result.rows[0].last_name,
+        created_at: result.rows[0].created_at,
+        updated_at: result.rows[0].updated_at
+      };
+      
       return user;
     } catch (error) {
       console.error('Error getting user by ID:', error.message);
