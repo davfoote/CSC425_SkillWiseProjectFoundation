@@ -20,7 +20,7 @@ const goalController = {
   // Get all goals for authenticated user
   getGoals: async (req, res, next) => {
     try {
-      const userId = req.user.id;
+      const userId = req.user.userId;
       const goals = await goalService.getUserGoals(userId);
       
       res.json({
@@ -37,7 +37,7 @@ const goalController = {
   getGoalById: async (req, res, next) => {
     try {
       const goalId = req.params.id;
-      const userId = req.user.id;
+      const userId = req.user.userId;
       
       const goal = await goalService.getGoalById(goalId, userId);
       
@@ -63,7 +63,7 @@ const goalController = {
     try {
       // Validate request body
       const validatedData = createGoalSchema.parse(req.body);
-      const userId = req.user.id;
+      const userId = req.user.userId;
 
       // Create goal
       const newGoal = await goalService.createGoal({
@@ -92,7 +92,7 @@ const goalController = {
   updateGoal: async (req, res, next) => {
     try {
       const goalId = req.params.id;
-      const userId = req.user.id;
+      const userId = req.user.userId;
       
       // Validate request body (partial update allowed)
       const validatedData = createGoalSchema.partial().parse(req.body);
@@ -127,7 +127,7 @@ const goalController = {
   deleteGoal: async (req, res, next) => {
     try {
       const goalId = req.params.id;
-      const userId = req.user.id;
+      const userId = req.user.userId;
 
       const deleted = await goalService.deleteGoal(goalId, userId);
 
@@ -141,6 +141,39 @@ const goalController = {
       res.json({
         success: true,
         message: 'Goal deleted successfully'
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  // Update goal progress
+  updateProgress: async (req, res, next) => {
+    try {
+      const goalId = req.params.id;
+      const { progress_percentage } = req.body;
+      
+      // Validate progress percentage
+      if (typeof progress_percentage !== 'number' || progress_percentage < 0 || progress_percentage > 100) {
+        return res.status(400).json({
+          success: false,
+          message: 'Progress percentage must be a number between 0 and 100'
+        });
+      }
+      
+      const updatedProgress = await goalService.updateProgress(goalId, progress_percentage);
+      
+      if (!updatedProgress) {
+        return res.status(404).json({
+          success: false,
+          message: 'Goal not found'
+        });
+      }
+
+      res.json({
+        success: true,
+        data: updatedProgress,
+        message: 'Goal progress updated successfully'
       });
     } catch (error) {
       next(error);

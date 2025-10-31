@@ -24,10 +24,17 @@ const registerSchema = z.object({
 const goalSchema = z.object({
   body: z.object({
     title: z.string().min(1, 'Goal title is required').max(255, 'Title too long'),
-    description: z.string().optional(),
-    category: z.string().optional(),
-    difficulty: z.enum(['easy', 'medium', 'hard']).default('medium'),
-    targetCompletionDate: z.string().datetime().optional()
+    description: z.string().max(1000, 'Description too long').optional(),
+    category: z.string().max(100, 'Category too long').optional(),
+    difficulty_level: z.enum(['easy', 'medium', 'hard']).default('medium'),
+    target_completion_date: z.string().optional().refine(date => {
+      if (!date) return true;
+      const parsedDate = new Date(date);
+      return !isNaN(parsedDate.getTime()) && parsedDate > new Date();
+    }, "Target completion date must be a valid future date"),
+    is_public: z.boolean().default(false),
+    progress_percentage: z.number().min(0).max(100).optional(),
+    is_completed: z.boolean().optional()
   })
 });
 

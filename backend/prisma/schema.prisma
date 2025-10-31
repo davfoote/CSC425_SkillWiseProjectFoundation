@@ -22,6 +22,7 @@ model User {
   createdAt     DateTime       @default(now()) @map("created_at")
   updatedAt     DateTime       @updatedAt @map("updated_at")
   refreshTokens RefreshToken[]
+  goals         Goal[]
 
   @@map("users")
 }
@@ -36,4 +37,24 @@ model RefreshToken {
   isRevoked Boolean  @default(false)
 
   @@map("refresh_tokens")
+}
+
+model Goal {
+  id                     Int       @id @default(autoincrement())
+  userId                 Int       @map("user_id")
+  user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title                  String    @db.VarChar(255)
+  description            String?   @db.Text
+  category               String?   @db.VarChar(100)
+  difficultyLevel        String    @default("medium") @map("difficulty_level") @db.VarChar(20)
+  targetCompletionDate   DateTime? @map("target_completion_date")
+  isCompleted            Boolean   @default(false) @map("is_completed")
+  completionDate         DateTime? @map("completion_date")
+  progressPercentage     Int       @default(0) @map("progress_percentage")
+  pointsReward           Int       @default(100) @map("points_reward")
+  isPublic               Boolean   @default(false) @map("is_public")
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime  @updatedAt @map("updated_at")
+
+  @@map("goals")
 }
