@@ -21,8 +21,8 @@ const router = express.Router();
 const authRoutes = require('./auth');
 const userRoutes = require('./users');
 const goalRoutes = require('./goals');
+const challengeRoutes = require('./challenges');
 // TODO: Import other route modules as they are implemented
-// const challengeRoutes = require('./challenges');
 // const progressRoutes = require('./progress');
 // const submissionRoutes = require('./submissions');
 // const aiRoutes = require('./ai');
@@ -56,8 +56,8 @@ router.get('/', (req, res) => {
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
 router.use('/goals', goalRoutes);
+router.use('/challenges', challengeRoutes);
 // TODO: Mount other API routes as they are implemented
-// router.use('/challenges', challengeRoutes);
 // router.use('/progress', progressRoutes);
 // router.use('/submissions', submissionRoutes);
 // router.use('/ai', aiRoutes);
