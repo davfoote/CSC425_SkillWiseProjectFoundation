@@ -1,14 +1,29 @@
-const { PrismaClient } = require('../src/generated/prisma');
+// Test database setup
+const { Pool } = require('pg');
 
 // Test database configuration
-const testPrisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: process.env.TEST_DATABASE_URL || 
-        'postgresql://skillwise_user:skillwise123@localhost:5432/skillwise_test_db'
-    }
+const testDbConfig = {
+  connectionString: process.env.TEST_DATABASE_URL || 
+    'postgresql://skillwise_user:skillwise_pass@localhost:5432/skillwise_test_db',
+  max: 5,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+};
+
+let testPool;
+
+// Mock Prisma for tests that don't need real database
+const testPrisma = {
+  $connect: jest.fn().mockResolvedValue(true),
+  $disconnect: jest.fn().mockResolvedValue(true),
+  $transaction: jest.fn().mockImplementation((callback) => callback(testPrisma)),
+  user: {
+    deleteMany: jest.fn().mockResolvedValue({ count: 0 })
+  },
+  refreshToken: {
+    deleteMany: jest.fn().mockResolvedValue({ count: 0 })
   }
-});
+};
 
 // Global test setup
 beforeAll(async () => {
@@ -16,7 +31,7 @@ beforeAll(async () => {
   process.env.NODE_ENV = 'test';
   process.env.JWT_SECRET = 'test-jwt-secret-key-for-testing-only';
   process.env.JWT_REFRESH_SECRET = 'test-refresh-secret-key-for-testing-only';
-  process.env.DATABASE_URL = 'postgresql://skillwise_user:skillwise123@localhost:5432/skillwise_test_db';
+  process.env.DATABASE_URL = 'postgresql://skillwise_user:skillwise_pass@localhost:5432/skillwise_test_db';
   
   // Test database connection
   try {
