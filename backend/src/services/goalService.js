@@ -7,10 +7,10 @@ const goalService = {
     try {
       const goals = await prisma.goal.findMany({
         where: {
-          userId: parseInt(userId)
+          userId: parseInt(userId),
         },
         orderBy: {
-          createdAt: 'desc'
+          createdAt: 'desc',
         },
         select: {
           id: true,
@@ -25,10 +25,10 @@ const goalService = {
           pointsReward: true,
           isPublic: true,
           createdAt: true,
-          updatedAt: true
-        }
+          updatedAt: true,
+        },
       });
-      
+
       // Transform field names to match API expectations
       return goals.map(goal => ({
         id: goal.id,
@@ -43,7 +43,7 @@ const goalService = {
         points_reward: goal.pointsReward,
         is_public: goal.isPublic,
         created_at: goal.createdAt,
-        updated_at: goal.updatedAt
+        updated_at: goal.updatedAt,
       }));
     } catch (error) {
       throw new Error(`Failed to fetch user goals: ${error.message}`);
@@ -56,7 +56,7 @@ const goalService = {
       const goal = await prisma.goal.findFirst({
         where: {
           id: parseInt(goalId),
-          userId: parseInt(userId)
+          userId: parseInt(userId),
         },
         select: {
           id: true,
@@ -71,12 +71,12 @@ const goalService = {
           pointsReward: true,
           isPublic: true,
           createdAt: true,
-          updatedAt: true
-        }
+          updatedAt: true,
+        },
       });
-      
+
       if (!goal) return null;
-      
+
       // Transform field names to match API expectations
       return {
         id: goal.id,
@@ -91,7 +91,7 @@ const goalService = {
         points_reward: goal.pointsReward,
         is_public: goal.isPublic,
         created_at: goal.createdAt,
-        updated_at: goal.updatedAt
+        updated_at: goal.updatedAt,
       };
     } catch (error) {
       throw new Error(`Failed to fetch goal: ${error.message}`);
@@ -108,7 +108,7 @@ const goalService = {
         category,
         difficulty_level = 'medium',
         target_completion_date,
-        is_public = false
+        is_public = false,
       } = goalData;
 
       // Calculate points based on difficulty
@@ -123,7 +123,7 @@ const goalService = {
           difficultyLevel: difficulty_level,
           targetCompletionDate: target_completion_date ? new Date(target_completion_date) : null,
           isPublic: is_public,
-          pointsReward
+          pointsReward,
         },
         select: {
           id: true,
@@ -138,8 +138,8 @@ const goalService = {
           pointsReward: true,
           isPublic: true,
           createdAt: true,
-          updatedAt: true
-        }
+          updatedAt: true,
+        },
       });
 
       // Transform field names to match API expectations
@@ -156,7 +156,7 @@ const goalService = {
         points_reward: goal.pointsReward,
         is_public: goal.isPublic,
         created_at: goal.createdAt,
-        updated_at: goal.updatedAt
+        updated_at: goal.updatedAt,
       };
     } catch (error) {
       throw new Error(`Failed to create goal: ${error.message}`);
@@ -174,7 +174,7 @@ const goalService = {
         'target_completion_date': 'targetCompletionDate',
         'is_public': 'isPublic',
         'progress_percentage': 'progressPercentage',
-        'is_completed': 'isCompleted'
+        'is_completed': 'isCompleted',
       };
 
       const prismaUpdateData = {};
@@ -183,12 +183,12 @@ const goalService = {
         if (allowedFields[key]) {
           const prismaField = allowedFields[key];
           let value = updateData[key];
-          
+
           // Handle special cases
           if (key === 'target_completion_date' && value) {
             value = new Date(value);
           }
-          
+
           prismaUpdateData[prismaField] = value;
         }
       });
@@ -206,7 +206,7 @@ const goalService = {
       const goal = await prisma.goal.update({
         where: {
           id: parseInt(goalId),
-          userId: parseInt(userId)
+          userId: parseInt(userId),
         },
         data: prismaUpdateData,
         select: {
@@ -222,8 +222,8 @@ const goalService = {
           pointsReward: true,
           isPublic: true,
           createdAt: true,
-          updatedAt: true
-        }
+          updatedAt: true,
+        },
       });
 
       // Transform field names to match API expectations
@@ -240,7 +240,7 @@ const goalService = {
         points_reward: goal.pointsReward,
         is_public: goal.isPublic,
         created_at: goal.createdAt,
-        updated_at: goal.updatedAt
+        updated_at: goal.updatedAt,
       };
     } catch (error) {
       if (error.code === 'P2025') {
@@ -256,11 +256,11 @@ const goalService = {
       const deletedGoal = await prisma.goal.delete({
         where: {
           id: parseInt(goalId),
-          userId: parseInt(userId)
+          userId: parseInt(userId),
         },
         select: {
-          id: true
-        }
+          id: true,
+        },
       });
       return !!deletedGoal;
     } catch (error) {
@@ -276,18 +276,18 @@ const goalService = {
     try {
       const goal = await prisma.goal.update({
         where: {
-          id: parseInt(goalId)
+          id: parseInt(goalId),
         },
         data: {
-          progressPercentage: parseInt(progress)
+          progressPercentage: parseInt(progress),
         },
         select: {
-          progressPercentage: true
-        }
+          progressPercentage: true,
+        },
       });
-      
+
       return {
-        progress_percentage: goal.progressPercentage
+        progress_percentage: goal.progressPercentage,
       };
     } catch (error) {
       if (error.code === 'P2025') {
@@ -302,7 +302,7 @@ const goalService = {
     const pointsMap = {
       'easy': 100,
       'medium': 200,
-      'hard': 300
+      'hard': 300,
     };
     return pointsMap[difficulty_level] || 200;
   },
@@ -313,7 +313,7 @@ const goalService = {
       return 100;
     }
     return goal.progress_percentage || 0;
-  }
+  },
 };
 
 module.exports = goalService;

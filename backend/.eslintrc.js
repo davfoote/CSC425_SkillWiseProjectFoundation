@@ -11,6 +11,13 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
+  ignorePatterns: [
+    'node_modules/',
+    'src/generated/**',
+    'coverage/',
+    'dist/',
+    '*.min.js',
+  ],
   rules: {
     'no-unused-vars': 'warn',
     'no-console': 'off', // Allow console for logging

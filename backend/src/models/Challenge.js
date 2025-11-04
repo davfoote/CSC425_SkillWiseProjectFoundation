@@ -1,7 +1,7 @@
 const db = require('../database/connection');
 
 class Challenge {
-  static async findAll() {
+  static async findAll () {
     try {
       const query = 'SELECT * FROM challenges ORDER BY difficulty_level, created_at DESC';
       const result = await db.query(query);
@@ -11,7 +11,7 @@ class Challenge {
     }
   }
 
-  static async findById(challengeId) {
+  static async findById (challengeId) {
     try {
       const query = 'SELECT * FROM challenges WHERE id = $1';
       const result = await db.query(query, [challengeId]);
@@ -21,7 +21,7 @@ class Challenge {
     }
   }
 
-  static async findByDifficulty(difficulty) {
+  static async findByDifficulty (difficulty) {
     try {
       const query = 'SELECT * FROM challenges WHERE difficulty_level = $1 ORDER BY created_at DESC';
       const result = await db.query(query, [difficulty]);
@@ -31,7 +31,7 @@ class Challenge {
     }
   }
 
-  static async findBySubject(subject) {
+  static async findBySubject (subject) {
     try {
       const query = 'SELECT * FROM challenges WHERE category = $1 ORDER BY difficulty_level, created_at DESC';
       const result = await db.query(query, [subject]);
@@ -41,13 +41,13 @@ class Challenge {
     }
   }
 
-  static async create(challengeData) {
+  static async create (challengeData) {
     try {
-      const { 
-        title, 
-        description, 
+      const {
+        title,
+        description,
         instructions,
-        category, 
+        category,
         difficulty_level = 'medium',
         estimated_time_minutes,
         points_reward = 10,
@@ -57,9 +57,9 @@ class Challenge {
         created_by,
         tags = [],
         prerequisites = [],
-        learning_objectives = []
+        learning_objectives = [],
       } = challengeData;
-      
+
       const query = `
         INSERT INTO challenges (
           title, description, instructions, category, difficulty_level, 
@@ -70,26 +70,26 @@ class Challenge {
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, NOW(), NOW())
         RETURNING *
       `;
-      
+
       const result = await db.query(query, [
         title, description, instructions, category, difficulty_level,
         estimated_time_minutes, points_reward, max_attempts, requires_peer_review,
-        is_active, created_by, tags, prerequisites, learning_objectives
+        is_active, created_by, tags, prerequisites, learning_objectives,
       ]);
-      
+
       return result.rows[0];
     } catch (error) {
       throw new Error(`Error creating challenge: ${error.message}`);
     }
   }
 
-  static async update(challengeId, updateData) {
+  static async update (challengeId, updateData) {
     try {
-      const { 
-        title, 
-        description, 
+      const {
+        title,
+        description,
         instructions,
-        category, 
+        category,
         difficulty_level,
         estimated_time_minutes,
         points_reward,
@@ -98,9 +98,9 @@ class Challenge {
         is_active,
         tags,
         prerequisites,
-        learning_objectives
+        learning_objectives,
       } = updateData;
-      
+
       const query = `
         UPDATE challenges 
         SET title = COALESCE($2, title),
@@ -120,20 +120,20 @@ class Challenge {
         WHERE id = $1
         RETURNING *
       `;
-      
+
       const result = await db.query(query, [
         challengeId, title, description, instructions, category, difficulty_level,
         estimated_time_minutes, points_reward, max_attempts, requires_peer_review,
-        is_active, tags, prerequisites, learning_objectives
+        is_active, tags, prerequisites, learning_objectives,
       ]);
-      
+
       return result.rows[0];
     } catch (error) {
       throw new Error(`Error updating challenge: ${error.message}`);
     }
   }
 
-  static async delete(challengeId) {
+  static async delete (challengeId) {
     try {
       const query = 'DELETE FROM challenges WHERE id = $1 RETURNING *';
       const result = await db.query(query, [challengeId]);

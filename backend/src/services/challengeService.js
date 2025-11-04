@@ -1,6 +1,6 @@
 /**
  * Challenge Service - Business logic layer using Prisma ORM
- * 
+ *
  * Provides type-safe database operations for Challenge model including:
  * - CRUD operations with goal relationships
  * - Goal-linked challenge management
@@ -37,22 +37,22 @@ const challengeService = {
               title: true,
               category: true,
               difficultyLevel: true,
-              userId: true
-            }
+              userId: true,
+            },
           },
           createdByUser: {
             select: {
               id: true,
               firstName: true,
               lastName: true,
-              email: true
-            }
-          }
+              email: true,
+            },
+          },
         },
         orderBy: [
           { difficultyLevel: 'asc' },
-          { createdAt: 'desc' }
-        ]
+          { createdAt: 'desc' },
+        ],
       });
 
       return challenges;
@@ -83,20 +83,20 @@ const challengeService = {
                 select: {
                   firstName: true,
                   lastName: true,
-                  email: true
-                }
-              }
-            }
+                  email: true,
+                },
+              },
+            },
           },
           createdByUser: {
             select: {
               id: true,
               firstName: true,
               lastName: true,
-              email: true
-            }
-          }
-        }
+              email: true,
+            },
+          },
+        },
       });
 
       return challenge;
@@ -127,19 +127,19 @@ const challengeService = {
         tags: challengeData.tags || [],
         prerequisites: challengeData.prerequisites || [],
         learningObjectives: challengeData.learning_objectives || challengeData.learningObjectives || [],
-        createdBy: userId
+        createdBy: userId,
       };
 
       // Link to goal if provided
       if (challengeData.goal_id || challengeData.goalId) {
         data.goalId = parseInt(challengeData.goal_id || challengeData.goalId);
-        
+
         // Verify goal exists and belongs to the user
         const goal = await prisma.goal.findFirst({
           where: {
             id: data.goalId,
-            userId: userId
-          }
+            userId: userId,
+          },
         });
 
         if (!goal) {
@@ -155,18 +155,18 @@ const challengeService = {
               id: true,
               title: true,
               category: true,
-              difficultyLevel: true
-            }
+              difficultyLevel: true,
+            },
           },
           createdByUser: {
             select: {
               id: true,
               firstName: true,
               lastName: true,
-              email: true
-            }
-          }
-        }
+              email: true,
+            },
+          },
+        },
       });
 
       return challenge;
@@ -186,7 +186,7 @@ const challengeService = {
     try {
       // Check if challenge exists and user has permission
       const existingChallenge = await prisma.challenge.findUnique({
-        where: { id: parseInt(challengeId) }
+        where: { id: parseInt(challengeId) },
       });
 
       if (!existingChallenge) {
@@ -231,14 +231,14 @@ const challengeService = {
       // Handle goal linking/unlinking
       if (updateData.goal_id !== undefined || updateData.goalId !== undefined) {
         const goalId = updateData.goal_id || updateData.goalId;
-        
+
         if (goalId) {
           // Verify goal exists and belongs to user
           const goal = await prisma.goal.findFirst({
             where: {
               id: parseInt(goalId),
-              userId: userId
-            }
+              userId: userId,
+            },
           });
 
           if (!goal) {
@@ -261,18 +261,18 @@ const challengeService = {
               id: true,
               title: true,
               category: true,
-              difficultyLevel: true
-            }
+              difficultyLevel: true,
+            },
           },
           createdByUser: {
             select: {
               id: true,
               firstName: true,
               lastName: true,
-              email: true
-            }
-          }
-        }
+              email: true,
+            },
+          },
+        },
       });
 
       return challenge;
@@ -291,7 +291,7 @@ const challengeService = {
     try {
       // Check if challenge exists and user has permission
       const existingChallenge = await prisma.challenge.findUnique({
-        where: { id: parseInt(challengeId) }
+        where: { id: parseInt(challengeId) },
       });
 
       if (!existingChallenge) {
@@ -303,7 +303,7 @@ const challengeService = {
       }
 
       const challenge = await prisma.challenge.delete({
-        where: { id: parseInt(challengeId) }
+        where: { id: parseInt(challengeId) },
       });
 
       return challenge;
@@ -324,8 +324,8 @@ const challengeService = {
       const goal = await prisma.goal.findFirst({
         where: {
           id: parseInt(goalId),
-          userId: userId
-        }
+          userId: userId,
+        },
       });
 
       if (!goal) {
@@ -340,21 +340,21 @@ const challengeService = {
               id: true,
               firstName: true,
               lastName: true,
-              email: true
-            }
-          }
+              email: true,
+            },
+          },
         },
         orderBy: [
           { difficultyLevel: 'asc' },
-          { createdAt: 'asc' }
-        ]
+          { createdAt: 'asc' },
+        ],
       });
 
       return challenges;
     } catch (error) {
       throw new Error(`Error fetching challenges for goal: ${error.message}`);
     }
-  }
+  },
 };
 
 module.exports = challengeService;

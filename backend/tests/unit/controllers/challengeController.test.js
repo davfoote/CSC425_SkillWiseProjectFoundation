@@ -20,7 +20,7 @@ describe('Challenge Controller', () => {
       lastName: 'Tester',
       email: `challengetest-${Date.now()}@example.com`,
       password: 'ChallengeTest123',
-      confirmPassword: 'ChallengeTest123'
+      confirmPassword: 'ChallengeTest123',
     };
 
     await request(app)
@@ -31,7 +31,7 @@ describe('Challenge Controller', () => {
       .post('/api/auth/login')
       .send({
         email: userCredentials.email,
-        password: userCredentials.password
+        password: userCredentials.password,
       });
 
     authCookies = loginResponse.get('Set-Cookie');
@@ -50,7 +50,7 @@ describe('Challenge Controller', () => {
           points: 100,
           timeLimit: 60,
           status: 'active',
-          createdAt: new Date()
+          createdAt: new Date(),
         },
         {
           id: 2,
@@ -61,8 +61,8 @@ describe('Challenge Controller', () => {
           points: 150,
           timeLimit: 120,
           status: 'active',
-          createdAt: new Date()
-        }
+          createdAt: new Date(),
+        },
       ];
 
       Challenge.findAll = jest.fn().mockResolvedValue(mockChallenges);
@@ -76,7 +76,7 @@ describe('Challenge Controller', () => {
       expect(response.body.challenges[0]).toMatchObject({
         title: 'Build a Calculator',
         category: 'programming',
-        difficulty: 'easy'
+        difficulty: 'easy',
       });
       expect(Challenge.findAll).toHaveBeenCalledWith({});
     });
@@ -88,8 +88,8 @@ describe('Challenge Controller', () => {
           title: 'React Component',
           category: 'programming',
           difficulty: 'medium',
-          points: 200
-        }
+          points: 200,
+        },
       ];
 
       Challenge.findAll = jest.fn().mockResolvedValue(mockChallenges);
@@ -101,7 +101,7 @@ describe('Challenge Controller', () => {
 
       expect(response.body.challenges).toHaveLength(1);
       expect(Challenge.findAll).toHaveBeenCalledWith({
-        category: 'programming'
+        category: 'programming',
       });
     });
 
@@ -112,8 +112,8 @@ describe('Challenge Controller', () => {
           title: 'Advanced Algorithm',
           category: 'programming',
           difficulty: 'hard',
-          points: 500
-        }
+          points: 500,
+        },
       ];
 
       Challenge.findAll = jest.fn().mockResolvedValue(mockChallenges);
@@ -125,7 +125,7 @@ describe('Challenge Controller', () => {
 
       expect(response.body.challenges).toHaveLength(1);
       expect(Challenge.findAll).toHaveBeenCalledWith({
-        difficulty: 'hard'
+        difficulty: 'hard',
       });
     });
 
@@ -151,7 +151,7 @@ describe('Challenge Controller', () => {
         timeLimit: 180,
         requirements: ['React', 'Node.js', 'Database'],
         status: 'active',
-        createdAt: new Date()
+        createdAt: new Date(),
       };
 
       Challenge.findById = jest.fn().mockResolvedValue(mockChallenge);
@@ -165,7 +165,7 @@ describe('Challenge Controller', () => {
         title: 'Build a To-Do App',
         category: 'programming',
         difficulty: 'medium',
-        points: 250
+        points: 250,
       });
       expect(Challenge.findById).toHaveBeenCalledWith(challengeId);
     });
@@ -199,7 +199,7 @@ describe('Challenge Controller', () => {
         id: challengeId,
         title: 'Build a Calculator',
         difficulty: 'easy',
-        timeLimit: 60
+        timeLimit: 60,
       };
 
       const mockStartedChallenge = {
@@ -207,7 +207,7 @@ describe('Challenge Controller', () => {
         challengeId: challengeId,
         userId: mockUser.id,
         status: 'in_progress',
-        startedAt: new Date()
+        startedAt: new Date(),
       };
 
       Challenge.findById = jest.fn().mockResolvedValue(mockChallenge);
@@ -240,7 +240,7 @@ describe('Challenge Controller', () => {
       const challengeId = 1;
       const mockChallenge = {
         id: challengeId,
-        title: 'Build a Calculator'
+        title: 'Build a Calculator',
       };
 
       Challenge.findById = jest.fn().mockResolvedValue(mockChallenge);
@@ -260,7 +260,7 @@ describe('Challenge Controller', () => {
       const challengeId = 1;
       const submissionData = {
         submissionUrl: 'https://github.com/user/calculator-app',
-        notes: 'Completed with React and CSS'
+        notes: 'Completed with React and CSS',
       };
 
       const mockCompletedChallenge = {
@@ -270,7 +270,7 @@ describe('Challenge Controller', () => {
         status: 'completed',
         completedAt: new Date(),
         submissionUrl: submissionData.submissionUrl,
-        notes: submissionData.notes
+        notes: submissionData.notes,
       };
 
       Challenge.completeForUser = jest.fn().mockResolvedValue(mockCompletedChallenge);
@@ -284,16 +284,16 @@ describe('Challenge Controller', () => {
       expect(response.body.message).toBe('Challenge completed successfully');
       expect(response.body.userChallenge.status).toBe('completed');
       expect(Challenge.completeForUser).toHaveBeenCalledWith(
-        challengeId, 
-        mockUser.id, 
-        submissionData
+        challengeId,
+        mockUser.id,
+        submissionData,
       );
     });
 
     it('should require submission URL', async () => {
       const challengeId = 1;
       const invalidData = {
-        notes: 'Missing submission URL'
+        notes: 'Missing submission URL',
       };
 
       const response = await request(app)
@@ -309,7 +309,7 @@ describe('Challenge Controller', () => {
       const challengeId = 1;
       const invalidData = {
         submissionUrl: 'invalid-url',
-        notes: 'Invalid URL format'
+        notes: 'Invalid URL format',
       };
 
       const response = await request(app)
@@ -326,7 +326,7 @@ describe('Challenge Controller', () => {
         .post('/api/challenges/1/complete')
         .send({
           submissionUrl: 'https://github.com/user/project',
-          notes: 'Completed'
+          notes: 'Completed',
         })
         .expect(401);
 
@@ -344,8 +344,8 @@ describe('Challenge Controller', () => {
         completionRate: 30,
         challengesByCategory: {
           programming: { completed: 2, total: 5 },
-          design: { completed: 1, total: 3 }
-        }
+          design: { completed: 1, total: 3 },
+        },
       };
 
       Challenge.getUserProgress = jest.fn().mockResolvedValue(mockProgress);

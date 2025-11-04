@@ -6,8 +6,8 @@ const { AppError } = require('./errorHandler');
 const loginSchema = z.object({
   body: z.object({
     email: z.string().email('Invalid email format'),
-    password: z.string().min(1, 'Password is required')
-  })
+    password: z.string().min(1, 'Password is required'),
+  }),
 });
 
 const registerSchema = z.object({
@@ -17,8 +17,8 @@ const registerSchema = z.object({
       .min(8, 'Password must be at least 8 characters')
       .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain at least one lowercase letter, one uppercase letter, and one number'),
     firstName: z.string().min(1, 'First name is required').max(50, 'First name too long'),
-    lastName: z.string().min(1, 'Last name is required').max(50, 'Last name too long')
-  })
+    lastName: z.string().min(1, 'Last name is required').max(50, 'Last name too long'),
+  }),
 });
 
 const goalSchema = z.object({
@@ -31,11 +31,11 @@ const goalSchema = z.object({
       if (!date) return true;
       const parsedDate = new Date(date);
       return !isNaN(parsedDate.getTime()) && parsedDate > new Date();
-    }, "Target completion date must be a valid future date"),
+    }, 'Target completion date must be a valid future date'),
     is_public: z.boolean().default(false),
     progress_percentage: z.number().min(0).max(100).optional(),
-    is_completed: z.boolean().optional()
-  })
+    is_completed: z.boolean().optional(),
+  }),
 });
 
 const challengeSchema = z.object({
@@ -47,8 +47,8 @@ const challengeSchema = z.object({
     difficulty: z.enum(['easy', 'medium', 'hard']).default('medium'),
     estimatedTimeMinutes: z.number().int().positive().optional(),
     pointsReward: z.number().int().positive().default(10),
-    maxAttempts: z.number().int().positive().default(3)
-  })
+    maxAttempts: z.number().int().positive().default(3),
+  }),
 });
 
 // TODO: Generic validation middleware
@@ -58,7 +58,7 @@ const validate = (schema) => {
       const validationData = {
         body: req.body,
         query: req.query,
-        params: req.params
+        params: req.params,
       };
 
       const result = schema.safeParse(validationData);
@@ -66,13 +66,13 @@ const validate = (schema) => {
       if (!result.success) {
         const errors = result.error.errors.map(err => ({
           field: err.path.join('.'),
-          message: err.message
+          message: err.message,
         }));
 
         return next(new AppError(
           `Validation error: ${errors.map(e => e.message).join(', ')}`,
           400,
-          'VALIDATION_ERROR'
+          'VALIDATION_ERROR',
         ));
       }
 
@@ -104,6 +104,6 @@ module.exports = {
     loginSchema,
     registerSchema,
     goalSchema,
-    challengeSchema
-  }
+    challengeSchema,
+  },
 };

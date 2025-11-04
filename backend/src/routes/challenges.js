@@ -1,6 +1,6 @@
 /**
  * Challenge Routes - /api/challenges/*
- * 
+ *
  * Provides endpoints for challenge management including:
  * - GET /         - List all challenges with filtering
  * - GET /:id      - Get specific challenge details

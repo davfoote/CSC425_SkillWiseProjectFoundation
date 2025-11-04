@@ -1,7 +1,7 @@
 const db = require('../database/connection');
 
 class Goal {
-  static async findByUserId(userId) {
+  static async findByUserId (userId) {
     try {
       const query = `
         SELECT 
@@ -30,7 +30,7 @@ class Goal {
     }
   }
 
-  static async findById(goalId, userId = null) {
+  static async findById (goalId, userId = null) {
     try {
       let query = `
         SELECT 
@@ -65,17 +65,17 @@ class Goal {
     }
   }
 
-  static async create(goalData) {
+  static async create (goalData) {
     try {
-      const { 
-        user_id, 
-        title, 
-        description, 
-        category, 
+      const {
+        user_id,
+        title,
+        description,
+        category,
         difficulty_level = 'medium',
         target_completion_date,
         is_public = false,
-        points_reward
+        points_reward,
       } = goalData;
 
       const query = `
@@ -108,35 +108,35 @@ class Goal {
           created_at,
           updated_at
       `;
-      
+
       const result = await db.query(query, [
-        user_id, 
-        title, 
-        description, 
-        category, 
+        user_id,
+        title,
+        description,
+        category,
         difficulty_level,
         target_completion_date,
         is_public,
-        points_reward
+        points_reward,
       ]);
-      
+
       return result.rows[0];
     } catch (error) {
       throw new Error(`Error creating goal: ${error.message}`);
     }
   }
 
-  static async update(goalId, userId, updateData) {
+  static async update (goalId, userId, updateData) {
     try {
       const allowedFields = [
         'title',
-        'description', 
+        'description',
         'category',
         'difficulty_level',
         'target_completion_date',
         'is_public',
         'progress_percentage',
-        'is_completed'
+        'is_completed',
       ];
 
       const updates = [];
@@ -156,12 +156,12 @@ class Goal {
       }
 
       // Add updated_at
-      updates.push(`updated_at = NOW()`);
+      updates.push('updated_at = NOW()');
 
       // If completing goal, set completion_date and progress to 100
       if (updateData.is_completed) {
-        updates.push(`completion_date = NOW()`);
-        updates.push(`progress_percentage = 100`);
+        updates.push('completion_date = NOW()');
+        updates.push('progress_percentage = 100');
       }
 
       values.push(goalId, userId);
@@ -194,7 +194,7 @@ class Goal {
     }
   }
 
-  static async delete(goalId, userId) {
+  static async delete (goalId, userId) {
     try {
       const query = 'DELETE FROM goals WHERE id = $1 AND user_id = $2 RETURNING id';
       const result = await db.query(query, [goalId, userId]);

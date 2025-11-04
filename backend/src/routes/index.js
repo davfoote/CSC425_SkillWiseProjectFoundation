@@ -1,6 +1,6 @@
 /**
  * API Routes Index - Mounts all API endpoints under /api/*
- * 
+ *
  * Route Structure:
  * - /api/auth/*          - Authentication endpoints (login, register, logout, refresh)
  * - /api/users/*         - User management (profile, settings, statistics)
@@ -45,10 +45,10 @@ router.get('/', (req, res) => {
       ai: '/api/ai - AI-powered features',
       reviews: '/api/reviews - Peer review system',
       leaderboard: '/api/leaderboard - Rankings and achievements',
-      health: '/api/health - Health check'
+      health: '/api/health - Health check',
     },
     documentation: '/api/docs',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -68,7 +68,7 @@ router.use('/challenges', challengeRoutes);
 router.get('/health', (req, res) => {
   res.json({
     status: 'healthy',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 

@@ -7,112 +7,112 @@ const db = require('../../src/database/connection');
 // Mock the userService and database connection
 jest.mock('../../src/services/userService');
 jest.mock('../../src/database/connection', () => ({
-  query: jest.fn()
+  query: jest.fn(),
 }));
 
 // Simple validation middleware for tests
 const mockValidation = {
   validateSignup: (req, res, next) => {
     const { firstName, lastName, email, password, confirmPassword } = req.body;
-    
+
     if (!firstName || !lastName || !email || !password) {
       return res.status(400).json({
         code: 'VALIDATION_ERROR',
-        message: 'Validation error: Missing required fields'
+        message: 'Validation error: Missing required fields',
       });
     }
-    
+
     if (!/\S+@\S+\.\S+/.test(email)) {
       return res.status(400).json({
         code: 'VALIDATION_ERROR',
-        message: 'Validation error: Invalid email format'
+        message: 'Validation error: Invalid email format',
       });
     }
-    
+
     if (password.length < 8) {
       return res.status(400).json({
         code: 'VALIDATION_ERROR',
-        message: 'Validation error: Password must be at least 8 characters'
+        message: 'Validation error: Password must be at least 8 characters',
       });
     }
-    
+
     if (confirmPassword && password !== confirmPassword) {
       return res.status(400).json({
         code: 'VALIDATION_ERROR',
-        message: 'Validation error: Passwords don\'t match'
+        message: 'Validation error: Passwords don\'t match',
       });
     }
-    
+
     // Add validated body for controller
     req.validated = { body: req.body };
     next();
   },
-  
+
   validateLogin: (req, res, next) => {
     const { email, password } = req.body;
-    
+
     if (!email || !password) {
       return res.status(400).json({
         code: 'VALIDATION_ERROR',
-        message: 'Validation error: Email and password required'
+        message: 'Validation error: Email and password required',
       });
     }
-    
+
     if (!/\S+@\S+\.\S+/.test(email)) {
       return res.status(400).json({
         code: 'VALIDATION_ERROR',
-        message: 'Validation error: Invalid email format'
+        message: 'Validation error: Invalid email format',
       });
     }
-    
-    // Add validated body for controller  
+
+    // Add validated body for controller
     req.validated = { body: req.body };
     next();
-  }
+  },
 };
 
 // Create test app with mocked dependencies
 const createTestApp = () => {
   const app = express();
   app.use(express.json());
-  
+
   // Mock cookie parser for testing
   app.use((req, res, next) => {
     req.cookies = req.cookies || {};
     next();
   });
-  
+
   // Auth routes
   app.post('/api/auth/signup', mockValidation.validateSignup, authController.register);
   app.post('/api/auth/login', mockValidation.validateLogin, authController.login);
   app.post('/api/auth/logout', authController.logout);
   app.post('/api/auth/refresh', authController.refreshToken);
-  
+
   return app;
 };
 
 describe('Authentication Controller Unit Tests', () => {
   let app;
-  
+
   beforeAll(() => {
     // Set test environment variables
     process.env.NODE_ENV = 'test';
     process.env.JWT_SECRET = 'test-jwt-secret';
     process.env.JWT_REFRESH_SECRET = 'test-refresh-secret';
   });
-  
+
   beforeEach(() => {
     app = createTestApp();
     jest.clearAllMocks();
   });
-  
+
   describe('POST /api/auth/signup', () => {
     const validSignupData = {
       firstName: 'Test',
       lastName: 'User',
       email: 'test@example.com',
       password: 'TestPassword123',
-      confirmPassword: 'TestPassword123'
+      confirmPassword: 'TestPassword123',
     };
 
     it('should create a new user with valid data', async () => {
@@ -122,7 +122,7 @@ describe('Authentication Controller Unit Tests', () => {
         firstName: validSignupData.firstName,
         lastName: validSignupData.lastName,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       };
 
       userService.createUser.mockResolvedValue(mockUser);
@@ -137,8 +137,8 @@ describe('Authentication Controller Unit Tests', () => {
         user: {
           email: validSignupData.email,
           firstName: validSignupData.firstName,
-          lastName: validSignupData.lastName
-        }
+          lastName: validSignupData.lastName,
+        },
       });
 
       expect(response.body.user).not.toHaveProperty('password');
@@ -147,7 +147,7 @@ describe('Authentication Controller Unit Tests', () => {
         firstName: validSignupData.firstName,
         lastName: validSignupData.lastName,
         email: validSignupData.email,
-        password: validSignupData.password
+        password: validSignupData.password,
       });
     });
 
@@ -156,7 +156,7 @@ describe('Authentication Controller Unit Tests', () => {
         firstName: 'John',
         // lastName missing
         email: 'john@example.com',
-        password: 'SecurePass123'
+        password: 'SecurePass123',
       };
 
       const response = await request(app)
@@ -171,7 +171,7 @@ describe('Authentication Controller Unit Tests', () => {
     it('should reject signup with invalid email format', async () => {
       const invalidData = {
         ...validSignupData,
-        email: 'invalid-email-format'
+        email: 'invalid-email-format',
       };
 
       const response = await request(app)
@@ -187,7 +187,7 @@ describe('Authentication Controller Unit Tests', () => {
       const invalidData = {
         ...validSignupData,
         password: 'weak',
-        confirmPassword: 'weak'
+        confirmPassword: 'weak',
       };
 
       const response = await request(app)
@@ -202,7 +202,7 @@ describe('Authentication Controller Unit Tests', () => {
     it('should reject signup when passwords do not match', async () => {
       const invalidData = {
         ...validSignupData,
-        confirmPassword: 'DifferentPass123'
+        confirmPassword: 'DifferentPass123',
       };
 
       const response = await request(app)
@@ -229,7 +229,7 @@ describe('Authentication Controller Unit Tests', () => {
   describe('POST /api/auth/login', () => {
     const loginData = {
       email: 'test@example.com',
-      password: 'TestPass123'
+      password: 'TestPass123',
     };
 
     it('should login successfully with valid credentials', async () => {
@@ -240,12 +240,12 @@ describe('Authentication Controller Unit Tests', () => {
         lastName: 'User',
         password_hash: 'hashedPassword',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       };
 
       userService.findUserByEmail.mockResolvedValue(mockUser);
       userService.verifyPassword.mockResolvedValue(true);
-      
+
       // Mock database calls for token storage
       db.query.mockResolvedValue({ rows: [] });
 
@@ -259,8 +259,8 @@ describe('Authentication Controller Unit Tests', () => {
         user: {
           email: loginData.email,
           firstName: 'Test',
-          lastName: 'User'
-        }
+          lastName: 'User',
+        },
       });
 
       expect(response.body).toHaveProperty('token');
@@ -277,7 +277,7 @@ describe('Authentication Controller Unit Tests', () => {
         .post('/api/auth/login')
         .send({
           email: 'nonexistent@example.com',
-          password: loginData.password
+          password: loginData.password,
         })
         .expect(401);
 
@@ -288,7 +288,7 @@ describe('Authentication Controller Unit Tests', () => {
       const mockUser = {
         id: 1,
         email: loginData.email,
-        password_hash: 'hashedPassword'
+        password_hash: 'hashedPassword',
       };
 
       userService.findUserByEmail.mockResolvedValue(mockUser);
@@ -298,7 +298,7 @@ describe('Authentication Controller Unit Tests', () => {
         .post('/api/auth/login')
         .send({
           email: loginData.email,
-          password: 'WrongPassword123'
+          password: 'WrongPassword123',
         })
         .expect(401);
 
@@ -309,7 +309,7 @@ describe('Authentication Controller Unit Tests', () => {
       const response = await request(app)
         .post('/api/auth/login')
         .send({
-          password: loginData.password
+          password: loginData.password,
         })
         .expect(400);
 
@@ -321,7 +321,7 @@ describe('Authentication Controller Unit Tests', () => {
       const response = await request(app)
         .post('/api/auth/login')
         .send({
-          email: loginData.email
+          email: loginData.email,
         })
         .expect(400);
 
@@ -334,7 +334,7 @@ describe('Authentication Controller Unit Tests', () => {
         .post('/api/auth/login')
         .send({
           email: 'invalid-email',
-          password: loginData.password
+          password: loginData.password,
         })
         .expect(400);
 
@@ -350,7 +350,7 @@ describe('Authentication Controller Unit Tests', () => {
         .expect(200);
 
       expect(response.body).toMatchObject({
-        message: 'Logout successful'
+        message: 'Logout successful',
       });
       expect(response.body).toHaveProperty('timestamp');
     });
@@ -361,7 +361,7 @@ describe('Authentication Controller Unit Tests', () => {
         .expect(200);
 
       expect(response.body).toMatchObject({
-        message: 'Logout successful'
+        message: 'Logout successful',
       });
     });
   });

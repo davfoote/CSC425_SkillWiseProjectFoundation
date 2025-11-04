@@ -21,7 +21,7 @@ router.get('/me', authenticateToken, (req, res) => {
   res.json({
     success: true,
     user: req.user,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 

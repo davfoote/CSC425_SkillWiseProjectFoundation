@@ -22,7 +22,7 @@ describe('Goal Controller', () => {
       lastName: 'Tester',
       email: `goaltest-${Date.now()}@example.com`,
       password: 'GoalTest123',
-      confirmPassword: 'GoalTest123'
+      confirmPassword: 'GoalTest123',
     };
 
     await request(app)
@@ -33,7 +33,7 @@ describe('Goal Controller', () => {
       .post('/api/auth/login')
       .send({
         email: userCredentials.email,
-        password: userCredentials.password
+        password: userCredentials.password,
       });
 
     authCookies = loginResponse.get('Set-Cookie');
@@ -53,7 +53,7 @@ describe('Goal Controller', () => {
           userId: mockUser.id,
           status: 'in_progress',
           createdAt: new Date(),
-          progress: 60
+          progress: 60,
         },
         {
           id: 2,
@@ -65,8 +65,8 @@ describe('Goal Controller', () => {
           userId: mockUser.id,
           status: 'not_started',
           createdAt: new Date(),
-          progress: 0
-        }
+          progress: 0,
+        },
       ];
 
       Goal.findByUserId = jest.fn().mockResolvedValue(mockGoals);
@@ -80,7 +80,7 @@ describe('Goal Controller', () => {
       expect(response.body.goals[0]).toMatchObject({
         title: 'Learn React',
         progress: 60,
-        status: 'in_progress'
+        status: 'in_progress',
       });
       expect(Goal.findByUserId).toHaveBeenCalledWith(mockUser.id);
     });
@@ -113,7 +113,7 @@ describe('Goal Controller', () => {
         description: 'Learn advanced JavaScript concepts',
         category: 'programming',
         difficulty: 'high',
-        estimatedHours: 80
+        estimatedHours: 80,
       };
 
       const mockCreatedGoal = {
@@ -122,7 +122,7 @@ describe('Goal Controller', () => {
         userId: mockUser.id,
         status: 'not_started',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       };
 
       Goal.create = jest.fn().mockResolvedValue(mockCreatedGoal);
@@ -140,12 +140,12 @@ describe('Goal Controller', () => {
         category: goalData.category,
         difficulty: goalData.difficulty,
         estimatedHours: goalData.estimatedHours,
-        status: 'not_started'
+        status: 'not_started',
       });
 
       expect(Goal.create).toHaveBeenCalledWith({
         ...goalData,
-        userId: mockUser.id
+        userId: mockUser.id,
       });
     });
 
@@ -155,7 +155,7 @@ describe('Goal Controller', () => {
         description: 'Test Description',
         category: 'test',
         difficulty: 'easy',
-        estimatedHours: 10
+        estimatedHours: 10,
       };
 
       const response = await request(app)
@@ -169,7 +169,7 @@ describe('Goal Controller', () => {
     it('should validate required fields', async () => {
       const invalidData = {
         description: 'Missing title',
-        category: 'test'
+        category: 'test',
       };
 
       const response = await request(app)
@@ -187,7 +187,7 @@ describe('Goal Controller', () => {
         description: 'Test Description',
         category: 'test',
         difficulty: 'invalid_difficulty',
-        estimatedHours: 10
+        estimatedHours: 10,
       };
 
       const response = await request(app)
@@ -205,7 +205,7 @@ describe('Goal Controller', () => {
         description: 'Test Description',
         category: 'test',
         difficulty: 'easy',
-        estimatedHours: -5
+        estimatedHours: -5,
       };
 
       const response = await request(app)
@@ -224,7 +224,7 @@ describe('Goal Controller', () => {
       const updateData = {
         title: 'Updated Goal Title',
         description: 'Updated description',
-        status: 'in_progress'
+        status: 'in_progress',
       };
 
       const mockUpdatedGoal = {
@@ -234,7 +234,7 @@ describe('Goal Controller', () => {
         category: 'programming',
         difficulty: 'medium',
         estimatedHours: 40,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       };
 
       Goal.update = jest.fn().mockResolvedValue(mockUpdatedGoal);
@@ -254,7 +254,7 @@ describe('Goal Controller', () => {
     it('should return 404 for non-existent goal', async () => {
       const goalId = 999;
       const updateData = {
-        title: 'Updated Title'
+        title: 'Updated Title',
       };
 
       Goal.update = jest.fn().mockResolvedValue(null);
@@ -281,7 +281,7 @@ describe('Goal Controller', () => {
   describe('DELETE /api/goals/:id', () => {
     it('should delete existing goal', async () => {
       const goalId = 1;
-      
+
       Goal.delete = jest.fn().mockResolvedValue(true);
 
       const response = await request(app)
@@ -295,7 +295,7 @@ describe('Goal Controller', () => {
 
     it('should return 404 for non-existent goal', async () => {
       const goalId = 999;
-      
+
       Goal.delete = jest.fn().mockResolvedValue(false);
 
       const response = await request(app)
@@ -324,7 +324,7 @@ describe('Goal Controller', () => {
         totalChallenges: 5,
         percentComplete: 60,
         hoursSpent: 24,
-        estimatedHours: 40
+        estimatedHours: 40,
       };
 
       Progress.getByGoalId = jest.fn().mockResolvedValue(mockProgress);
