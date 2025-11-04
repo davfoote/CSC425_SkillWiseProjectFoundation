@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
+import challengeService from '../../services/challengeService';
 
-const ChallengeCard = ({ challenge, onChallengeClick }) => {
+const ChallengeCard = ({ challenge, onChallengeClick, onProgressUpdate }) => {
   // Determine status display
   const getStatusInfo = (challenge) => {
     if (!challenge.is_active) {
@@ -32,6 +33,30 @@ const ChallengeCard = ({ challenge, onChallengeClick }) => {
   };
 
   const statusInfo = getStatusInfo(challenge);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Handle marking challenge as complete
+  const handleMarkComplete = async (e) => {
+    e.stopPropagation(); // Prevent card click event
+    
+    try {
+      setIsLoading(true);
+      await challengeService.markChallengeComplete(challenge.id);
+      setIsCompleted(true);
+      
+      // Trigger progress update callback if provided
+      if (onProgressUpdate) {
+        onProgressUpdate(challenge.id, true);
+      }
+      
+    } catch (error) {
+      console.error('Error marking challenge complete:', error);
+      alert('Failed to mark challenge as complete. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div 
@@ -118,6 +143,37 @@ const ChallengeCard = ({ challenge, onChallengeClick }) => {
             <span>👥</span>
             <span>Peer Review</span>
           </div>
+        )}
+      </div>
+
+      {/* Completion Status and Button */}
+      <div className="mt-3 pt-3 border-t border-gray-100">
+        {isCompleted ? (
+          <div className="flex items-center justify-center space-x-2 text-green-600 bg-green-50 rounded-lg py-2">
+            <span>✅</span>
+            <span className="text-sm font-medium">Completed!</span>
+          </div>
+        ) : (
+          <button
+            onClick={handleMarkComplete}
+            disabled={isLoading}
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+          >
+            {isLoading ? (
+              <span className="flex items-center justify-center space-x-2">
+                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                  <path fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                <span>Completing...</span>
+              </span>
+            ) : (
+              <span className="flex items-center justify-center space-x-2">
+                <span>✓</span>
+                <span>Mark Complete</span>
+              </span>
+            )}
+          </button>
         )}
       </div>
 

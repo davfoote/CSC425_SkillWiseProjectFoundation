@@ -129,6 +129,59 @@ export const challengeService = {
       console.error('Error fetching available challenges:', error);
       throw error;
     }
+  },
+
+  // Mark challenge as completed
+  markChallengeComplete: async (challengeId) => {
+    try {
+      // TODO: Implement actual completion endpoint when backend is ready
+      // For now, simulate the API call
+      console.log(`Marking challenge ${challengeId} as complete`);
+      
+      // Simulate API response
+      return {
+        success: true,
+        message: 'Challenge marked as complete',
+        challengeId: challengeId,
+        completedAt: new Date().toISOString()
+      };
+    } catch (error) {
+      console.error('Error marking challenge complete:', error);
+      throw error;
+    }
+  },
+
+  // Get challenges for a specific goal
+  getChallengesByGoal: async (goalId) => {
+    try {
+      const response = await apiClient.get(`/challenges/goal/${goalId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching challenges by goal:', error);
+      throw error;
+    }
+  },
+
+  // Get user's completed challenges
+  getCompletedChallenges: async () => {
+    try {
+      // TODO: Implement when completion tracking is available in backend
+      // For now, simulate some completed challenges
+      const allChallenges = await challengeService.getChallenges();
+      const challenges = allChallenges.data || allChallenges;
+      
+      // Simulate 30% completion rate
+      const completedCount = Math.floor(challenges.length * 0.3);
+      const completed = challenges.slice(0, completedCount).map(challenge => ({
+        ...challenge,
+        completedAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString()
+      }));
+      
+      return { data: completed };
+    } catch (error) {
+      console.error('Error fetching completed challenges:', error);
+      throw error;
+    }
   }
 };
 

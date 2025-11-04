@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navigation from '../layout/Navigation';
 import ChallengeCard from './ChallengeCard';
 import challengeService from '../../services/challengeService';
+import progressService from '../../services/progressService';
 
 const Challenges = () => {
   const [challenges, setChallenges] = useState([]);
@@ -82,10 +83,25 @@ const Challenges = () => {
   };
 
   const handleChallengeClick = (challenge) => {
-    // For now, just log the challenge click
-    // In future sprints, this could navigate to challenge detail page
+    // TODO: Navigate to challenge detail view or open modal
     console.log('Challenge clicked:', challenge);
-    alert(`Challenge "${challenge.title}" clicked! Challenge detail view will be implemented in future sprints.`);
+  };
+
+  // Handle progress update when a challenge is completed
+  const handleProgressUpdate = async (challengeId, isCompleted) => {
+    try {
+      // Update progress tracking
+      await progressService.updateChallengeCompletion(challengeId, isCompleted);
+      
+      // Show success message
+      console.log(`Challenge ${challengeId} completion status updated to ${isCompleted}`);
+      
+      // Optionally reload challenges to reflect any changes
+      // loadChallenges();
+      
+    } catch (error) {
+      console.error('Error updating progress:', error);
+    }
   };
 
   const clearFilters = () => {
@@ -251,6 +267,7 @@ const Challenges = () => {
                   key={challenge.id}
                   challenge={challenge}
                   onChallengeClick={handleChallengeClick}
+                  onProgressUpdate={handleProgressUpdate}
                 />
               ))}
             </div>

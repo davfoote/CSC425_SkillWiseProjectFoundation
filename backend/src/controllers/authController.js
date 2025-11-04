@@ -37,14 +37,14 @@ const authController = {
       const refreshToken = generateRefreshToken();
       
       // Clean up any existing refresh tokens for this user (prevent duplicates)
-      await db.query('DELETE FROM refresh_tokens WHERE user_id = $1', [user.id]);
+      await db.query('DELETE FROM refresh_tokens WHERE "userId" = $1', [user.id]);
       
       // Store refresh token in database
       const expiresAt = new Date();
       expiresAt.setDate(expiresAt.getDate() + 7); // 7 days from now
       
       await db.query(
-        'INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES ($1, $2, $3)',
+        'INSERT INTO refresh_tokens (token, "userId", "expiresAt") VALUES ($1, $2, $3)',
         [refreshToken, user.id, expiresAt]
       );
 

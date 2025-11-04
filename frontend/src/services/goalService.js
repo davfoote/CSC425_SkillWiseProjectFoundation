@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+// Fixed: Updated API base URL to include /api path
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
 
 // Create axios instance with base configuration
 const api = axios.create({
@@ -43,7 +44,7 @@ const goalService = {
   // Get all goals for authenticated user
   getGoals: async () => {
     try {
-      const response = await api.get('/api/goals');
+      const response = await api.get('/goals');
       return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Failed to fetch goals');
@@ -53,7 +54,7 @@ const goalService = {
   // Get single goal by ID
   getGoal: async (goalId) => {
     try {
-      const response = await api.get(`/api/goals/${goalId}`);
+      const response = await api.get(`/goals/${goalId}`);
       return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Failed to fetch goal');
@@ -63,7 +64,7 @@ const goalService = {
   // Create new goal
   createGoal: async (goalData) => {
     try {
-      const response = await api.post('/api/goals', goalData);
+      const response = await api.post('/goals', goalData);
       return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Failed to create goal');
@@ -73,7 +74,7 @@ const goalService = {
   // Update existing goal
   updateGoal: async (goalId, updateData) => {
     try {
-      const response = await api.put(`/api/goals/${goalId}`, updateData);
+      const response = await api.put(`/goals/${goalId}`, updateData);
       return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Failed to update goal');
@@ -83,7 +84,7 @@ const goalService = {
   // Delete goal
   deleteGoal: async (goalId) => {
     try {
-      await api.delete(`/api/goals/${goalId}`);
+      await api.delete(`/goals/${goalId}`);
       return true;
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Failed to delete goal');
@@ -93,7 +94,7 @@ const goalService = {
   // Update goal progress
   updateProgress: async (goalId, progress) => {
     try {
-      const response = await api.patch(`/api/goals/${goalId}/progress`, { progress_percentage: progress });
+      const response = await api.patch(`/goals/${goalId}/progress`, { progress_percentage: progress });
       return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Failed to update progress');

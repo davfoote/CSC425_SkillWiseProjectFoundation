@@ -8,6 +8,7 @@ import DashboardShell from './components/dashboard/DashboardShell';
 import Goals from './components/goals/Goals';
 import Challenges from './components/challenges/Challenges';
 import Progress from './components/progress/Progress';
+import ProgressBarDemo from './components/progress/ProgressBarDemo';
 import Profile from './components/profile/Profile';
 
 // Protected Route Component
@@ -122,6 +123,15 @@ const AppContent = () => {
           element={
             <ProtectedRoute>
               <Progress />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/progress-demo" 
+          element={
+            <ProtectedRoute>
+              <ProgressBarDemo />
             </ProtectedRoute>
           } 
         />
