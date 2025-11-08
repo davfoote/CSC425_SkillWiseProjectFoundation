@@ -28,8 +28,8 @@ services:
     env_file:
       - ./backend/.env.docker
     volumes:
-      - ./backend:/app
-      - /app/node_modules
+      - ./backend:/app:cached
+      - backend_node_modules:/app/node_modules
     depends_on:
       database:
         condition: service_healthy
@@ -75,3 +75,4 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  backend_node_modules:

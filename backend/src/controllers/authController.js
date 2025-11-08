@@ -3,6 +3,8 @@ const userService = require('../services/userService');
 const { generateAccessToken, generateRefreshToken } = require('../middleware/jwtAuth');
 const db = require('../database/connection');
 const jwt = require('jsonwebtoken');
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
 const authController = {
   // Login endpoint with secure session management
