@@ -37,3 +37,46 @@ model RefreshToken {
 
   @@map("refresh_tokens")
 }
+
+// Goal model - mirrors the existing SQL 'goals' table
+model Goal {
+  id                    Int      @id @default(autoincrement())
+  userId                Int      @map("user_id")
+  title                 String
+  description           String?  
+  category              String?  
+  difficultyLevel       String?  @map("difficulty_level")
+  targetCompletionDate  DateTime? @map("target_completion_date")
+  isCompleted           Boolean  @default(false) @map("is_completed")
+  completionDate        DateTime? @map("completion_date")
+  progressPercentage    Int      @default(0) @map("progress_percentage")
+  pointsReward          Int?     @map("points_reward")
+  isPublic              Boolean  @default(false) @map("is_public")
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+  challenges            Challenge[]
+
+  @@map("goals")
+  @@index([userId], name: "idx_goals_user_id")
+}
+
+// Challenge model - mirrors the existing SQL 'challenges' table
+model Challenge {
+  id             Int      @id @default(autoincrement())
+  title          String
+  description    String?
+  instructions   String? 
+  category       String? 
+  difficultyLevel String? @map("difficulty_level")
+  pointsReward   Int?     @map("points_reward")
+  createdBy      Int?     @map("created_by")
+  goalId         Int?     @map("goal_id")
+  goal           Goal?    @relation(fields: [goalId], references: [id])
+  isCompleted    Boolean  @default(false) @map("is_completed")
+  tags           String?  
+  isActive       Boolean  @default(true) @map("is_active")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@map("challenges")
+}

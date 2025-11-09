@@ -9,6 +9,7 @@ import Goals from './components/goals/Goals';
 import Challenges from './components/challenges/Challenges';
 import Progress from './components/progress/Progress';
 import Profile from './components/profile/Profile';
+import MainLayout from './components/layout/MainLayout';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -94,7 +95,9 @@ const AppContent = () => {
           path="/dashboard" 
           element={
             <ProtectedRoute>
-              <DashboardShell />
+              <MainLayout>
+                <DashboardShell />
+              </MainLayout>
             </ProtectedRoute>
           } 
         />
@@ -103,7 +106,9 @@ const AppContent = () => {
           path="/goals" 
           element={
             <ProtectedRoute>
-              <Goals />
+              <MainLayout>
+                <Goals />
+              </MainLayout>
             </ProtectedRoute>
           } 
         />
@@ -112,7 +117,9 @@ const AppContent = () => {
           path="/challenges" 
           element={
             <ProtectedRoute>
-              <Challenges />
+              <MainLayout>
+                <Challenges />
+              </MainLayout>
             </ProtectedRoute>
           } 
         />
@@ -121,7 +128,9 @@ const AppContent = () => {
           path="/progress" 
           element={
             <ProtectedRoute>
-              <Progress />
+              <MainLayout>
+                <Progress />
+              </MainLayout>
             </ProtectedRoute>
           } 
         />
@@ -130,7 +139,9 @@ const AppContent = () => {
           path="/profile" 
           element={
             <ProtectedRoute>
-              <Profile />
+              <MainLayout>
+                <Profile />
+              </MainLayout>
             </ProtectedRoute>
           } 
         />

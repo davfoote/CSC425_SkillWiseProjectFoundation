@@ -1,7 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navigation from '../layout/Navigation';
 
 const DashboardShell = () => {
+  const navigate = useNavigate();
+
+  const goToGoals = () => navigate('/goals');
+  const goToChallenges = () => navigate('/challenges');
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
@@ -78,7 +84,7 @@ const DashboardShell = () => {
                     <span className="text-2xl mr-3">🎯</span>
                     My Learning Goals
                   </h2>
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-200">
+                  <button onClick={goToGoals} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-200">
                     + New Goal
                   </button>
                 </div>
@@ -93,7 +99,7 @@ const DashboardShell = () => {
                     Start your learning journey by creating your first goal. 
                     Goals help you structure and track your progress.
                   </p>
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium transition duration-200">
+                  <button onClick={goToGoals} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium transition duration-200">
                     Create Your First Goal
                   </button>
                 </div>
@@ -125,7 +131,7 @@ const DashboardShell = () => {
                     <span className="text-2xl mr-3">💪</span>
                     Recent Challenges
                   </h2>
-                  <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-200">
+                  <button onClick={goToChallenges} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-200">
                     Browse All
                   </button>
                 </div>
@@ -140,7 +146,7 @@ const DashboardShell = () => {
                     Challenges are hands-on exercises that help you practice and improve your skills. 
                     Create goals first, then add challenges to them.
                   </p>
-                  <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-medium transition duration-200">
+                  <button onClick={goToChallenges} className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-medium transition duration-200">
                     Explore Challenges
                   </button>
                 </div>

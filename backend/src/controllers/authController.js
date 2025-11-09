@@ -2,6 +2,7 @@
 const userService = require('../services/userService');
 const { generateAccessToken, generateRefreshToken } = require('../middleware/jwtAuth');
 const db = require('../database/connection');
+const prisma = require('../database/prisma');
 const jwt = require('jsonwebtoken');
 
 const authController = {

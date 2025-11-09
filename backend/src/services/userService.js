@@ -1,6 +1,7 @@
 // User service for database operations
 const bcrypt = require('bcryptjs');
 const db = require('../database/connection');
+const prisma = require('../database/prisma');
 
 const userService = {
   // Create a new user with hashed password

@@ -1,0 +1,121 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install backend dependencies
+        run: npm ci
+
+      - name: Run backend lint
+        run: npm run lint --if-present
+
+      - name: Run backend unit tests
+        run: npm test --if-present --silent
+
+      - name: Install frontend dependencies
+        run: npm ci --prefix frontend
+
+      - name: Run frontend unit tests (headless)
+        run: npm test --prefix frontend -- --watchAll=false --silent
+
+      # Note: full E2E is run in the separate `cypress-e2e` job which provisions a test DB.
+
+  cypress-e2e:
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: skillwise_test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready -U postgres -d skillwise_test_db
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+
+      - name: Install backend dependencies
+        run: |
+          npm ci --prefix backend
+
+      - name: Install frontend dependencies
+        run: |
+          npm ci --prefix frontend
+
+      - name: Wait for Postgres to accept connections
+        run: |
+          echo "Waiting for Postgres on 127.0.0.1:5432..."
+          for i in {1..60}; do
+            nc -z 127.0.0.1 5432 && echo "Postgres is up" && break || sleep 1
+          done
+
+      - name: Apply Prisma schema to test DB and generate client
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/skillwise_test_db
+        run: |
+          npx prisma --version
+          cd backend
+          npx prisma db push --schema=./prisma/schema.prisma
+          npx prisma generate --schema=./prisma/schema.prisma
+
+      - name: Run seed script to populate test data
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/skillwise_test_db
+        run: |
+          node backend/scripts/seed-test-data.js || true
+
+      - name: Start backend (port 3001) in background
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/skillwise_test_db
+          JWT_SECRET: test-jwt-secret
+          JWT_REFRESH_SECRET: test-refresh-secret
+          BCRYPT_SALT_ROUNDS: 4
+          NODE_ENV: test
+        run: |
+          nohup bash -c "cd backend && npm run dev" > backend.log 2>&1 &
+
+      - name: Start frontend (port 3000) in background
+        run: |
+          nohup bash -c "npm start --prefix frontend" > frontend.log 2>&1 &
+
+      - name: Wait for services to be ready
+        run: |
+          npx wait-on http://localhost:3000 || (sleep 2 && npx wait-on http://localhost:3000)
+          npx wait-on http://localhost:3001 || (sleep 2 && npx wait-on http://localhost:3001)
+
+      - name: Run Cypress (headless)
+        env:
+          CYPRESS_BASE_URL: http://localhost:3000
+        working-directory: frontend
+        run: |
+          npx cypress run --spec "cypress/e2e/full_flow.cy.js"

@@ -10,6 +10,9 @@ router.post('/login', validation.loginValidation, authController.login);
 // TODO: Add POST /register route
 router.post('/register', validation.registerValidation, authController.register);
 
+// Compatibility alias: some frontends call /signup
+router.post('/signup', validation.registerValidation, authController.register);
+
 // TODO: Add POST /logout route
 router.post('/logout', authController.logout);
 

@@ -1,30 +1,66 @@
-// TODO: Implement goals CRUD operations controller
 const goalService = require('../services/goalService');
 
 const goalController = {
-  // TODO: Get all goals for user
   getGoals: async (req, res, next) => {
-    // Implementation needed
+    try {
+      const userId = req.user && req.user.id;
+      if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+      const goals = await goalService.getUserGoals(userId);
+      return res.status(200).json({ data: goals });
+    } catch (error) {
+      next(error);
+    }
   },
 
-  // TODO: Get single goal by ID
   getGoalById: async (req, res, next) => {
-    // Implementation needed
+    try {
+      const id = req.params.id;
+      const goals = await goalService.getUserGoals(req.user.id);
+      const goal = goals.find(g => String(g.id) === String(id));
+      if (!goal) return res.status(404).json({ message: 'Goal not found' });
+      return res.status(200).json({ data: goal });
+    } catch (error) {
+      next(error);
+    }
   },
 
-  // TODO: Create new goal
   createGoal: async (req, res, next) => {
-    // Implementation needed
+    try {
+      const userId = req.user && req.user.id;
+      if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+      const payload = req.body;
+      const created = await goalService.createGoal(payload, userId);
+      return res.status(201).json({ data: created });
+    } catch (error) {
+      next(error);
+    }
   },
 
-  // TODO: Update existing goal
   updateGoal: async (req, res, next) => {
-    // Implementation needed
+    try {
+      const id = req.params.id;
+      const updateData = req.body;
+      const updated = await goalService.updateGoal(id, updateData);
+      if (!updated) return res.status(404).json({ message: 'Goal not found' });
+      return res.status(200).json({ data: updated });
+    } catch (error) {
+      next(error);
+    }
   },
 
-  // TODO: Delete goal
   deleteGoal: async (req, res, next) => {
-    // Implementation needed
+    try {
+      const id = req.params.id;
+      // Use prisma directly for delete to simplify
+      const prisma = require('../database/prisma');
+      const deleted = await prisma.goal.delete({ where: { id: Number(id) } });
+      return res.status(200).json({ data: deleted });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        return res.status(404).json({ message: 'Goal not found' });
+      }
+      next(error);
+    }
   }
 };
 

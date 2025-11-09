@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import axios from 'axios';
+import axios from '../../api/axiosInstance';
 
 // Zod validation schema for login
 const loginSchema = z.object({
@@ -31,7 +31,7 @@ const LoginForm = ({ onLoginSuccess }) => {
     setSubmitError('');
 
     try {
-      const response = await axios.post('http://localhost:3001/api/auth/login', data);
+  const response = await axios.post('/auth/login', data);
       
       console.log('Login successful:', response.data);
       

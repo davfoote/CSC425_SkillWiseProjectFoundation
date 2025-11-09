@@ -1,38 +1,103 @@
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial;
+  color: var(--text);
+  background: var(--bg);
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+:root {
+  --bg: #f5f7fb; /* very light gray */
+  --card: #ffffff;
+  --muted: #6b7280;
+  --text: #0f172a;
+  --primary: #2563eb; /* blue-600 */
+  --green: #16a34a;
+  --radius: 10px;
+  --shadow: 0 6px 18px rgba(12, 16, 23, 0.06);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Layout helpers */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1rem;
 }
+
+/* Cards */
+.card,
+.bg-white,
+.rounded-lg {
+  background: var(--card) !important;
+  border-radius: var(--radius) !important;
+}
+
+.shadow,
+.shadow-lg {
+  box-shadow: var(--shadow) !important;
+}
+
+/* Typography */
+h1, h2, h3, h4 {
+  color: var(--text);
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+}
+
+p { color: var(--muted); }
+
+/* Buttons: neutral baseline and primary overrides for existing Tailwind classes */
+button {
+  border: 0;
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+button:active { transform: translateY(1px); }
+
+/* Primary colors to override Tailwind utility classes used in components */
+.bg-blue-600 { background-color: var(--primary) !important; color: #fff !important; }
+.hover\:bg-blue-700:hover { background-color: #1d4ed8 !important; }
+.bg-green-600 { background-color: var(--green) !important; color: #fff !important; }
+.hover\:bg-green-700:hover { background-color: #15803d !important; }
+.bg-red-600 { background-color: #dc2626 !important; color: #fff !important; }
+.hover\:bg-red-700:hover { background-color: #b91c1c !important; }
+
+/* Navigation tweaks */
+nav { background: transparent; border-bottom: 1px solid rgba(15,23,42,0.06); }
+nav .text-2xl { font-weight: 700; color: var(--primary); }
+
+/* Make forms cleaner */
+input, textarea, select {
+  border: 1px solid rgba(15,23,42,0.08);
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text);
+}
+
+/* Small utility */
+.muted { color: var(--muted); }
+
+/* Responsive tweaks for main area */
+main { padding: 2rem 1rem; }
+
+/* Make the navigation user info slightly smaller */
+.navigation-user { font-size: 0.9rem; color: var(--muted); }
+
+/* Reduce heavy rounded corners on small elements used in sample UI */
+.rounded-full { border-radius: 9999px !important; }
+
+/* Ensure links look clean */
+a { color: var(--primary); text-decoration: none; }
+
+/* Helpers for hidden / spacing used in components */
+.hidden { display: none !important; }
+.mb-8 { margin-bottom: 2rem !important; }
+
+/* utility text color */
+.text-primary { color: var(--primary) !important; }
+

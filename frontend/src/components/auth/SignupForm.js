@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import axios from 'axios';
+import axios from '../../api/axiosInstance';
 
 // Zod validation schema
 const signupSchema = z.object({
@@ -44,11 +44,10 @@ const SignupForm = () => {
     setSubmitError('');
     setSubmitSuccess(false);
 
-    try {
-      // Remove confirmPassword before sending to API
-      const { confirmPassword, ...submitData } = data;
-      
-      const response = await axios.post('http://localhost:3001/api/auth/signup', submitData);
+      try {
+        // Send full form data (include confirmPassword) because backend validation expects it
+        const submitData = data;
+        const response = await axios.post('/auth/signup', submitData);
       
       console.log('Signup successful:', response.data);
       setSubmitSuccess(true);

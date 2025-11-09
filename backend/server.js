@@ -45,6 +45,9 @@ process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (err) => {
+  // Also print to console to ensure the stack is visible in terminals
+  console.error('Uncaught Exception stack:');
+  console.error(err && err.stack ? err.stack : err);
   logger.error('💥 Uncaught Exception:', err);
   process.exit(1);
 });
