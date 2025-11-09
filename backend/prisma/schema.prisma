@@ -37,3 +37,36 @@ model RefreshToken {
 
   @@map("refresh_tokens")
 }
+
+// Goals table for user-defined learning objectives
+model Goal {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  userId      Int      @map("user_id")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetDate  DateTime? @map("target_date")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@map("goals")
+  @@index([userId], name: "idx_goals_user_id")
+}
+
+// Challenges model (Prisma)
+model Challenge {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  status      String?  // e.g., open, in-progress, completed
+  difficulty  String?  // e.g., easy, medium, hard
+  createdById Int?    @map("created_by")
+  createdBy   User?   @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  goalId      Int?    @map("goal_id")
+  goal        Goal?   @relation(fields: [goalId], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("challenges")
+  @@index([goalId], name: "idx_challenges_goal_id")
+}

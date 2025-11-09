@@ -1,0 +1,93 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ '**' ]
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Lint, Unit tests, and E2E
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: skillwise_user
+          POSTGRES_PASSWORD: skillwise_pass
+          POSTGRES_DB: skillwise_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U skillwise_user"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://skillwise_user:skillwise_pass@localhost:5432/skillwise_db
+      NODE_ENV: test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install backend dependencies
+        run: npm ci
+
+      - name: Wait for Postgres to be ready
+        run: |
+          echo "Waiting for Postgres on localhost:5432..."
+          for i in {1..30}; do
+            if (echo > /dev/tcp/localhost/5432) >/dev/null 2>&1; then
+              echo "Postgres is available"; break
+            fi
+            echo "Postgres not ready yet, sleeping..."; sleep 1
+          done
+
+      - name: Run DB migrations (backend)
+        run: npm run migrate
+
+      - name: Start backend
+        run: |
+          npm start &
+          echo "Waiting for backend to be available at http://localhost:3001/healthz"
+          for i in {1..30}; do
+            if curl -sSf http://localhost:3001/healthz >/dev/null 2>&1; then
+              echo "Backend is up"; break
+            fi
+            echo "Backend not up yet..."; sleep 1
+          done
+
+      - name: Install frontend dependencies
+        run: npm ci --prefix frontend
+
+      - name: Start frontend
+        run: |
+          npm start --prefix frontend &
+          echo "Waiting for frontend at http://localhost:3000"
+          for i in {1..30}; do
+            if curl -sSf http://localhost:3000/ >/dev/null 2>&1; then
+              echo "Frontend is up"; break
+            fi
+            echo "Frontend not up yet..."; sleep 1
+          done
+
+      - name: Lint (backend)
+        run: npm run lint
+
+      - name: Run unit tests (Jest)
+        run: npm test -- --runInBand --silent
+
+      - name: Run Cypress E2E
+        run: npm run cypress:run --prefix frontend
+        env:
+          CYPRESS_BASE_URL: http://localhost:3000
+          API_BASE_URL: http://localhost:3001

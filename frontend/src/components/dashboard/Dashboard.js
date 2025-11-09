@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
+  const { goals } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Get user data from localStorage
@@ -95,7 +99,7 @@ const Dashboard = () => {
                   <div className="text-3xl mb-2">🎯</div>
                   <h4 className="text-lg font-semibold text-gray-900 mb-2">Set Goals</h4>
                   <p className="text-gray-600 mb-4">Define your learning objectives</p>
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">
+                  <button onClick={() => navigate('/goals')} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">
                     Create Goal
                   </button>
                 </div>
@@ -122,10 +126,24 @@ const Dashboard = () => {
               {/* Recent Activity */}
               <div className="bg-white rounded-lg shadow p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
-                <div className="text-center py-8">
-                  <div className="text-4xl mb-4">🌟</div>
-                  <p className="text-gray-600">Welcome to SkillWise! Start your learning journey by setting your first goal.</p>
-                </div>
+                {goals && goals.length > 0 ? (
+                  <ul className="space-y-3">
+                    {goals.slice(0, 5).map((g) => (
+                      <li key={g.id} className="border rounded-md p-3 flex justify-between items-center">
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">{g.title}</div>
+                          <div className="text-xs text-gray-500">{g.description}</div>
+                        </div>
+                        <div className="text-xs text-gray-400">{g.targetDate ? new Date(g.targetDate).toLocaleDateString() : ''}</div>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="text-center py-8">
+                    <div className="text-4xl mb-4">🌟</div>
+                    <p className="text-gray-600">Welcome to SkillWise! Start your learning journey by setting your first goal.</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>

@@ -7,6 +7,7 @@ import LoginForm from './components/auth/LoginForm';
 import DashboardShell from './components/dashboard/DashboardShell';
 import Goals from './components/goals/Goals';
 import Challenges from './components/challenges/Challenges';
+import ChallengeDetail from './components/challenges/ChallengeDetail';
 import Progress from './components/progress/Progress';
 import Profile from './components/profile/Profile';
 
@@ -115,6 +116,14 @@ const AppContent = () => {
               <Challenges />
             </ProtectedRoute>
           } 
+        />
+        <Route
+          path="/challenges/:id"
+          element={
+            <ProtectedRoute>
+              <ChallengeDetail />
+            </ProtectedRoute>
+          }
         />
         
         <Route 
