@@ -5,7 +5,7 @@ const GoalCard = ({ goal, onEdit, onDelete, onUpdateProgress }) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
@@ -13,7 +13,7 @@ const GoalCard = ({ goal, onEdit, onDelete, onUpdateProgress }) => {
     const colors = {
       easy: 'text-green-600 bg-green-100',
       medium: 'text-yellow-600 bg-yellow-100',
-      hard: 'text-red-600 bg-red-100'
+      hard: 'text-red-600 bg-red-100',
     };
     return colors[level] || colors.medium;
   };
@@ -30,10 +30,10 @@ const GoalCard = ({ goal, onEdit, onDelete, onUpdateProgress }) => {
 
   return (
     <div className={`bg-white rounded-lg shadow-md p-6 border-l-4 ${
-      goal.is_completed 
-        ? 'border-green-500' 
-        : isOverdue() 
-          ? 'border-red-500' 
+      goal.is_completed
+        ? 'border-green-500'
+        : isOverdue()
+          ? 'border-red-500'
           : 'border-blue-500'
     }`}>
       <div className="flex justify-between items-start mb-4">
@@ -41,7 +41,7 @@ const GoalCard = ({ goal, onEdit, onDelete, onUpdateProgress }) => {
           <h3 className="text-lg font-semibold text-gray-900 mb-2">{goal.title}</h3>
           <p className="text-gray-600 text-sm line-clamp-2">{goal.description}</p>
         </div>
-        
+
         <div className="flex items-center space-x-2 ml-4">
           {goal.is_public && (
             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">

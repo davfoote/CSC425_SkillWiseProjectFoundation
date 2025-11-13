@@ -7,7 +7,7 @@ const Progress = () => {
   const [progressData, setProgressData] = useState({
     overall: { percentage: 0, completed: 0, total: 0 },
     goals: { percentage: 0, completed: 0, total: 0 },
-    challenges: { percentage: 0, completed: 0, total: 0 }
+    challenges: { percentage: 0, completed: 0, total: 0 },
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,10 +21,10 @@ const Progress = () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const data = await progressService.calculateOverallProgress();
       setProgressData(data);
-      
+
     } catch (err) {
       console.error('Error loading progress:', err);
       setError('Failed to load progress data');
@@ -38,10 +38,10 @@ const Progress = () => {
     try {
       const updatedProgress = await progressService.updateChallengeCompletion('demo-challenge', true);
       setProgressData(updatedProgress);
-      
+
       // Show success message (could be replaced with toast notification)
       alert('Challenge marked as complete! Progress updated.');
-      
+
     } catch (err) {
       console.error('Error updating challenge:', err);
       alert('Error updating progress. Please try again.');
@@ -67,10 +67,10 @@ const Progress = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
-      
+
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
-          
+
           {/* Header */}
           <div className="text-center mb-8">
             <div className="text-6xl mb-4">📊</div>
@@ -109,7 +109,7 @@ const Progress = () => {
 
           {/* Progress Breakdown */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            
+
             {/* Goals Progress */}
             <div className="bg-white rounded-lg shadow p-6">
               <h3 className="text-xl font-bold text-gray-900 mb-4">📎 Goals Progress</h3>
@@ -165,7 +165,7 @@ const Progress = () => {
           <div className="bg-white rounded-lg shadow p-8 mb-8">
             <h3 className="text-xl font-bold text-gray-900 mb-6">Progress Visualization Options</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              
+
               {/* Circular Progress - Medium */}
               <div className="text-center">
                 <h4 className="font-semibold text-gray-700 mb-3">Circular Progress</h4>
@@ -238,7 +238,7 @@ const Progress = () => {
             <p className="text-gray-600 mb-6">
               Click the button below to simulate completing a challenge and see the progress bar update in real-time!
             </p>
-            
+
             <div className="flex flex-col sm:flex-row items-center justify-between bg-white rounded-lg p-6 shadow">
               <div className="flex-1 mb-4 sm:mb-0">
                 <ProgressBar
@@ -251,7 +251,7 @@ const Progress = () => {
                   animated={true}
                 />
               </div>
-              
+
               <button
                 onClick={handleMarkChallengeComplete}
                 className="ml-0 sm:ml-6 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
@@ -259,7 +259,7 @@ const Progress = () => {
                 ✓ Complete Challenge
               </button>
             </div>
-            
+
             <p className="text-sm text-gray-500 mt-4">
               * This is a demo. In the actual implementation, progress updates automatically when you complete real challenges.
             </p>

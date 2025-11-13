@@ -1,8 +1,8 @@
 // Test the login functionality
 const testLogin = async () => {
   const testData = {
-    email: "test@example.com",
-    password: "password123"
+    email: 'test@example.com',
+    password: 'password123',
   };
 
   try {
@@ -11,13 +11,13 @@ const testLogin = async () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(testData)
+      body: JSON.stringify(testData),
     });
 
     const result = await response.json();
     console.log('Response status:', response.status);
     console.log('Response data:', result);
-    
+
     if (result.token) {
       console.log('✅ JWT Token received:', result.token.substring(0, 20) + '...');
     }

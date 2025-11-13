@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
       setToken(storedToken);
       setUser(JSON.parse(storedUser));
     }
-    
+
     setLoading(false);
   }, []);
 
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     isAuthenticated,
-    loading
+    loading,
   };
 
   return (

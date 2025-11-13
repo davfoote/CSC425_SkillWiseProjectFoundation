@@ -1,6 +1,6 @@
 /**
  * Progress Service
- * 
+ *
  * Handles calculation of user progress based on goals and challenges
  * Provides real-time progress tracking functionality
  */
@@ -9,7 +9,7 @@ import goalService from '../services/goalService';
 import challengeService from '../services/challengeService';
 
 export const progressService = {
-  
+
   /**
    * Calculate overall user progress based on goals and challenges
    * @param {string} userId - User ID
@@ -20,7 +20,7 @@ export const progressService = {
       // Get user's goals and challenges
       const [goals, challenges] = await Promise.all([
         goalService.getGoals(),
-        challengeService.getChallenges()
+        challengeService.getChallenges(),
       ]);
 
       // Filter user's data (if needed, depending on API response)
@@ -29,10 +29,10 @@ export const progressService = {
 
       // Calculate goal-based progress
       const goalProgress = calculateGoalProgress(userGoals);
-      
+
       // Calculate challenge-based progress
       const challengeProgress = calculateChallengeProgress(userChallenges);
-      
+
       // Calculate combined progress
       const overallProgress = calculateCombinedProgress(goalProgress, challengeProgress);
 
@@ -40,16 +40,16 @@ export const progressService = {
         overall: overallProgress,
         goals: goalProgress,
         challenges: challengeProgress,
-        lastUpdated: new Date().toISOString()
+        lastUpdated: new Date().toISOString(),
       };
-      
+
     } catch (error) {
       console.error('Error calculating progress:', error);
       return {
         overall: { percentage: 0, completed: 0, total: 0 },
         goals: { percentage: 0, completed: 0, total: 0 },
         challenges: { percentage: 0, completed: 0, total: 0 },
-        error: error.message
+        error: error.message,
       };
     }
   },
@@ -63,25 +63,25 @@ export const progressService = {
     try {
       const goal = await goalService.getGoal(goalId);
       const goalChallenges = await challengeService.getChallengesByGoal(goalId);
-      
+
       const challengeProgress = calculateChallengeProgress(goalChallenges.data || goalChallenges);
-      
+
       return {
         goalId: goalId,
         goalTitle: goal.title,
         goalProgress: goal.progress_percentage || 0,
         challengeProgress: challengeProgress,
         isCompleted: goal.is_completed || false,
-        lastUpdated: new Date().toISOString()
+        lastUpdated: new Date().toISOString(),
       };
-      
+
     } catch (error) {
       console.error('Error getting goal progress:', error);
       return {
         goalId: goalId,
         goalProgress: 0,
         challengeProgress: { percentage: 0, completed: 0, total: 0 },
-        error: error.message
+        error: error.message,
       };
     }
   },
@@ -96,19 +96,19 @@ export const progressService = {
     try {
       // In a real implementation, this would call an API to mark challenge as complete
       // For now, we'll simulate the update and recalculate progress
-      
+
       console.log(`Challenge ${challengeId} marked as ${isCompleted ? 'completed' : 'incomplete'}`);
-      
+
       // Trigger progress recalculation
       const updatedProgress = await progressService.calculateOverallProgress();
-      
+
       return updatedProgress;
-      
+
     } catch (error) {
       console.error('Error updating challenge completion:', error);
       throw error;
     }
-  }
+  },
 };
 
 /**
@@ -116,7 +116,7 @@ export const progressService = {
  * @param {Array} goals - Array of goal objects
  * @returns {Object} Goal progress data
  */
-function calculateGoalProgress(goals) {
+function calculateGoalProgress (goals) {
   if (!goals || goals.length === 0) {
     return { percentage: 0, completed: 0, total: 0 };
   }
@@ -134,7 +134,7 @@ function calculateGoalProgress(goals) {
     completed,
     total,
     averageProgress,
-    completionRate: percentage
+    completionRate: percentage,
   };
 }
 
@@ -143,7 +143,7 @@ function calculateGoalProgress(goals) {
  * @param {Array} challenges - Array of challenge objects
  * @returns {Object} Challenge progress data
  */
-function calculateChallengeProgress(challenges) {
+function calculateChallengeProgress (challenges) {
   if (!challenges || challenges.length === 0) {
     return { percentage: 0, completed: 0, total: 0 };
   }
@@ -157,7 +157,7 @@ function calculateChallengeProgress(challenges) {
   return {
     percentage,
     completed,
-    total
+    total,
   };
 }
 
@@ -167,13 +167,13 @@ function calculateChallengeProgress(challenges) {
  * @param {Object} challengeProgress - Challenge progress data
  * @returns {Object} Combined progress data
  */
-function calculateCombinedProgress(goalProgress, challengeProgress) {
+function calculateCombinedProgress (goalProgress, challengeProgress) {
   // Weighted combination: 60% goals, 40% challenges
   const goalWeight = 0.6;
   const challengeWeight = 0.4;
 
   const combinedPercentage = Math.round(
-    (goalProgress.percentage * goalWeight) + (challengeProgress.percentage * challengeWeight)
+    (goalProgress.percentage * goalWeight) + (challengeProgress.percentage * challengeWeight),
   );
 
   const totalItems = goalProgress.total + challengeProgress.total;
@@ -185,8 +185,8 @@ function calculateCombinedProgress(goalProgress, challengeProgress) {
     total: totalItems,
     breakdown: {
       goals: goalProgress,
-      challenges: challengeProgress
-    }
+      challenges: challengeProgress,
+    },
   };
 }
 

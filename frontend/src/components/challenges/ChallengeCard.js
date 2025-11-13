@@ -7,7 +7,7 @@ const ChallengeCard = ({ challenge, onChallengeClick, onProgressUpdate }) => {
     if (!challenge.is_active) {
       return { text: 'Inactive', color: 'bg-gray-100 text-gray-600', icon: '🚫' };
     }
-    
+
     // For now, we'll use simple status logic since submissions aren't implemented yet
     // In future sprints, this could check user submissions/completions
     return { text: 'Available', color: 'bg-green-100 text-green-700', icon: '✨' };
@@ -18,7 +18,7 @@ const ChallengeCard = ({ challenge, onChallengeClick, onProgressUpdate }) => {
     const colors = {
       easy: 'bg-green-500',
       medium: 'bg-yellow-500',
-      hard: 'bg-red-500'
+      hard: 'bg-red-500',
     };
     return colors[difficulty?.toLowerCase()] || colors.medium;
   };
@@ -39,17 +39,17 @@ const ChallengeCard = ({ challenge, onChallengeClick, onProgressUpdate }) => {
   // Handle marking challenge as complete
   const handleMarkComplete = async (e) => {
     e.stopPropagation(); // Prevent card click event
-    
+
     try {
       setIsLoading(true);
       await challengeService.markChallengeComplete(challenge.id);
       setIsCompleted(true);
-      
+
       // Trigger progress update callback if provided
       if (onProgressUpdate) {
         onProgressUpdate(challenge.id, true);
       }
-      
+
     } catch (error) {
       console.error('Error marking challenge complete:', error);
       alert('Failed to mark challenge as complete. Please try again.');
@@ -59,7 +59,7 @@ const ChallengeCard = ({ challenge, onChallengeClick, onProgressUpdate }) => {
   };
 
   return (
-    <div 
+    <div
       className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 cursor-pointer border border-gray-200 hover:border-blue-300"
       onClick={() => onChallengeClick && onChallengeClick(challenge)}
     >
@@ -72,7 +72,7 @@ const ChallengeCard = ({ challenge, onChallengeClick, onProgressUpdate }) => {
           </span>
         </div>
         <div className="flex items-center space-x-2">
-          <div 
+          <div
             className={`w-3 h-3 rounded-full ${getDifficultyColor(challenge.difficulty_level)}`}
             title={`${challenge.difficulty_level || 'medium'} difficulty`}
           ></div>
@@ -106,7 +106,7 @@ const ChallengeCard = ({ challenge, onChallengeClick, onProgressUpdate }) => {
         <div className="mb-3">
           <div className="flex flex-wrap gap-1">
             {challenge.tags.slice(0, 3).map((tag, index) => (
-              <span 
+              <span
                 key={index}
                 className="inline-block bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs"
               >
@@ -136,7 +136,7 @@ const ChallengeCard = ({ challenge, onChallengeClick, onProgressUpdate }) => {
             </div>
           )}
         </div>
-        
+
         {/* Peer Review Indicator */}
         {challenge.requires_peer_review && (
           <div className="flex items-center space-x-1 text-xs text-purple-600">

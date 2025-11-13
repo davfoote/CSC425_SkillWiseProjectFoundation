@@ -1,4 +1,4 @@
-const { defineConfig } = require('cypress')
+const { defineConfig } = require('cypress');
 
 module.exports = defineConfig({
   e2e: {
@@ -9,11 +9,11 @@ module.exports = defineConfig({
     screenshotsFolder: 'cypress/screenshots',
     viewportWidth: 1280,
     viewportHeight: 720,
-    setupNodeEvents(on, config) {
+    setupNodeEvents (on, config) {
       // implement node event listeners here
     },
     env: {
-      apiUrl: 'http://localhost:3001/api'
-    }
+      apiUrl: 'http://localhost:3001/api',
+    },
   },
-})
+});

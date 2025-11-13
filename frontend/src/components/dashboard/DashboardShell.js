@@ -5,7 +5,7 @@ const DashboardShell = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
-      
+
       {/* Main Content */}
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
@@ -83,14 +83,14 @@ const DashboardShell = () => {
                   </button>
                 </div>
               </div>
-              
+
               <div className="p-6">
                 {/* Goals Placeholder */}
                 <div className="text-center py-12">
                   <div className="text-6xl mb-4">🎯</div>
                   <h3 className="text-lg font-medium text-gray-900 mb-2">No goals yet</h3>
                   <p className="text-gray-600 mb-6">
-                    Start your learning journey by creating your first goal. 
+                    Start your learning journey by creating your first goal.
                     Goals help you structure and track your progress.
                   </p>
                   <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium transition duration-200">
@@ -108,7 +108,7 @@ const DashboardShell = () => {
                     <p className="text-sm text-gray-600 mb-3">Master the fundamentals of JavaScript programming</p>
                     <div className="flex items-center justify-between">
                       <div className="w-full bg-gray-200 rounded-full h-2 mr-4">
-                        <div className="bg-blue-600 h-2 rounded-full" style={{width: '65%'}}></div>
+                        <div className="bg-blue-600 h-2 rounded-full" style={{ width: '65%' }}></div>
                       </div>
                       <span className="text-sm text-gray-500">65%</span>
                     </div>
@@ -130,14 +130,14 @@ const DashboardShell = () => {
                   </button>
                 </div>
               </div>
-              
+
               <div className="p-6">
                 {/* Challenges Placeholder */}
                 <div className="text-center py-12">
                   <div className="text-6xl mb-4">💪</div>
                   <h3 className="text-lg font-medium text-gray-900 mb-2">No challenges yet</h3>
                   <p className="text-gray-600 mb-6">
-                    Challenges are hands-on exercises that help you practice and improve your skills. 
+                    Challenges are hands-on exercises that help you practice and improve your skills.
                     Create goals first, then add challenges to them.
                   </p>
                   <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-medium transition duration-200">
@@ -171,7 +171,7 @@ const DashboardShell = () => {
                 Recent Activity
               </h2>
             </div>
-            
+
             <div className="p-6">
               <div className="text-center py-8">
                 <div className="text-4xl mb-4">🌟</div>

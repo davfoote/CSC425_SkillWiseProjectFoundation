@@ -29,7 +29,7 @@ apiClient.interceptors.response.use(
       window.location.href = '/login';
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export const challengeService = {
@@ -37,16 +37,16 @@ export const challengeService = {
   getChallenges: async (filters = {}) => {
     try {
       const params = new URLSearchParams();
-      
+
       // Add filters as query parameters
       if (filters.category) params.append('category', filters.category);
       if (filters.difficulty) params.append('difficulty', filters.difficulty);
       if (filters.isActive !== undefined) params.append('isActive', filters.isActive);
       if (filters.requiresPeerReview !== undefined) params.append('requiresPeerReview', filters.requiresPeerReview);
-      
+
       const queryString = params.toString();
       const url = `/challenges${queryString ? `?${queryString}` : ''}`;
-      
+
       const response = await apiClient.get(url);
       // Handle backend response format: { success: true, count: X, data: [...] }
       return response.data.data || response.data;
@@ -137,13 +137,13 @@ export const challengeService = {
       // TODO: Implement actual completion endpoint when backend is ready
       // For now, simulate the API call
       console.log(`Marking challenge ${challengeId} as complete`);
-      
+
       // Simulate API response
       return {
         success: true,
         message: 'Challenge marked as complete',
         challengeId: challengeId,
-        completedAt: new Date().toISOString()
+        completedAt: new Date().toISOString(),
       };
     } catch (error) {
       console.error('Error marking challenge complete:', error);
@@ -169,20 +169,20 @@ export const challengeService = {
       // For now, simulate some completed challenges
       const allChallenges = await challengeService.getChallenges();
       const challenges = allChallenges.data || allChallenges;
-      
+
       // Simulate 30% completion rate
       const completedCount = Math.floor(challenges.length * 0.3);
       const completed = challenges.slice(0, completedCount).map(challenge => ({
         ...challenge,
-        completedAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString()
+        completedAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
       }));
-      
+
       return { data: completed };
     } catch (error) {
       console.error('Error fetching completed challenges:', error);
       throw error;
     }
-  }
+  },
 };
 
 export default challengeService;

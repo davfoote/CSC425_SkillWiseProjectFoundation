@@ -11,12 +11,12 @@ const Challenges = () => {
   const [filters, setFilters] = useState({
     category: '',
     difficulty: '',
-    isActive: true
+    isActive: true,
   });
   const [stats, setStats] = useState({
     total: 0,
     byDifficulty: { easy: 0, medium: 0, hard: 0 },
-    byCategory: {}
+    byCategory: {},
   });
 
   // Load challenges on component mount and filter changes
@@ -28,7 +28,7 @@ const Challenges = () => {
     try {
       setLoading(true);
       setError('');
-      
+
       // Create filter object for API call
       const apiFilters = {};
       if (filters.category) apiFilters.category = filters.category;
@@ -36,13 +36,13 @@ const Challenges = () => {
       if (filters.isActive !== undefined) apiFilters.isActive = filters.isActive;
 
       const response = await challengeService.getChallenges(apiFilters);
-      
+
       // Handle both array response and object with data property
       const challengesData = Array.isArray(response) ? response : response.challenges || [];
-      
+
       setChallenges(challengesData);
       calculateStats(challengesData);
-      
+
     } catch (err) {
       console.error('Error loading challenges:', err);
       setError(err.message || 'Failed to load challenges. Please try again.');
@@ -56,7 +56,7 @@ const Challenges = () => {
     const stats = {
       total: challengesData.length,
       byDifficulty: { easy: 0, medium: 0, hard: 0 },
-      byCategory: {}
+      byCategory: {},
     };
 
     challengesData.forEach(challenge => {
@@ -78,7 +78,7 @@ const Challenges = () => {
   const handleFilterChange = (filterType, value) => {
     setFilters(prev => ({
       ...prev,
-      [filterType]: value === prev[filterType] ? '' : value // Toggle off if same value
+      [filterType]: value === prev[filterType] ? '' : value, // Toggle off if same value
     }));
   };
 
@@ -92,13 +92,13 @@ const Challenges = () => {
     try {
       // Update progress tracking
       await progressService.updateChallengeCompletion(challengeId, isCompleted);
-      
+
       // Show success message
       console.log(`Challenge ${challengeId} completion status updated to ${isCompleted}`);
-      
+
       // Optionally reload challenges to reflect any changes
       // loadChallenges();
-      
+
     } catch (error) {
       console.error('Error updating progress:', error);
     }
@@ -108,7 +108,7 @@ const Challenges = () => {
     setFilters({
       category: '',
       difficulty: '',
-      isActive: true
+      isActive: true,
     });
   };
 
@@ -118,10 +118,10 @@ const Challenges = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
-      
+
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
-          
+
           {/* Header */}
           <div className="text-center mb-8">
             <div className="text-6xl mb-4">💪</div>
@@ -129,7 +129,7 @@ const Challenges = () => {
             <p className="text-gray-600 mb-6">
               Explore and tackle coding challenges to improve your skills
             </p>
-            
+
             {/* Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-8">
               <div className="bg-white rounded-lg shadow p-4">
@@ -156,10 +156,10 @@ const Challenges = () => {
             <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
               <div className="flex flex-col md:flex-row gap-4 items-center">
                 <span className="text-sm font-medium text-gray-700">Filter by:</span>
-                
+
                 {/* Category Filter */}
-                <select 
-                  value={filters.category} 
+                <select
+                  value={filters.category}
                   onChange={(e) => handleFilterChange('category', e.target.value)}
                   className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
@@ -170,8 +170,8 @@ const Challenges = () => {
                 </select>
 
                 {/* Difficulty Filter */}
-                <select 
-                  value={filters.difficulty} 
+                <select
+                  value={filters.difficulty}
                   onChange={(e) => handleFilterChange('difficulty', e.target.value)}
                   className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
@@ -182,8 +182,8 @@ const Challenges = () => {
                 </select>
 
                 {/* Status Filter */}
-                <select 
-                  value={filters.isActive.toString()} 
+                <select
+                  value={filters.isActive.toString()}
                   onChange={(e) => handleFilterChange('isActive', e.target.value === 'true')}
                   className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
@@ -243,7 +243,7 @@ const Challenges = () => {
               <div className="text-4xl mb-4">🔍</div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">No challenges found</h3>
               <p className="text-gray-600 mb-6">
-                {filters.category || filters.difficulty ? 
+                {filters.category || filters.difficulty ?
                   'No challenges match your current filters. Try adjusting your search criteria.' :
                   'No challenges are available at the moment. Check back later!'
                 }

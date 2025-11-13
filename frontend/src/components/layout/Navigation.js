@@ -21,7 +21,7 @@ const Navigation = () => {
     { name: 'Goals', path: '/goals', icon: '🎯' },
     { name: 'Challenges', path: '/challenges', icon: '💪' },
     { name: 'Progress', path: '/progress', icon: '📊' },
-    { name: 'Profile', path: '/profile', icon: '👤' }
+    { name: 'Profile', path: '/profile', icon: '👤' },
   ];
 
   const isActive = (path) => location.pathname === path;

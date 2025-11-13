@@ -20,15 +20,15 @@ const goalSchema = z.object({
     .max(50, 'Category must be less than 50 characters'),
   difficulty_level: z
     .enum(['easy', 'medium', 'hard'], {
-      errorMap: () => ({ message: 'Please select a valid difficulty level' })
+      errorMap: () => ({ message: 'Please select a valid difficulty level' }),
     }),
   target_completion_date: z
     .string()
     .min(1, 'Target completion date is required')
     .refine((date) => new Date(date) > new Date(), {
-      message: 'Target completion date must be in the future'
+      message: 'Target completion date must be in the future',
     }),
-  is_public: z.boolean().optional()
+  is_public: z.boolean().optional(),
 });
 
 const GoalCreationForm = ({ onGoalCreated, onCancel }) => {
@@ -39,13 +39,13 @@ const GoalCreationForm = ({ onGoalCreated, onCancel }) => {
     register,
     handleSubmit,
     formState: { errors },
-    reset
+    reset,
   } = useForm({
     resolver: zodResolver(goalSchema),
     defaultValues: {
       difficulty_level: 'medium',
-      is_public: false
-    }
+      is_public: false,
+    },
   });
 
   const onSubmit = async (data) => {
@@ -155,7 +155,7 @@ const GoalCreationForm = ({ onGoalCreated, onCancel }) => {
             {[
               { value: 'easy', label: 'Easy', description: 'Beginner friendly', points: '100 pts', color: 'green' },
               { value: 'medium', label: 'Medium', description: 'Some experience needed', points: '200 pts', color: 'yellow' },
-              { value: 'hard', label: 'Hard', description: 'Advanced challenge', points: '300 pts', color: 'red' }
+              { value: 'hard', label: 'Hard', description: 'Advanced challenge', points: '300 pts', color: 'red' },
             ].map((level) => (
               <label key={level.value} className="cursor-pointer">
                 <input
@@ -165,7 +165,7 @@ const GoalCreationForm = ({ onGoalCreated, onCancel }) => {
                   className="sr-only"
                 />
                 <div className={`border-2 rounded-lg p-4 text-center transition-all ${
-                  register('difficulty_level').value === level.value || 
+                  register('difficulty_level').value === level.value ||
                   (!register('difficulty_level').value && level.value === 'medium')
                     ? `border-${level.color}-500 bg-${level.color}-50`
                     : 'border-gray-200 hover:border-gray-300'

@@ -15,7 +15,7 @@ const Dashboard = () => {
     // Clear authentication data
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
-    
+
     // Redirect to login (in a real app, you'd use React Router)
     window.location.href = '/';
   };
@@ -61,7 +61,7 @@ const Dashboard = () => {
           <div className="border-4 border-dashed border-gray-200 rounded-lg min-h-96">
             <div className="p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Welcome to Your Learning Journey!</h2>
-              
+
               {/* User Info Card */}
               <div className="bg-white rounded-lg shadow p-6 mb-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Profile</h3>

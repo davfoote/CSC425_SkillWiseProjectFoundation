@@ -3,7 +3,7 @@ import ProgressBar from './ProgressBar';
 
 /**
  * Progress Bar Demo/Test Component
- * 
+ *
  * This component demonstrates all the different progress bar types and features
  * for testing and documentation purposes.
  */
@@ -25,14 +25,14 @@ const ProgressBarDemo = () => {
   const completeChallenge = () => {
     setChallenges(prev => ({
       ...prev,
-      completed: Math.min(prev.completed + 1, prev.total)
+      completed: Math.min(prev.completed + 1, prev.total),
     }));
   };
 
   const completeGoal = () => {
     setGoals(prev => ({
       ...prev,
-      completed: Math.min(prev.completed + 1, prev.total)
+      completed: Math.min(prev.completed + 1, prev.total),
     }));
   };
 
@@ -43,7 +43,7 @@ const ProgressBarDemo = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-6xl mx-auto px-4">
-        
+
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">📊 Progress Bar Components Demo</h1>
@@ -56,7 +56,7 @@ const ProgressBarDemo = () => {
         <div className="bg-white rounded-lg shadow p-6 mb-8">
           <h2 className="text-xl font-bold mb-4">🎮 Interactive Demo Controls</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
+
             {/* Manual Progress Control */}
             <div>
               <h3 className="font-semibold mb-3">Manual Progress</h3>
@@ -136,7 +136,7 @@ const ProgressBarDemo = () => {
         {/* Progress Bar Variations */}
         <div className="bg-white rounded-lg shadow p-6 mb-8">
           <h2 className="text-xl font-bold mb-6">📈 Progress Bar Variations</h2>
-          
+
           {/* Circular Progress - Different Sizes */}
           <div className="mb-8">
             <h3 className="font-semibold mb-4">Circular Progress (Different Sizes)</h3>
