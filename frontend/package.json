@@ -21,13 +21,20 @@
     "web-vitals": "^2.1.4",
     "zod": "^4.1.12"
   },
+  "devDependencies": {
+    "eslint": "^9.39.1",
+    "@babel/eslint-parser": "^7.28.5",
+    "@babel/preset-react": "^7.28.5",
+    "eslint-plugin-react": "^7.37.5",
+    "@eslint/js": "^8.57.1"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
-    "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix"
+    "lint": "cd .. && npm run lint",
+    "lint:fix": "cd .. && npm run lint:fix"
   },
   "eslintConfig": {
     "extends": [
