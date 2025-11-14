@@ -1,8 +1,8 @@
 const request = require('supertest');
 const express = require('express');
-const authController = require('../../src/controllers/authController');
-const userService = require('../../src/services/userService');
-const db = require('../../src/database/connection');
+const authController = require('../../../src/controllers/authController');
+const userService = require('../../../src/services/userService');
+const db = require('../../../src/database/connection');
 
 // Mock the userService and database connection
 jest.mock('../../src/services/userService');
