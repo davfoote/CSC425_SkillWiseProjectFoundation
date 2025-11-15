@@ -22,6 +22,8 @@ model User {
   createdAt     DateTime       @default(now()) @map("created_at")
   updatedAt     DateTime       @updatedAt @map("updated_at")
   refreshTokens RefreshToken[]
+  goals         Goal[]
+  challenges    Challenge[]    // Challenges created by this user
 
   @@map("users")
 }
@@ -36,4 +38,52 @@ model RefreshToken {
   isRevoked Boolean  @default(false)
 
   @@map("refresh_tokens")
+}
+
+model Goal {
+  id                     Int         @id @default(autoincrement())
+  userId                 Int         @map("user_id")
+  user                   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title                  String      @db.VarChar(255)
+  description            String?     @db.Text
+  category               String?     @db.VarChar(100)
+  difficultyLevel        String      @default("medium") @map("difficulty_level") @db.VarChar(20)
+  targetCompletionDate   DateTime?   @map("target_completion_date")
+  isCompleted            Boolean     @default(false) @map("is_completed")
+  completionDate         DateTime?   @map("completion_date")
+  progressPercentage     Int         @default(0) @map("progress_percentage")
+  pointsReward           Int         @default(100) @map("points_reward")
+  isPublic               Boolean     @default(false) @map("is_public")
+  createdAt              DateTime    @default(now()) @map("created_at")
+  updatedAt              DateTime    @updatedAt @map("updated_at")
+  
+  // One-to-Many relationship: One Goal can have many Challenges
+  challenges             Challenge[]
+
+  @@map("goals")
+}
+
+model Challenge {
+  id                     Int       @id @default(autoincrement())
+  goalId                 Int?      @map("goal_id")
+  goal                   Goal?     @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  createdBy              Int?      @map("created_by")
+  createdByUser          User?     @relation(fields: [createdBy], references: [id], onDelete: SetNull)
+  title                  String    @db.VarChar(255)
+  description            String    @db.Text
+  instructions           String    @db.Text
+  category               String    @db.VarChar(100)
+  difficultyLevel        String    @default("medium") @map("difficulty_level") @db.VarChar(20)
+  estimatedTimeMinutes   Int?      @map("estimated_time_minutes")
+  pointsReward           Int       @default(10) @map("points_reward")
+  maxAttempts            Int       @default(3) @map("max_attempts")
+  requiresPeerReview     Boolean   @default(false) @map("requires_peer_review")
+  isActive               Boolean   @default(true) @map("is_active")
+  tags                   String[]
+  prerequisites          String[]
+  learningObjectives     String[]  @map("learning_objectives")
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime  @updatedAt @map("updated_at")
+
+  @@map("challenges")
 }

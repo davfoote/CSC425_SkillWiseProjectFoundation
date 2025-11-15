@@ -32,25 +32,25 @@ const LoginForm = ({ onLoginSuccess }) => {
 
     try {
       const response = await axios.post('http://localhost:3001/api/auth/login', data);
-      
+
       console.log('Login successful:', response.data);
-      
+
       // Store JWT token in localStorage
       if (response.data.token) {
         localStorage.setItem('authToken', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
       }
-      
+
       // Call success callback (for navigation)
       if (onLoginSuccess) {
         onLoginSuccess(response.data);
       }
-      
+
       reset(); // Clear form on success
-      
+
     } catch (error) {
       console.error('Login error:', error);
-      
+
       if (error.response) {
         // Server responded with error status
         setSubmitError(error.response.data.message || 'Login failed. Please check your credentials.');
@@ -71,7 +71,7 @@ const LoginForm = ({ onLoginSuccess }) => {
       <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
         Welcome Back
       </h2>
-      
+
       {submitError && (
         <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
           {submitError}

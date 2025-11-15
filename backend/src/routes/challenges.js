@@ -1,22 +1,37 @@
-// TODO: Implement challenge routes
+/**
+ * Challenge Routes - /api/challenges/*
+ *
+ * Provides endpoints for challenge management including:
+ * - GET /         - List all challenges with filtering
+ * - GET /:id      - Get specific challenge details
+ * - GET /goal/:goalId - Get challenges for a specific goal
+ * - POST /        - Create new challenge
+ * - PUT /:id      - Update challenge
+ * - DELETE /:id   - Delete challenge
+ */
+
 const express = require('express');
 const router = express.Router();
 const challengeController = require('../controllers/challengeController');
 const auth = require('../middleware/auth');
 
-// TODO: Add GET / route for all challenges
+// Get all challenges with optional filtering
+// Query params: category, difficulty, isActive, goalId, userId
 router.get('/', auth, challengeController.getChallenges);
 
-// TODO: Add GET /:id route for single challenge
+// Get challenges for a specific goal (must be before /:id route to avoid conflicts)
+router.get('/goal/:goalId', auth, challengeController.getChallengesByGoal);
+
+// Get single challenge by ID
 router.get('/:id', auth, challengeController.getChallengeById);
 
-// TODO: Add POST / route for creating challenge (admin only)
+// Create new challenge
 router.post('/', auth, challengeController.createChallenge);
 
-// TODO: Add PUT /:id route for updating challenge (admin only)
+// Update challenge
 router.put('/:id', auth, challengeController.updateChallenge);
 
-// TODO: Add DELETE /:id route for deleting challenge (admin only)
+// Delete challenge
 router.delete('/:id', auth, challengeController.deleteChallenge);
 
 module.exports = router;

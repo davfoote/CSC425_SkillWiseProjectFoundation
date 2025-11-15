@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const db = require('../database/connection');
 const { AppError } = require('./errorHandler');
+const { prisma } = require('../database/prisma');
 
 /**
  * JWT Authentication Middleware
@@ -16,7 +17,7 @@ const authenticateToken = async (req, res, next) => {
     if (authHeader && authHeader.startsWith('Bearer ')) {
       token = authHeader.slice(7); // Remove 'Bearer ' prefix
     }
-    
+
     // Fallback to httpOnly cookie (for browser requests)
     if (!token && req.cookies && req.cookies.accessToken) {
       token = req.cookies.accessToken;
@@ -28,7 +29,7 @@ const authenticateToken = async (req, res, next) => {
 
     // Verify the token
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'dev-secret-key');
-    
+
     // Get user data from database (exclude password)
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
@@ -38,8 +39,8 @@ const authenticateToken = async (req, res, next) => {
         firstName: true,
         lastName: true,
         createdAt: true,
-        updatedAt: true
-      }
+        updatedAt: true,
+      },
     });
 
     if (!user) {
@@ -57,7 +58,7 @@ const authenticateToken = async (req, res, next) => {
     if (error.name === 'TokenExpiredError') {
       return next(new AppError('Access token expired', 401, 'TOKEN_EXPIRED'));
     }
-    
+
     console.error('Authentication error:', error);
     return next(new AppError('Authentication failed', 401, 'UNAUTHORIZED'));
   }
@@ -76,7 +77,7 @@ const optionalAuth = async (req, res, next) => {
     if (authHeader && authHeader.startsWith('Bearer ')) {
       token = authHeader.slice(7);
     }
-    
+
     if (!token && req.cookies && req.cookies.accessToken) {
       token = req.cookies.accessToken;
     }
@@ -86,7 +87,7 @@ const optionalAuth = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'dev-secret-key');
-    
+
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
       select: {
@@ -95,8 +96,8 @@ const optionalAuth = async (req, res, next) => {
         firstName: true,
         lastName: true,
         createdAt: true,
-        updatedAt: true
-      }
+        updatedAt: true,
+      },
     });
 
     if (user) {
@@ -116,12 +117,12 @@ const optionalAuth = async (req, res, next) => {
  */
 const generateAccessToken = (user) => {
   return jwt.sign(
-    { 
-      userId: user.id, 
-      email: user.email 
+    {
+      userId: user.id,
+      email: user.email,
     },
     process.env.JWT_SECRET || 'dev-secret-key',
-    { expiresIn: '15m' } // Short-lived access token
+    { expiresIn: '15m' }, // Short-lived access token
   );
 };
 
@@ -130,13 +131,13 @@ const generateAccessToken = (user) => {
  */
 const generateRefreshToken = () => {
   return jwt.sign(
-    { 
+    {
       type: 'refresh',
       timestamp: Date.now(),
-      random: Math.random()
+      random: Math.random(),
     },
     process.env.JWT_REFRESH_SECRET || 'dev-refresh-secret-key',
-    { expiresIn: '7d' } // Long-lived refresh token
+    { expiresIn: '7d' }, // Long-lived refresh token
   );
 };
 
@@ -144,5 +145,5 @@ module.exports = {
   authenticateToken,
   optionalAuth,
   generateAccessToken,
-  generateRefreshToken
+  generateRefreshToken,
 };

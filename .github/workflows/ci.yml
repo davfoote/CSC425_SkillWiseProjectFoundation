@@ -1,0 +1,282 @@
+name: 🧪 SkillWise CI Pipeline
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ main, develop ]
+    
+env:
+  NODE_VERSION: '18'
+  
+jobs:
+  # ======================================
+  # 🔍 CODE QUALITY & LINTING
+  # ======================================
+  lint:
+    name: 🔍 Code Quality & Linting
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📁 Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: 📥 Install Dependencies
+        run: |
+          npm install
+          cd backend && npm install
+          cd ../frontend && npm install
+          
+      - name: 🔍 Run Backend Linting
+        run: |
+          cd backend
+          npm run lint
+          
+      - name: 🔍 Run Frontend Linting  
+        run: |
+          cd frontend
+          npm run lint
+        continue-on-error: true # Frontend may not have linting yet
+        
+      - name: ✅ Linting Complete
+        run: echo "✅ Code quality checks passed!"
+
+  # ======================================
+  # 🧪 UNIT TESTS (JEST)
+  # ======================================
+  unit-tests:
+    name: 🧪 Unit Tests (Jest)
+    runs-on: ubuntu-latest
+    needs: lint
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: skillwise_test
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+          
+    steps:
+      - name: 📁 Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: 📦 Setup Node.js  
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: 📥 Install Dependencies
+        run: |
+          npm install
+          cd backend && npm install
+          
+      - name: 🗄️ Setup Test Database
+        run: |
+          cd backend
+          cp .env.example .env.test || echo "No .env.example found, creating basic .env.test"
+          cat > .env.test << EOF
+          NODE_ENV=test
+          PORT=3001
+          DATABASE_URL=postgres://test:test@localhost:5432/skillwise_test
+          JWT_SECRET=test-secret-key-for-ci
+          JWT_REFRESH_SECRET=test-refresh-secret-key-for-ci
+          OPENAI_API_KEY=test-key
+          EOF
+          
+      - name: 🗄️ Run Database Migrations
+        run: |
+          cd backend
+          npm run migrate
+        env:
+          NODE_ENV: test
+          DATABASE_URL: postgres://test:test@localhost:5432/skillwise_test
+          
+      - name: 🧪 Run Unit Tests
+        run: |
+          cd backend
+          npm test -- --verbose --coverage
+        env:
+          NODE_ENV: test
+          DATABASE_URL: postgres://test:test@localhost:5432/skillwise_test
+          JWT_SECRET: test-secret-key-for-ci
+          JWT_REFRESH_SECRET: test-refresh-secret-key-for-ci
+          
+      - name: 📊 Upload Coverage Reports
+        uses: codecov/codecov-action@v3
+        with:
+          directory: ./backend/coverage
+          flags: backend
+          fail_ci_if_error: false
+          
+      - name: ✅ Unit Tests Complete
+        run: echo "✅ All unit tests passed! 🎉"
+
+  # ======================================  
+  # 🚀 E2E TESTS (CYPRESS)
+  # ======================================
+  e2e-tests:
+    name: 🚀 E2E Tests (Cypress)
+    runs-on: ubuntu-latest
+    needs: [lint, unit-tests]
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: skillwise_e2e
+          POSTGRES_USER: test  
+          POSTGRES_PASSWORD: test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+          
+    steps:
+      - name: 📁 Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: 📥 Install Dependencies
+        run: |
+          npm install
+          cd backend && npm install
+          cd ../frontend && npm install
+          
+      - name: 🗄️ Setup E2E Database
+        run: |
+          cd backend
+          cat > .env.e2e << EOF
+          NODE_ENV=test
+          PORT=3001
+          DATABASE_URL=postgres://test:test@localhost:5432/skillwise_e2e
+          JWT_SECRET=test-secret-key-for-e2e
+          JWT_REFRESH_SECRET=test-refresh-secret-key-for-e2e
+          OPENAI_API_KEY=test-key
+          EOF
+          
+      - name: 🗄️ Run E2E Database Migrations
+        run: |
+          cd backend  
+          npm run migrate
+        env:
+          NODE_ENV: test
+          DATABASE_URL: postgres://test:test@localhost:5432/skillwise_e2e
+          
+      - name: 🗄️ Seed Test Data
+        run: |
+          cd backend
+          npm run seed
+        env:
+          NODE_ENV: test
+          DATABASE_URL: postgres://test:test@localhost:5432/skillwise_e2e
+          
+      - name: 🚀 Start Backend Server
+        run: |
+          cd backend
+          npm start &
+          sleep 10 # Give server time to start
+        env:
+          NODE_ENV: test
+          PORT: 3001
+          DATABASE_URL: postgres://test:test@localhost:5432/skillwise_e2e
+          JWT_SECRET: test-secret-key-for-e2e
+          JWT_REFRESH_SECRET: test-refresh-secret-key-for-e2e
+        
+      - name: 🚀 Start Frontend Server  
+        run: |
+          cd frontend
+          npm start &
+          sleep 15 # Give React time to build and start
+        env:
+          REACT_APP_API_URL: http://localhost:3001
+          CI: false # Treat warnings as warnings, not errors
+          
+      - name: 🧪 Run Cypress E2E Tests
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: ./
+          wait-on: 'http://localhost:3000, http://localhost:3001/health'
+          wait-on-timeout: 120
+          browser: chrome
+          headless: true
+        env:
+          CYPRESS_BASE_URL: http://localhost:3000
+          CYPRESS_API_URL: http://localhost:3001
+          
+      - name: 📸 Upload Cypress Screenshots  
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+          
+      - name: 🎥 Upload Cypress Videos
+        uses: actions/upload-artifact@v4
+        if: failure()  
+        with:
+          name: cypress-videos
+          path: cypress/videos
+          
+      - name: ✅ E2E Tests Complete
+        run: echo "✅ All E2E tests passed! 🎉"
+
+  # ======================================
+  # 🎊 SUCCESS SUMMARY
+  # ======================================  
+  ci-success:
+    name: 🎊 CI Pipeline Success
+    runs-on: ubuntu-latest
+    needs: [lint, unit-tests, e2e-tests]
+    if: success()
+    
+    steps:
+      - name: 🎉 All Checks Passed!
+        run: |
+          echo "🎊 SkillWise CI Pipeline Complete!"
+          echo "✅ Code Quality: PASSED"  
+          echo "✅ Unit Tests: PASSED"
+          echo "✅ E2E Tests: PASSED"
+          echo ""
+          echo "🚀 Ready for merge! This PR maintains SkillWise quality standards."
+          
+  # ======================================
+  # 🚨 FAILURE NOTIFICATION  
+  # ======================================
+  ci-failure:
+    name: 🚨 CI Pipeline Failed
+    runs-on: ubuntu-latest
+    needs: [lint, unit-tests, e2e-tests]
+    if: failure()
+    
+    steps:
+      - name: 🚨 Pipeline Failed
+        run: |
+          echo "🚨 SkillWise CI Pipeline Failed!"
+          echo "❌ One or more checks failed"
+          echo ""
+          echo "Please check the logs above and fix the issues before merging."
+          echo "Quality gates must pass to maintain SkillWise standards."
+          exit 1
