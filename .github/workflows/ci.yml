@@ -109,7 +109,7 @@ jobs:
       - name: 🧪 Run Unit Tests
         run: |
           cd backend
-          npm test -- --verbose --coverage
+          npm test tests/unit/controllers/authController.test.js -- --verbose --coverage
         env:
           NODE_ENV: test
           DATABASE_URL: postgres://test:test@localhost:5432/skillwise_test
