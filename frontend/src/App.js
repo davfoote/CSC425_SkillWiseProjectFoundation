@@ -8,6 +8,7 @@ import DashboardShell from './components/dashboard/DashboardShell';
 import Goals from './components/goals/Goals';
 import Challenges from './components/challenges/Challenges';
 import Progress from './components/progress/Progress';
+import ProgressBarDemo from './components/progress/ProgressBarDemo';
 import Profile from './components/profile/Profile';
 
 // Protected Route Component
@@ -36,7 +37,7 @@ const AppContent = () => {
   const handleLoginSuccess = (loginData) => {
     console.log('Login success callback triggered:', loginData);
     login(loginData.user, loginData.token);
-    
+
     // Force navigation to dashboard
     setTimeout(() => {
       navigate('/dashboard');
@@ -47,109 +48,118 @@ const AppContent = () => {
     <div className="App">
       <Routes>
         {/* Public Routes */}
-        <Route 
-          path="/login" 
+        <Route
+          path="/login"
           element={
-            isAuthenticated() ? 
-            <Navigate to="/dashboard" replace /> : 
-            <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-              <div className="max-w-4xl mx-auto">
-                <div className="text-center mb-8">
-                  <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            isAuthenticated() ?
+              <Navigate to="/dashboard" replace /> :
+              <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-4xl mx-auto">
+                  <div className="text-center mb-8">
+                    <h1 className="text-4xl font-bold text-gray-900 mb-4">
                     Welcome to SkillWise
-                  </h1>
-                  <p className="text-lg text-gray-600">
+                    </h1>
+                    <p className="text-lg text-gray-600">
                     Sign in to your account
-                  </p>
+                    </p>
+                  </div>
+                  <LoginForm onLoginSuccess={handleLoginSuccess} />
                 </div>
-                <LoginForm onLoginSuccess={handleLoginSuccess} />
               </div>
-            </div>
-          } 
+          }
         />
-        
-        <Route 
-          path="/signup" 
+
+        <Route
+          path="/signup"
           element={
-            isAuthenticated() ? 
-            <Navigate to="/dashboard" replace /> : 
-            <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-              <div className="max-w-4xl mx-auto">
-                <div className="text-center mb-8">
-                  <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            isAuthenticated() ?
+              <Navigate to="/dashboard" replace /> :
+              <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-4xl mx-auto">
+                  <div className="text-center mb-8">
+                    <h1 className="text-4xl font-bold text-gray-900 mb-4">
                     Welcome to SkillWise
-                  </h1>
-                  <p className="text-lg text-gray-600">
+                    </h1>
+                    <p className="text-lg text-gray-600">
                     Your AI-powered learning platform
-                  </p>
+                    </p>
+                  </div>
+                  <SignupForm />
                 </div>
-                <SignupForm />
               </div>
-            </div>
-          } 
+          }
         />
 
         {/* Protected Routes */}
-        <Route 
-          path="/dashboard" 
+        <Route
+          path="/dashboard"
           element={
             <ProtectedRoute>
               <DashboardShell />
             </ProtectedRoute>
-          } 
+          }
         />
-        
-        <Route 
-          path="/goals" 
+
+        <Route
+          path="/goals"
           element={
             <ProtectedRoute>
               <Goals />
             </ProtectedRoute>
-          } 
+          }
         />
-        
-        <Route 
-          path="/challenges" 
+
+        <Route
+          path="/challenges"
           element={
             <ProtectedRoute>
               <Challenges />
             </ProtectedRoute>
-          } 
+          }
         />
-        
-        <Route 
-          path="/progress" 
+
+        <Route
+          path="/progress"
           element={
             <ProtectedRoute>
               <Progress />
             </ProtectedRoute>
-          } 
+          }
         />
-        
-        <Route 
-          path="/profile" 
+
+        <Route
+          path="/progress-demo"
+          element={
+            <ProtectedRoute>
+              <ProgressBarDemo />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
           element={
             <ProtectedRoute>
               <Profile />
             </ProtectedRoute>
-          } 
+          }
         />
 
         {/* Default Route */}
-        <Route 
-          path="/" 
+        <Route
+          path="/"
           element={
-            isAuthenticated() ? 
-            <Navigate to="/dashboard" replace /> : 
-            <Navigate to="/login" replace />
-          } 
+            isAuthenticated() ?
+              <Navigate to="/dashboard" replace /> :
+              <Navigate to="/login" replace />
+          }
         />
       </Routes>
     </div>
   );
 };
 
-function App() {
+function App () {
   return (
     <AuthProvider>
       <Router>

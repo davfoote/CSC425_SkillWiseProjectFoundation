@@ -6,8 +6,8 @@ const { AppError } = require('./errorHandler');
 const loginSchema = z.object({
   body: z.object({
     email: z.string().email('Invalid email format'),
-    password: z.string().min(1, 'Password is required')
-  })
+    password: z.string().min(1, 'Password is required'),
+  }),
 });
 
 const registerSchema = z.object({
@@ -18,21 +18,24 @@ const registerSchema = z.object({
       .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain at least one lowercase letter, one uppercase letter, and one number'),
     firstName: z.string().min(1, 'First name is required').max(50, 'First name too long'),
     lastName: z.string().min(1, 'Last name is required').max(50, 'Last name too long'),
-    confirmPassword: z.string()
-  }).refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"]
-  })
+  }),
 });
 
 const goalSchema = z.object({
   body: z.object({
     title: z.string().min(1, 'Goal title is required').max(255, 'Title too long'),
-    description: z.string().optional(),
-    category: z.string().optional(),
-    difficulty: z.enum(['easy', 'medium', 'hard']).default('medium'),
-    targetCompletionDate: z.string().datetime().optional()
-  })
+    description: z.string().max(1000, 'Description too long').optional(),
+    category: z.string().max(100, 'Category too long').optional(),
+    difficulty_level: z.enum(['easy', 'medium', 'hard']).default('medium'),
+    target_completion_date: z.string().optional().refine(date => {
+      if (!date) return true;
+      const parsedDate = new Date(date);
+      return !isNaN(parsedDate.getTime()) && parsedDate > new Date();
+    }, 'Target completion date must be a valid future date'),
+    is_public: z.boolean().default(false),
+    progress_percentage: z.number().min(0).max(100).optional(),
+    is_completed: z.boolean().optional(),
+  }),
 });
 
 const challengeSchema = z.object({
@@ -44,8 +47,8 @@ const challengeSchema = z.object({
     difficulty: z.enum(['easy', 'medium', 'hard']).default('medium'),
     estimatedTimeMinutes: z.number().int().positive().optional(),
     pointsReward: z.number().int().positive().default(10),
-    maxAttempts: z.number().int().positive().default(3)
-  })
+    maxAttempts: z.number().int().positive().default(3),
+  }),
 });
 
 // TODO: Generic validation middleware
@@ -55,7 +58,7 @@ const validate = (schema) => {
       const validationData = {
         body: req.body,
         query: req.query,
-        params: req.params
+        params: req.params,
       };
 
       const result = schema.safeParse(validationData);
@@ -63,13 +66,13 @@ const validate = (schema) => {
       if (!result.success) {
         const errors = result.error.errors.map(err => ({
           field: err.path.join('.'),
-          message: err.message
+          message: err.message,
         }));
 
         return next(new AppError(
           `Validation error: ${errors.map(e => e.message).join(', ')}`,
           400,
-          'VALIDATION_ERROR'
+          'VALIDATION_ERROR',
         ));
       }
 
@@ -101,6 +104,6 @@ module.exports = {
     loginSchema,
     registerSchema,
     goalSchema,
-    challengeSchema
-  }
+    challengeSchema,
+  },
 };

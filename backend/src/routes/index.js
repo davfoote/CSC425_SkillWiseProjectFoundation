@@ -1,6 +1,6 @@
 /**
  * API Routes Index - Mounts all API endpoints under /api/*
- * 
+ *
  * Route Structure:
  * - /api/auth/*          - Authentication endpoints (login, register, logout, refresh)
  * - /api/users/*         - User management (profile, settings, statistics)
@@ -20,9 +20,9 @@ const router = express.Router();
 // Import route modules
 const authRoutes = require('./auth');
 const userRoutes = require('./users');
+const goalRoutes = require('./goals');
+const challengeRoutes = require('./challenges');
 // TODO: Import other route modules as they are implemented
-// const goalRoutes = require('./goals');
-// const challengeRoutes = require('./challenges');
 // const progressRoutes = require('./progress');
 // const submissionRoutes = require('./submissions');
 // const aiRoutes = require('./ai');
@@ -45,19 +45,19 @@ router.get('/', (req, res) => {
       ai: '/api/ai - AI-powered features',
       reviews: '/api/reviews - Peer review system',
       leaderboard: '/api/leaderboard - Rankings and achievements',
-      health: '/api/health - Health check'
+      health: '/api/health - Health check',
     },
     documentation: '/api/docs',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
 // Mount API routes
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
+router.use('/goals', goalRoutes);
+router.use('/challenges', challengeRoutes);
 // TODO: Mount other API routes as they are implemented
-// router.use('/goals', goalRoutes);
-// router.use('/challenges', challengeRoutes);
 // router.use('/progress', progressRoutes);
 // router.use('/submissions', submissionRoutes);
 // router.use('/ai', aiRoutes);
@@ -68,7 +68,7 @@ router.use('/users', userRoutes);
 router.get('/health', (req, res) => {
   res.json({
     status: 'healthy',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 

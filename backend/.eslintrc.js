@@ -7,10 +7,26 @@ module.exports = {
   extends: [
     'eslint:recommended',
   ],
+  plugins: ['cypress'],
+  overrides: [
+    {
+      files: ['cypress/**/*.js'],
+      env: {
+        'cypress/globals': true,
+      },
+    },
+  ],
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
+  ignorePatterns: [
+    'node_modules/',
+    'src/generated/**',
+    'coverage/',
+    'dist/',
+    '*.min.js',
+  ],
   rules: {
     'no-unused-vars': 'warn',
     'no-console': 'off', // Allow console for logging

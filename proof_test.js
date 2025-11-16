@@ -1,13 +1,13 @@
 const http = require('http');
 
-function makeRequest(method, path, data = null) {
+function makeRequest (method, path, data = null) {
   return new Promise((resolve, reject) => {
     const options = {
       hostname: 'localhost',
       port: 3001,
       path: path,
       method: method,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     };
 
     const req = http.request(options, (res) => {
@@ -28,9 +28,9 @@ function makeRequest(method, path, data = null) {
   });
 }
 
-async function proveItWorks() {
+async function proveItWorks () {
   console.log('🧪 PROVING SkillWise Authentication Actually Works\n');
-  
+
   try {
     // Test 1: API responds
     console.log('1. Testing basic API...');
@@ -49,15 +49,15 @@ async function proveItWorks() {
       lastName: 'User',
       email: `test${timestamp}@example.com`,
       password: 'TestPassword123!',
-      confirmPassword: 'TestPassword123!'
+      confirmPassword: 'TestPassword123!',
     };
-    
+
     console.log('2. Testing user signup...');
     console.log(`   Creating user: ${newUser.email}`);
     const signup = await makeRequest('POST', '/api/auth/signup', newUser);
     console.log(`   Status: ${signup.status}`);
     console.log(`   Response: ${signup.data.message || JSON.stringify(signup.data)}`);
-    
+
     if (signup.status !== 201) {
       throw new Error(`Signup failed: ${JSON.stringify(signup.data)}`);
     }
@@ -67,14 +67,14 @@ async function proveItWorks() {
     console.log('3. Testing user login...');
     const loginData = {
       email: newUser.email,
-      password: newUser.password
+      password: newUser.password,
     };
-    
+
     const login = await makeRequest('POST', '/api/auth/login', loginData);
     console.log(`   Status: ${login.status}`);
     console.log(`   Token received: ${login.data.token ? 'YES' : 'NO'}`);
     console.log(`   User data: ${login.data.user ? login.data.user.email : 'None'}`);
-    
+
     if (login.status !== 200 || !login.data.token || !login.data.user) {
       throw new Error(`Login failed: ${JSON.stringify(login.data)}`);
     }
@@ -97,7 +97,7 @@ async function proveItWorks() {
     console.log('   ✅ User login validates against database');
     console.log('   ✅ JWT token generation and return working');
     console.log('   ✅ Complete authentication flow functional');
-    
+
   } catch (error) {
     console.error('❌ PROOF FAILED:');
     console.error('   Error:', error.message);

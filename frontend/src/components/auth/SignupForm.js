@@ -21,8 +21,8 @@ const signupSchema = z.object({
   confirmPassword: z.string()
     .min(1, 'Please confirm your password'),
 }).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
+  message: 'Passwords don\'t match',
+  path: ['confirmPassword'],
 });
 
 const SignupForm = () => {
@@ -47,16 +47,16 @@ const SignupForm = () => {
     try {
       // Remove confirmPassword before sending to API
       const { confirmPassword, ...submitData } = data;
-      
+
       const response = await axios.post('http://localhost:3001/api/auth/signup', submitData);
-      
+
       console.log('Signup successful:', response.data);
       setSubmitSuccess(true);
       reset(); // Clear form on success
-      
+
     } catch (error) {
       console.error('Signup error:', error);
-      
+
       if (error.response) {
         // Server responded with error status
         setSubmitError(error.response.data.message || 'Signup failed. Please try again.');
@@ -77,7 +77,7 @@ const SignupForm = () => {
       <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
         Create Your Account
       </h2>
-      
+
       {submitSuccess && (
         <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
           Account created successfully! You can now log in.
