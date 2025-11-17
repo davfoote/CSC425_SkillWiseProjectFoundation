@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navigation from '../layout/Navigation';
 import ChallengeCard from './ChallengeCard';
+import GenerateChallengeModal from './GenerateChallengeModal';
 import challengeService from '../../services/challengeService';
 import progressService from '../../services/progressService';
 
@@ -8,6 +9,7 @@ const Challenges = () => {
   const [challenges, setChallenges] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [filters, setFilters] = useState({
     category: '',
     difficulty: '',
@@ -112,6 +114,15 @@ const Challenges = () => {
     });
   };
 
+  const handleChallengeGenerated = (challenge) => {
+    // Add the AI-generated challenge to the local state
+    setChallenges((prev) => [challenge, ...prev]);
+    calculateStats([challenge, ...challenges]);
+    
+    // Show success notification
+    console.log('AI Challenge generated:', challenge);
+  };
+
   // Get unique categories for filter dropdown
   const uniqueCategories = [...new Set(challenges.map(c => c.category).filter(Boolean))];
 
@@ -194,6 +205,12 @@ const Challenges = () => {
 
               <div className="flex gap-2">
                 <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg text-sm font-semibold hover:from-blue-600 hover:to-blue-700 transition-all shadow-md hover:shadow-lg"
+                >
+                  🤖 Generate AI Challenge
+                </button>
+                <button
                   onClick={clearFilters}
                   className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
                 >
@@ -274,6 +291,13 @@ const Challenges = () => {
           )}
         </div>
       </main>
+
+      {/* AI Challenge Generation Modal */}
+      <GenerateChallengeModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onChallengeGenerated={handleChallengeGenerated}
+      />
     </div>
   );
 };

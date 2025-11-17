@@ -1,26 +1,98 @@
-// TODO: Implement AI integration with OpenAI API
-const openai = require('openai');
+// AI integration with OpenAI API
+const OpenAI = require('openai');
+
+// Initialize OpenAI client
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 const aiService = {
-  // TODO: Generate feedback using AI
+  // Generate a coding challenge using AI
+  generateChallenge: async (preferences = {}) => {
+    try {
+      const { 
+        difficulty = 'medium', 
+        category = 'general', 
+        language = 'JavaScript',
+        topic = ''
+      } = preferences;
+
+      const prompt = `Generate a ${difficulty} level coding challenge for ${language}${topic ? ` focusing on ${topic}` : ''}.
+      
+Requirements:
+- Title: A clear, engaging title
+- Description: Detailed problem description (2-3 paragraphs)
+- Difficulty: ${difficulty}
+- Category: ${category}
+- Example Input/Output: At least 2 examples
+- Constraints: Technical constraints and limits
+- Hints: 2-3 helpful hints
+- Test Cases: 3-5 test cases with inputs and expected outputs
+
+Format the response as JSON with these exact fields: title, description, difficulty, category, exampleInput, exampleOutput, constraints, hints (array), testCases (array with input and expectedOutput).`;
+
+      const completion = await openai.chat.completions.create({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an expert programming instructor who creates engaging, educational coding challenges. Always respond with valid JSON.',
+          },
+          {
+            role: 'user',
+            content: prompt,
+          },
+        ],
+        temperature: 0.8,
+        max_tokens: 1500,
+      });
+
+      const responseText = completion.choices[0].message.content;
+      
+      // Parse JSON response
+      const challengeData = JSON.parse(responseText);
+
+      return {
+        success: true,
+        challenge: {
+          title: challengeData.title,
+          description: challengeData.description,
+          difficulty: difficulty,
+          category: category,
+          exampleInput: challengeData.exampleInput,
+          exampleOutput: challengeData.exampleOutput,
+          constraints: challengeData.constraints,
+          hints: challengeData.hints || [],
+          testCases: challengeData.testCases || [],
+          isActive: true,
+          pointValue: difficulty === 'easy' ? 10 : difficulty === 'medium' ? 25 : 50,
+        },
+      };
+    } catch (error) {
+      console.error('Error generating challenge:', error);
+      throw new Error('Failed to generate challenge from AI: ' + error.message);
+    }
+  },
+
+  // Generate feedback using AI
   generateFeedback: async (submissionText, challengeContext) => {
     // Implementation needed
     throw new Error('Not implemented');
   },
 
-  // TODO: Generate hints for challenges
+  // Generate hints for challenges
   generateHints: async (challengeId, userProgress) => {
     // Implementation needed
     throw new Error('Not implemented');
   },
 
-  // TODO: Analyze learning patterns
+  // Analyze learning patterns
   analyzePattern: async (userId, learningData) => {
     // Implementation needed
     throw new Error('Not implemented');
   },
 
-  // TODO: Suggest next challenges
+  // Suggest next challenges
   suggestNextChallenges: async (userId) => {
     // Implementation needed
     throw new Error('Not implemented');
