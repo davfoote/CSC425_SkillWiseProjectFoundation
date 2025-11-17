@@ -8,18 +8,26 @@
 
 ## 📋 Sprint Goals
 
-### User Story 1: AI Challenge Generation
+### User Story 1: AI Challenge Generation (Frontend)
 **As a user, I want to generate a challenge from AI so that I don't have to design one myself.**
 
 **Task:** Generate challenge button + modal  
 **Tech Stack:** React, Axios, OpenAI API, Node.js  
 **Status:** ✅ **COMPLETED**
 
+### User Story 2: AI Challenge Endpoint (Backend)
+**As a developer, I want an AI endpoint so that I can provide tailored practice challenges.**
+
+**Task:** AI challenge endpoint with comprehensive logging  
+**Tech Stack:** Express, OpenAI API, Prisma, Pino Logger  
+**Definition of Done:** `/api/ai/generateChallenge` returns challenge; logs prompt/response  
+**Status:** ✅ **COMPLETED**
+
 ---
 
 ## 🎯 Completed Features
 
-### 1. AI Challenge Generation System
+### 1. AI Challenge Generation System (User Story 1 - Frontend)
 
 #### Backend Implementation
 
@@ -172,8 +180,9 @@ frontend/
 
 ---
 
-## ✅ Definition of Done - VERIFIED
+## ✅ Definition of Done
 
+### User Story 1 (Frontend) - VERIFIED
 - [x] Button sends request to `/api/ai/generateChallenge`
 - [x] Result displays in modal
 - [x] Modal includes preference form (difficulty, category, language, topic)
@@ -185,11 +194,68 @@ frontend/
 - [x] Responsive design works on mobile
 - [x] Documentation created and maintained
 
+### User Story 2 (Backend Logging) - VERIFIED
+- [x] `/api/ai/generateChallenge` endpoint returns challenge data
+- [x] Logs incoming request with user preferences
+- [x] Logs full prompt sent to OpenAI API
+- [x] Logs complete response from OpenAI API
+- [x] Logs token usage and execution time
+- [x] Logs success/error status for each operation
+- [x] Structured logging with Pino (JSON format)
+- [x] User context included in controller logs
+- [x] Performance metrics tracked (execution time)
+- [x] Error logging includes stack traces
+
+---
+
+## 🎯 Completed Features Summary
+
+### 2. Comprehensive Logging System (User Story 2)
+
+#### Enhanced Logging in AI Service
+**File: `backend/src/services/aiService.js`**
+- ✅ Added Pino structured logger
+- ✅ Logs request parameters (🤖 emoji prefix)
+- ✅ Logs prompt details before OpenAI call (📤 emoji)
+- ✅ Logs OpenAI response with token usage (📥 emoji)
+- ✅ Logs successful generation with execution time (✅ emoji)
+- ✅ Logs errors with stack traces (❌ emoji)
+
+#### Enhanced Logging in AI Controller
+**File: `backend/src/controllers/aiController.js`**
+- ✅ Added Pino structured logger
+- ✅ Logs incoming requests with userId
+- ✅ Logs successful responses with challenge title
+- ✅ Logs errors with user context
+
+#### Sample Log Output
+```json
+[2025-11-17 11:43:36.885] INFO: 🤖 AI Challenge Generation Request
+    difficulty: "medium"
+    category: "algorithms"
+    language: "JavaScript"
+    topic: "arrays"
+
+[2025-11-17 11:43:37.123] INFO: 📤 Sending prompt to OpenAI
+    model: "gpt-3.5-turbo"
+    promptLength: 423
+    temperature: 0.8
+
+[2025-11-17 11:43:39.847] INFO: 📥 Received response from OpenAI
+    responseLength: 1842
+    tokensUsed: 524
+    finishReason: "stop"
+
+[2025-11-17 11:43:39.892] INFO: ✅ Challenge generated successfully
+    title: "Array Rotation Challenge"
+    executionTime: "2769ms"
+```
+
 ---
 
 ## 🧪 Testing Recommendations
 
-### Manual Testing Checklist
+### User Story 1: Frontend Testing
 - [ ] Test button appears on Challenges page
 - [ ] Modal opens when button clicked
 - [ ] Form inputs work correctly
@@ -201,6 +267,16 @@ frontend/
 - [ ] "Use This Challenge" adds challenge to list
 - [ ] Modal closes properly
 - [ ] Authentication is enforced (401 without token)
+
+### User Story 2: Backend Logging Testing
+- [x] Verify logs appear in console during challenge generation
+- [x] Check request logs contain all preference parameters
+- [x] Verify prompt logs show OpenAI request details
+- [x] Confirm response logs include token usage
+- [x] Check success logs show execution time
+- [x] Test error logs capture stack traces
+- [x] Verify userId appears in controller logs
+- [ ] Monitor logs in production for debugging insights
 
 ### Unit Tests Needed (Future)
 - `aiService.generateChallenge()` with mocked OpenAI

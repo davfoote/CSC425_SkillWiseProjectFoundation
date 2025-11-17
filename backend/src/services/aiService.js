@@ -1,5 +1,11 @@
 // AI integration with OpenAI API
 const OpenAI = require('openai');
+const pino = require('pino');
+
+const logger = pino({
+  name: 'skillwise-ai',
+  level: process.env.LOG_LEVEL || 'info',
+});
 
 // Initialize OpenAI client
 const openai = new OpenAI({
@@ -9,6 +15,8 @@ const openai = new OpenAI({
 const aiService = {
   // Generate a coding challenge using AI
   generateChallenge: async (preferences = {}) => {
+    const startTime = Date.now();
+    
     try {
       const { 
         difficulty = 'medium', 
@@ -16,6 +24,14 @@ const aiService = {
         language = 'JavaScript',
         topic = ''
       } = preferences;
+
+      logger.info('🤖 AI Challenge Generation Request:', {
+        difficulty,
+        category,
+        language,
+        topic,
+        timestamp: new Date().toISOString(),
+      });
 
       const prompt = `Generate a ${difficulty} level coding challenge for ${language}${topic ? ` focusing on ${topic}` : ''}.
       
@@ -30,6 +46,12 @@ Requirements:
 - Test Cases: 3-5 test cases with inputs and expected outputs
 
 Format the response as JSON with these exact fields: title, description, difficulty, category, exampleInput, exampleOutput, constraints, hints (array), testCases (array with input and expectedOutput).`;
+
+      logger.info('📤 Sending prompt to OpenAI:', {
+        model: 'gpt-3.5-turbo',
+        promptLength: prompt.length,
+        temperature: 0.8,
+      });
 
       const completion = await openai.chat.completions.create({
         model: 'gpt-3.5-turbo',
@@ -49,8 +71,22 @@ Format the response as JSON with these exact fields: title, description, difficu
 
       const responseText = completion.choices[0].message.content;
       
+      logger.info('📥 Received response from OpenAI:', {
+        responseLength: responseText.length,
+        tokensUsed: completion.usage?.total_tokens || 0,
+        model: completion.model,
+        finishReason: completion.choices[0].finish_reason,
+      });
+      
       // Parse JSON response
       const challengeData = JSON.parse(responseText);
+      
+      logger.info('✅ Challenge generated successfully:', {
+        title: challengeData.title,
+        difficulty: difficulty,
+        category: category,
+        executionTime: `${Date.now() - startTime}ms`,
+      });
 
       return {
         success: true,
@@ -69,7 +105,11 @@ Format the response as JSON with these exact fields: title, description, difficu
         },
       };
     } catch (error) {
-      console.error('Error generating challenge:', error);
+      logger.error('❌ Error generating challenge:', {
+        error: error.message,
+        stack: error.stack,
+        executionTime: `${Date.now() - startTime}ms`,
+      });
       throw new Error('Failed to generate challenge from AI: ' + error.message);
     }
   },

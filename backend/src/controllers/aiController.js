@@ -1,11 +1,22 @@
 // AI integration controller for feedback and hints
 const aiService = require('../services/aiService');
+const pino = require('pino');
+
+const logger = pino({
+  name: 'skillwise-ai-controller',
+  level: process.env.LOG_LEVEL || 'info',
+});
 
 const aiController = {
   // Generate a new challenge using AI
   generateChallenge: async (req, res, next) => {
     try {
       const { difficulty, category, language, topic } = req.body;
+      
+      logger.info('Received AI challenge generation request:', {
+        userId: req.user?.id,
+        preferences: { difficulty, category, language, topic },
+      });
 
       // Validate inputs
       const validDifficulties = ['easy', 'medium', 'hard'];
@@ -23,10 +34,19 @@ const aiController = {
         language,
         topic,
       });
+      
+      logger.info('Successfully generated challenge via controller:', {
+        userId: req.user?.id,
+        challengeTitle: result.challenge?.title,
+      });
 
       res.status(200).json(result);
     } catch (error) {
-      console.error('Error in generateChallenge controller:', error);
+      logger.error('Error in generateChallenge controller:', {
+        error: error.message,
+        userId: req.user?.id,
+        stack: error.stack,
+      });
       res.status(500).json({
         success: false,
         message: error.message || 'Failed to generate challenge',
