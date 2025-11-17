@@ -23,6 +23,14 @@
 **Definition of Done:** `/api/ai/generateChallenge` returns challenge; logs prompt/response  
 **Status:** ✅ **COMPLETED**
 
+### User Story 3: Reusable AI Prompts (Backend)
+**As a developer, I want reusable AI prompts so that challenge generation is consistent.**
+
+**Task:** AI prompt template system with test harness  
+**Tech Stack:** Node.js service file, Template system  
+**Definition of Done:** Template created with placeholders; test harness verifies responses  
+**Status:** ✅ **COMPLETED**
+
 ---
 
 ## 🎯 Completed Features
@@ -180,6 +188,123 @@ frontend/
 
 ---
 
+### 3. Reusable AI Prompt Template System (User Story 3)
+
+#### Prompt Template Implementation
+
+##### **File: `backend/src/services/promptTemplates.js` (NEW)**
+- **Purpose:** Centralized, reusable prompt templates for consistent AI interactions
+- **Key Features:**
+  - **Template Structure:**
+    - Separate `system` and `user` prompts
+    - Placeholder-based substitution system
+    - Computed placeholders for dynamic content
+    - Parameter validation and defaults
+  - **Available Templates:**
+    1. `challengeGeneration` - Main challenge creation template
+    2. `feedbackGeneration` - Code review feedback (future use)
+    3. `hintGeneration` - Progressive hint generation (future use)
+  - **Placeholder System:**
+    - Required vs optional parameters
+    - Type validation (difficulty must be easy/medium/hard)
+    - Default values (difficulty='medium', language='JavaScript')
+    - Computed fields (topicClause, contextClause)
+  - **API Functions:**
+    - `renderPrompt(templateName, section, params)` - Renders single prompt section
+    - `getPromptConfig(templateName, params)` - Gets complete system+user prompts
+    - `listTemplates()` - Lists all available templates
+    - `getTemplateMetadata(templateName)` - Gets template info and placeholders
+
+##### **Template Example - Challenge Generation:**
+```javascript
+const config = getPromptConfig('challengeGeneration', {
+  difficulty: 'medium',
+  category: 'algorithms',
+  language: 'JavaScript',
+  topic: 'binary search'
+});
+
+// Returns:
+// config.system: "You are an expert programming instructor..."
+// config.user: "Generate a medium level coding challenge for JavaScript focusing on binary search..."
+```
+
+##### **Placeholder Features:**
+- **Static Placeholders:** Direct value substitution (`{{difficulty}}` → `medium`)
+- **Computed Placeholders:** Dynamic generation based on other params
+  ```javascript
+  topicClause: (params) => params.topic ? ` focusing on ${params.topic}` : ''
+  contextClause: (params) => {
+    // Generates context based on difficulty and topic
+    // Easy: "Keep the problem straightforward..."
+    // Hard: "Include edge cases and require optimization..."
+  }
+  ```
+- **Validation:** Ensures difficulty is one of [easy, medium, hard]
+- **Defaults:** Falls back to sensible defaults if params omitted
+
+#### Test Harness Implementation
+
+##### **File: `backend/tests/prompt-template-test-harness.js` (NEW)**
+- **Purpose:** Comprehensive testing of prompt template system
+- **Test Coverage:** 33 tests across 10 test suites
+- **Test Suites:**
+  1. **Template Discovery** - Verifies all templates are registered
+  2. **Template Metadata** - Validates structure and placeholders
+  3. **Basic Rendering** - Tests prompt generation
+  4. **Placeholder Substitution** - Verifies all params replaced
+  5. **Computed Placeholders** - Tests dynamic field generation
+  6. **Parameter Validation** - Ensures invalid inputs rejected
+  7. **Default Values** - Confirms fallback behavior
+  8. **Response Structure** - Validates JSON schema definition
+  9. **Multiple Templates** - Tests all 3 templates
+  10. **Error Handling** - Verifies error messages
+
+##### **Test Results:**
+```
+✓ Passed: 33
+✗ Failed: 0
+Total: 33
+
+🎉 All tests passed!
+```
+
+##### **Key Validations:**
+- ✅ No unreplaced placeholders (no `{{}}` in output)
+- ✅ Required parameters enforced
+- ✅ Invalid difficulty levels rejected
+- ✅ Default values applied correctly
+- ✅ Computed placeholders work dynamically
+- ✅ JSON schema properly defined
+- ✅ Multiple templates supported
+- ✅ Error messages clear and helpful
+
+#### Integration with AI Service
+
+##### **File: `backend/src/services/aiService.js` (UPDATED)**
+- **Changed:** Replaced hardcoded prompts with template system
+- **Benefits:**
+  - Consistent prompt structure across all generations
+  - Easy to modify prompts without touching code
+  - Better maintainability and testing
+  - Supports multiple AI use cases (challenges, feedback, hints)
+  
+```javascript
+// Before: Hardcoded string template
+const prompt = `Generate a ${difficulty} level challenge...`;
+
+// After: Reusable template with validation
+const promptConfig = getPromptConfig('challengeGeneration', {
+  difficulty,
+  category,
+  language,
+  topic,
+});
+// Returns validated, consistent prompts
+```
+
+---
+
 ## ✅ Definition of Done
 
 ### User Story 1 (Frontend) - VERIFIED
@@ -205,6 +330,19 @@ frontend/
 - [x] User context included in controller logs
 - [x] Performance metrics tracked (execution time)
 - [x] Error logging includes stack traces
+
+### User Story 3 (Prompt Templates) - VERIFIED
+- [x] Template created with placeholder system
+- [x] Supports multiple templates (3+ templates)
+- [x] Placeholder substitution works correctly
+- [x] Computed placeholders for dynamic content
+- [x] Parameter validation implemented
+- [x] Default values for optional params
+- [x] Test harness created and passing (33/33 tests)
+- [x] Verifies template rendering
+- [x] Validates response structure
+- [x] Integrated with AI service
+- [x] Documentation complete
 
 ---
 
@@ -277,6 +415,19 @@ frontend/
 - [x] Test error logs capture stack traces
 - [x] Verify userId appears in controller logs
 - [ ] Monitor logs in production for debugging insights
+
+### User Story 3: Prompt Template Testing
+- [x] Template discovery - finds all templates ✅ (3 templates)
+- [x] Template metadata - validates structure ✅
+- [x] Basic rendering - templates render correctly ✅
+- [x] Placeholder substitution - all params replaced ✅
+- [x] Computed placeholders - dynamic values work ✅
+- [x] Parameter validation - rejects invalid inputs ✅
+- [x] Default values - applies defaults correctly ✅
+- [x] Response structure - JSON schema defined ✅
+- [x] Multiple templates - supports 3+ templates ✅
+- [x] Error handling - proper error messages ✅
+- [x] **ALL 33 TESTS PASSING** 🎉
 
 ### Unit Tests Needed (Future)
 - `aiService.generateChallenge()` with mocked OpenAI

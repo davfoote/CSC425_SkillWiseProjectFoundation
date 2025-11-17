@@ -1,6 +1,7 @@
 // AI integration with OpenAI API
 const OpenAI = require('openai');
 const pino = require('pino');
+const { getPromptConfig } = require('./promptTemplates');
 
 const logger = pino({
   name: 'skillwise-ai',
@@ -33,24 +34,19 @@ const aiService = {
         timestamp: new Date().toISOString(),
       });
 
-      const prompt = `Generate a ${difficulty} level coding challenge for ${language}${topic ? ` focusing on ${topic}` : ''}.
-      
-Requirements:
-- Title: A clear, engaging title
-- Description: Detailed problem description (2-3 paragraphs)
-- Difficulty: ${difficulty}
-- Category: ${category}
-- Example Input/Output: At least 2 examples
-- Constraints: Technical constraints and limits
-- Hints: 2-3 helpful hints
-- Test Cases: 3-5 test cases with inputs and expected outputs
-
-Format the response as JSON with these exact fields: title, description, difficulty, category, exampleInput, exampleOutput, constraints, hints (array), testCases (array with input and expectedOutput).`;
+      // Use reusable prompt template
+      const promptConfig = getPromptConfig('challengeGeneration', {
+        difficulty,
+        category,
+        language,
+        topic,
+      });
 
       logger.info('📤 Sending prompt to OpenAI:', {
         model: 'gpt-3.5-turbo',
-        promptLength: prompt.length,
+        promptLength: promptConfig.user.length,
         temperature: 0.8,
+        usingTemplate: 'challengeGeneration',
       });
 
       const completion = await openai.chat.completions.create({
@@ -58,11 +54,11 @@ Format the response as JSON with these exact fields: title, description, difficu
         messages: [
           {
             role: 'system',
-            content: 'You are an expert programming instructor who creates engaging, educational coding challenges. Always respond with valid JSON.',
+            content: promptConfig.system,
           },
           {
             role: 'user',
-            content: prompt,
+            content: promptConfig.user,
           },
         ],
         temperature: 0.8,
