@@ -36,12 +36,6 @@
     "lint": "cd .. && npm run lint",
     "lint:fix": "cd .. && npm run lint:fix"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",
