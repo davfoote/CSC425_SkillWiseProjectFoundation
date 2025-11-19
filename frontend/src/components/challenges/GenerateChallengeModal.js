@@ -26,7 +26,13 @@ const GenerateChallengeModal = ({ isOpen, onClose, onChallengeGenerated }) => {
       setError('');
       setGeneratedChallenge(null);
 
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('authToken');
+      console.log('🔑 Token from localStorage:', token ? `${token.substring(0, 20)}...` : 'NO TOKEN FOUND');
+      
+      if (!token) {
+        throw new Error('No authentication token found. Please log in again.');
+      }
+
       const response = await fetch('http://localhost:3001/api/ai/generateChallenge', {
         method: 'POST',
         headers: {

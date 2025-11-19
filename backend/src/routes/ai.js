@@ -7,7 +7,10 @@ const auth = require('../middleware/auth');
 // POST /ai/generateChallenge - Generate a new challenge using AI
 router.post('/generateChallenge', auth, aiController.generateChallenge);
 
-// POST /ai/feedback - Generate AI feedback for submission
+// POST /ai/submitForFeedback - Submit code for AI feedback
+router.post('/submitForFeedback', auth, aiController.submitForFeedback);
+
+// POST /ai/feedback - Generate AI feedback for submission (alias)
 router.post('/feedback', auth, aiController.generateFeedback);
 
 // GET /ai/hints/:challengeId - Get hints for a challenge

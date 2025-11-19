@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import challengeService from '../../services/challengeService';
 
-const ChallengeCard = ({ challenge, onChallengeClick, onProgressUpdate }) => {
+const ChallengeCard = ({ challenge, onChallengeClick, onProgressUpdate, onSubmitForFeedback }) => {
   // Determine status display
   const getStatusInfo = (challenge) => {
     if (!challenge.is_active) {
@@ -146,8 +146,21 @@ const ChallengeCard = ({ challenge, onChallengeClick, onProgressUpdate }) => {
         )}
       </div>
 
-      {/* Completion Status and Button */}
-      <div className="mt-3 pt-3 border-t border-gray-100">
+      {/* Completion Status and Buttons */}
+      <div className="mt-3 pt-3 border-t border-gray-100 space-y-2">
+        {/* Submit for Feedback Button */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onSubmitForFeedback && onSubmitForFeedback(challenge);
+          }}
+          className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors duration-200 text-sm font-medium flex items-center justify-center space-x-2"
+        >
+          <span>🤖</span>
+          <span>Submit for AI Feedback</span>
+        </button>
+
+        {/* Mark Complete Button */}
         {isCompleted ? (
           <div className="flex items-center justify-center space-x-2 text-green-600 bg-green-50 rounded-lg py-2">
             <span>✅</span>

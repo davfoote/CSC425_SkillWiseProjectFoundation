@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navigation from '../layout/Navigation';
 import ChallengeCard from './ChallengeCard';
 import GenerateChallengeModal from './GenerateChallengeModal';
+import SubmissionForm from './SubmissionForm';
 import challengeService from '../../services/challengeService';
 import progressService from '../../services/progressService';
 
 const Challenges = () => {
+  const navigate = useNavigate();
   const [challenges, setChallenges] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmissionFormOpen, setIsSubmissionFormOpen] = useState(false);
+  const [selectedChallenge, setSelectedChallenge] = useState(null);
+  const [feedbackResult, setFeedbackResult] = useState(null);
   const [filters, setFilters] = useState({
     category: '',
     difficulty: '',
@@ -20,6 +26,11 @@ const Challenges = () => {
     byDifficulty: { easy: 0, medium: 0, hard: 0 },
     byCategory: {},
   });
+
+  const handleQuickLogout = () => {
+    localStorage.clear();
+    navigate('/login');
+  };
 
   // Load challenges on component mount and filter changes
   useEffect(() => {
@@ -123,6 +134,27 @@ const Challenges = () => {
     console.log('AI Challenge generated:', challenge);
   };
 
+  const handleSubmitForFeedback = (challenge) => {
+    setSelectedChallenge(challenge);
+    setIsSubmissionFormOpen(true);
+    setFeedbackResult(null);
+  };
+
+  const handleSubmissionComplete = (result) => {
+    setFeedbackResult(result);
+    setIsSubmissionFormOpen(false);
+    
+    // Show success notification
+    console.log('Feedback received:', result);
+    alert(`Feedback received! Overall Score: ${result.feedback.overallScore}/100`);
+  };
+
+  const handleSubmissionCancel = () => {
+    setIsSubmissionFormOpen(false);
+    setSelectedChallenge(null);
+    setFeedbackResult(null);
+  };
+
   // Get unique categories for filter dropdown
   const uniqueCategories = [...new Set(challenges.map(c => c.category).filter(Boolean))];
 
@@ -135,7 +167,18 @@ const Challenges = () => {
 
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="text-6xl mb-4">💪</div>
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex-1"></div>
+              <div className="text-6xl">💪</div>
+              <div className="flex-1 flex justify-end">
+                <button
+                  onClick={handleQuickLogout}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition-colors"
+                >
+                  🔓 Logout & Refresh Token
+                </button>
+              </div>
+            </div>
             <h1 className="text-3xl font-bold text-gray-900 mb-4">Challenges</h1>
             <p className="text-gray-600 mb-6">
               Explore and tackle coding challenges to improve your skills
@@ -285,6 +328,7 @@ const Challenges = () => {
                   challenge={challenge}
                   onChallengeClick={handleChallengeClick}
                   onProgressUpdate={handleProgressUpdate}
+                  onSubmitForFeedback={handleSubmitForFeedback}
                 />
               ))}
             </div>
@@ -298,6 +342,15 @@ const Challenges = () => {
         onClose={() => setIsModalOpen(false)}
         onChallengeGenerated={handleChallengeGenerated}
       />
+
+      {/* Submission Form Modal */}
+      {isSubmissionFormOpen && selectedChallenge && (
+        <SubmissionForm
+          challenge={selectedChallenge}
+          onSubmit={handleSubmissionComplete}
+          onCancel={handleSubmissionCancel}
+        />
+      )}
     </div>
   );
 };
