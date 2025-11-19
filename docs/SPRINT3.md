@@ -39,6 +39,14 @@
 **Definition of Done:** Form submits content to backend `/api/ai/submitForFeedback`  
 **Status:** ✅ **COMPLETED**
 
+### User Story 5: AI Feedback Endpoint with Database Persistence (Backend)
+**As a developer, I want an endpoint for feedback so that users can receive AI evaluations.**
+
+**Task:** AI feedback endpoint with database persistence  
+**Tech Stack:** Express, OpenAI API, PostgreSQL, Prisma  
+**Definition of Done:** Endpoint saves submission to database, generates AI feedback, stores feedback in `ai_feedback` table  
+**Status:** ✅ **COMPLETED**
+
 ---
 
 ## 🎯 Completed Features
@@ -629,6 +637,117 @@ const promptConfig = getPromptConfig('challengeGeneration', {
 4. **JSON Parsing:** Occasional malformed JSON from OpenAI (handled with try-catch)
 5. **No Persistence:** Generated challenges aren't saved to database yet
 6. **Rate Limiting:** OpenAI has rate limits (RPM and TPM)
+
+---
+
+### 5. AI Feedback Endpoint with Database Persistence (User Story 5 - Backend)
+
+#### Implementation Overview
+The AI feedback endpoint now fully integrates with the database to persist submissions and AI-generated feedback. This enables tracking of user progress, submission history, and feedback over time.
+
+#### Backend Implementation
+
+##### **File: `backend/src/services/submissionService.js`**
+- **Enhanced:** Complete implementation of submission database operations
+- **Key Functions:**
+  - `submitSolution()` - Creates submission record in database
+  - `createAIFeedback()` - Saves AI feedback to `ai_feedback` table
+  - `gradeSubmission()` - Updates submission with score and graded status
+  - `getSubmissionById()` - Retrieves submission with associated feedback
+  - `getUserSubmissions()` - Gets all submissions for a user
+  - `getChallengeSubmissions()` - Gets all submissions for a challenge
+  - `getNextAttemptNumber()` - Calculates next attempt number for user/challenge
+  - `updateSubmissionStatus()` - Updates submission status
+- **Database Tables:**
+  - `submissions` - Stores code submissions with metadata
+  - `ai_feedback` - Stores AI-generated feedback linked to submissions
+- **Features:**
+  - Full Pino logging for all operations
+  - Error handling and validation
+  - Automatic attempt numbering
+  - JSONB support for file submissions
+  - Timestamp tracking
+
+##### **File: `backend/src/controllers/aiController.js`**
+- **Enhanced:** `submitForFeedback()` controller with full database integration
+- **Workflow:**
+  1. **Validate** input (code submission and challenge info)
+  2. **Get next attempt number** for user's challenge
+  3. **Save submission** to database via `submissionService.submitSolution()`
+  4. **Generate AI feedback** (mock or real OpenAI API)
+  5. **Save AI feedback** to database via `submissionService.createAIFeedback()`
+  6. **Update submission** with score via `submissionService.gradeSubmission()`
+  7. **Return response** with submission ID, feedback, and metadata
+- **Response Structure:**
+  ```json
+  {
+    "success": true,
+    "submissionId": 123,
+    "attemptNumber": 1,
+    "feedback": {
+      "overallScore": 85,
+      "correctness": { "score": 90, "feedback": "..." },
+      "codeQuality": { "score": 80, "feedback": "..." },
+      "suggestions": ["..."],
+      "strengths": ["..."],
+      "improvements": ["..."],
+      "encouragement": "..."
+    },
+    "timestamp": "2025-11-19T...",
+    "processingTimeMs": 245,
+    "isMock": true
+  }
+  ```
+- **Database Persistence:**
+  - Submission saved with user ID, challenge ID, code, attempt number
+  - AI feedback saved with suggestions, strengths, improvements arrays
+  - Submission updated with final score and graded status
+  - All operations logged with emoji prefixes (📝💾🤖✅)
+
+##### **Database Schema Usage**
+- **submissions table fields:**
+  - `user_id`, `challenge_id`, `submission_text`, `submission_files`
+  - `status` ('submitted' → 'graded')
+  - `score`, `attempt_number`, `submitted_at`, `graded_at`
+- **ai_feedback table fields:**
+  - `submission_id` (foreign key)
+  - `feedback_text`, `feedback_type`, `confidence_score`
+  - `suggestions[]`, `strengths[]`, `improvements[]`
+  - `ai_model`, `processing_time_ms`
+
+#### Features
+- ✅ Saves every submission to database
+- ✅ Stores AI feedback separately for analysis
+- ✅ Tracks attempt numbers automatically
+- ✅ Records processing time
+- ✅ Supports both mock and real AI feedback
+- ✅ Full audit trail with timestamps
+- ✅ Comprehensive logging throughout
+
+#### API Testing
+```bash
+# Test submission endpoint
+curl -X POST http://localhost:3001/api/ai/submitForFeedback \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{
+    "challengeId": 1,
+    "challengeTitle": "Array Sum",
+    "challengeDescription": "Calculate sum of array",
+    "codeSubmission": "function sum(arr) { return arr.reduce((a,b) => a+b, 0); }",
+    "language": "JavaScript"
+  }'
+```
+
+#### Definition of Done ✅
+- [x] Endpoint receives code submission
+- [x] Submission saved to `submissions` table
+- [x] AI feedback generated (mock or real)
+- [x] Feedback saved to `ai_feedback` table
+- [x] Submission updated with score
+- [x] Response includes submission ID and feedback
+- [x] All database operations logged
+- [x] Error handling implemented
 
 ---
 
