@@ -55,6 +55,14 @@
 **Definition of Done:** Table created with submission_id, prompt (feedback_text), response fields  
 **Status:** ✅ **COMPLETED** (Implemented in User Story 5)
 
+### User Story 7: Snapshot Tests for AI Responses (Backend)
+**As a developer, I want snapshot tests for AI responses so that they remain consistent.**
+
+**Task:** Snapshot test AI responses  
+**Tech Stack:** Jest  
+**Definition of Done:** Tests run with sample prompts; snapshots pass  
+**Status:** ✅ **COMPLETED**
+
 ---
 
 ## 🎯 Completed Features
@@ -756,6 +764,66 @@ curl -X POST http://localhost:3001/api/ai/submitForFeedback \
 - [x] Response includes submission ID and feedback
 - [x] All database operations logged
 - [x] Error handling implemented
+
+---
+
+### 7. Snapshot Tests for AI Responses (User Story 7 - Backend)
+
+#### Implementation Overview
+Implemented comprehensive Jest snapshot tests for the AI service to ensure consistency of AI prompt templates and mock responses across code changes.
+
+#### Test File
+**File:** `backend/tests/unit/aiService.snapshot.test.js`
+
+#### Test Coverage (10 Tests)
+
+##### **Prompt Template Snapshots (4 tests)**
+1. **Challenge generation with all parameters** - Tests full template rendering with difficulty, category, language, topic
+2. **Challenge generation with minimal parameters** - Tests template with required parameters only
+3. **Feedback generation prompt** - Tests feedback template with code submission and expected behavior
+4. **Hint generation prompt** - Tests hint template rendering
+
+##### **Mock AI Response Snapshots (3 tests)**
+5. **Mock challenge - easy difficulty** - Verifies mock challenge structure for easy level
+6. **Mock challenge - hard difficulty** - Verifies mock challenge structure for hard level  
+7. **Mock feedback response** - Verifies mock feedback structure with scores, suggestions, strengths
+
+##### **Prompt Rendering Consistency (2 tests)**
+8. **Consistent challenge prompt rendering** - Verifies same inputs produce same prompt
+9. **Missing optional parameters handling** - Verifies templates handle optional params gracefully
+
+##### **Template Metadata Snapshots (1 test)**
+10. **Template list snapshot** - Verifies available templates and their metadata structure
+
+#### Test Results
+```bash
+Test Suites: 1 passed, 1 total
+Tests:       10 passed, 10 total
+Snapshots:   10 total (1 updated, 2 written, 7 passed)
+Time:        0.731 s
+```
+
+#### Snapshot Files Generated
+- `__snapshots__/aiService.snapshot.test.js.snap` - Contains 10 snapshots capturing:
+  - Prompt template structures
+  - Mock response formats
+  - Template metadata
+
+#### Benefits
+- ✅ Detects unintended changes to AI prompts
+- ✅ Ensures mock responses maintain expected structure
+- ✅ Documents expected AI service behavior
+- ✅ Prevents regression in prompt templates
+- ✅ Validates template parameter handling
+
+#### Definition of Done ✅
+- [x] Snapshot tests created with sample prompts
+- [x] Tests cover challenge generation templates
+- [x] Tests cover feedback generation templates
+- [x] Tests cover hint generation templates
+- [x] Tests cover mock AI responses
+- [x] All 10 tests passing
+- [x] Snapshots committed to repository
 
 ---
 

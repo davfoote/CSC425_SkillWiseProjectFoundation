@@ -1,0 +1,371 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AI Service Snapshot Tests Mock AI Response Snapshots should match snapshot for mock challenge response - easy difficulty 1`] = `
+{
+  "challenge": {
+    "category": "algorithms",
+    "description": "Practice your JavaScript skills with this easy difficulty challenge focusing on array operations.",
+    "difficulty": "easy",
+    "estimatedTime": 15,
+    "hints": [
+      "Think about the time complexity of your solution",
+      "Consider edge cases like empty arrays",
+      "Can you optimize the space complexity?",
+    ],
+    "language": "JavaScript",
+    "points": 10,
+    "starterCode": "function solveProblem(input) {
+  // Your code here
+  return input;
+}",
+    "testCases": [
+      {
+        "expected": "Depends on implementation",
+        "input": "[1, 2, 3]",
+      },
+      {
+        "expected": "Depends on implementation",
+        "input": "[4, 5, 6]",
+      },
+    ],
+    "title": "Easy Algorithms Challenge: Array Operations",
+  },
+  "success": true,
+}
+`;
+
+exports[`AI Service Snapshot Tests Mock AI Response Snapshots should match snapshot for mock challenge response - hard difficulty 1`] = `
+{
+  "challenge": {
+    "category": "data structures",
+    "description": "Practice your Python skills with this hard difficulty challenge focusing on tree traversal.",
+    "difficulty": "hard",
+    "estimatedTime": 60,
+    "hints": [
+      "Think about the time complexity of your solution",
+      "Consider edge cases like empty arrays",
+      "Can you optimize the space complexity?",
+    ],
+    "language": "Python",
+    "points": 50,
+    "starterCode": "function solveProblem(input) {
+  // Your code here
+  return input;
+}",
+    "testCases": [
+      {
+        "expected": "Depends on implementation",
+        "input": "[1, 2, 3]",
+      },
+      {
+        "expected": "Depends on implementation",
+        "input": "[4, 5, 6]",
+      },
+    ],
+    "title": "Hard Data Structures Challenge: Tree Traversal",
+  },
+  "success": true,
+}
+`;
+
+exports[`AI Service Snapshot Tests Mock AI Response Snapshots should match snapshot for mock feedback response 1`] = `
+{
+  "attemptNumber": 1,
+  "feedback": {
+    "codeQuality": {
+      "feedback": "Your JavaScript solution for "Array Sum" shows good understanding. The code is well-structured and handles the main test cases correctly.",
+      "score": 80,
+    },
+    "correctness": {
+      "feedback": "Your solution appears to be functionally correct and handles the main test cases well.",
+      "score": 90,
+    },
+    "encouragement": "Great work! You're on the right track. Keep practicing and refining your approach.",
+    "improvements": [
+      "Add input validation",
+      "Consider edge cases like empty inputs",
+      "Add comments for complex logic",
+    ],
+    "overallScore": 85,
+    "strengths": [
+      "Clean and readable code structure",
+      "Handles main test cases correctly",
+      "Good use of built-in functions",
+    ],
+    "suggestions": [
+      "Consider using more descriptive variable names",
+      "Add error handling for edge cases",
+      "The time complexity could be improved",
+    ],
+  },
+  "isMock": true,
+  "processingTimeMs": 250,
+  "submissionId": 1,
+  "success": true,
+  "timestamp": "2025-11-19T00:00:00.000Z",
+}
+`;
+
+exports[`AI Service Snapshot Tests Prompt Rendering Consistency should consistently render challenge generation prompts 1`] = `
+{
+  "system": "You are an expert programming instructor who creates engaging, educational coding challenges. 
+Your challenges should be:
+- Clear and well-structured
+- Appropriately difficult for the specified level
+- Educational and teach important concepts
+- Include comprehensive test cases
+- Always respond with valid JSON
+
+Follow the exact JSON schema provided in the user prompt.",
+  "user": "Generate a medium level coding challenge for JavaScript focusing on sorting.
+
+Challenge Requirements:
+- Title: A clear, engaging title that describes the problem
+- Description: Detailed problem description (2-3 paragraphs) explaining the task
+- Difficulty: medium
+- Category: algorithms
+- Example Input/Output: At least 2 concrete examples showing input and expected output
+- Constraints: Technical constraints and limits (e.g., array size, value ranges)
+- Hints: 2-3 helpful hints that guide without giving away the solution
+- Test Cases: 3-5 test cases with inputs and expected outputs for validation
+
+JSON Schema (respond with ONLY valid JSON matching this structure):
+{
+  "title": "string",
+  "description": "string (2-3 paragraphs)",
+  "difficulty": "medium",
+  "category": "algorithms",
+  "exampleInput": "string",
+  "exampleOutput": "string",
+  "constraints": "string (bullet points or paragraph)",
+  "hints": ["string", "string", "string"],
+  "testCases": [
+    {
+      "input": "string",
+      "expectedOutput": "string"
+    }
+  ]
+}
+
+Additional Context:
+Focus specifically on sorting concepts.
+
+Generate the challenge now following the JSON schema exactly.",
+}
+`;
+
+exports[`AI Service Snapshot Tests Prompt Rendering Consistency should handle missing optional parameters consistently 1`] = `
+{
+  "system": "You are an expert programming instructor who creates engaging, educational coding challenges. 
+Your challenges should be:
+- Clear and well-structured
+- Appropriately difficult for the specified level
+- Educational and teach important concepts
+- Include comprehensive test cases
+- Always respond with valid JSON
+
+Follow the exact JSON schema provided in the user prompt.",
+  "user": "Generate a easy level coding challenge for Python.
+
+Challenge Requirements:
+- Title: A clear, engaging title that describes the problem
+- Description: Detailed problem description (2-3 paragraphs) explaining the task
+- Difficulty: easy
+- Category: web development
+- Example Input/Output: At least 2 concrete examples showing input and expected output
+- Constraints: Technical constraints and limits (e.g., array size, value ranges)
+- Hints: 2-3 helpful hints that guide without giving away the solution
+- Test Cases: 3-5 test cases with inputs and expected outputs for validation
+
+JSON Schema (respond with ONLY valid JSON matching this structure):
+{
+  "title": "string",
+  "description": "string (2-3 paragraphs)",
+  "difficulty": "easy",
+  "category": "web development",
+  "exampleInput": "string",
+  "exampleOutput": "string",
+  "constraints": "string (bullet points or paragraph)",
+  "hints": ["string", "string", "string"],
+  "testCases": [
+    {
+      "input": "string",
+      "expectedOutput": "string"
+    }
+  ]
+}
+
+Additional Context:
+Keep the problem straightforward and beginner-friendly.
+
+Generate the challenge now following the JSON schema exactly.",
+}
+`;
+
+exports[`AI Service Snapshot Tests Prompt Template Snapshots should match snapshot for challenge generation prompt with all parameters 1`] = `
+{
+  "system": "You are an expert programming instructor who creates engaging, educational coding challenges. 
+Your challenges should be:
+- Clear and well-structured
+- Appropriately difficult for the specified level
+- Educational and teach important concepts
+- Include comprehensive test cases
+- Always respond with valid JSON
+
+Follow the exact JSON schema provided in the user prompt.",
+  "user": "Generate a medium level coding challenge for JavaScript focusing on binary search.
+
+Challenge Requirements:
+- Title: A clear, engaging title that describes the problem
+- Description: Detailed problem description (2-3 paragraphs) explaining the task
+- Difficulty: medium
+- Category: algorithms
+- Example Input/Output: At least 2 concrete examples showing input and expected output
+- Constraints: Technical constraints and limits (e.g., array size, value ranges)
+- Hints: 2-3 helpful hints that guide without giving away the solution
+- Test Cases: 3-5 test cases with inputs and expected outputs for validation
+
+JSON Schema (respond with ONLY valid JSON matching this structure):
+{
+  "title": "string",
+  "description": "string (2-3 paragraphs)",
+  "difficulty": "medium",
+  "category": "algorithms",
+  "exampleInput": "string",
+  "exampleOutput": "string",
+  "constraints": "string (bullet points or paragraph)",
+  "hints": ["string", "string", "string"],
+  "testCases": [
+    {
+      "input": "string",
+      "expectedOutput": "string"
+    }
+  ]
+}
+
+Additional Context:
+Focus specifically on binary search concepts.
+
+Generate the challenge now following the JSON schema exactly.",
+}
+`;
+
+exports[`AI Service Snapshot Tests Prompt Template Snapshots should match snapshot for challenge generation prompt with minimal parameters 1`] = `
+{
+  "system": "You are an expert programming instructor who creates engaging, educational coding challenges. 
+Your challenges should be:
+- Clear and well-structured
+- Appropriately difficult for the specified level
+- Educational and teach important concepts
+- Include comprehensive test cases
+- Always respond with valid JSON
+
+Follow the exact JSON schema provided in the user prompt.",
+  "user": "Generate a easy level coding challenge for Python.
+
+Challenge Requirements:
+- Title: A clear, engaging title that describes the problem
+- Description: Detailed problem description (2-3 paragraphs) explaining the task
+- Difficulty: easy
+- Category: web development
+- Example Input/Output: At least 2 concrete examples showing input and expected output
+- Constraints: Technical constraints and limits (e.g., array size, value ranges)
+- Hints: 2-3 helpful hints that guide without giving away the solution
+- Test Cases: 3-5 test cases with inputs and expected outputs for validation
+
+JSON Schema (respond with ONLY valid JSON matching this structure):
+{
+  "title": "string",
+  "description": "string (2-3 paragraphs)",
+  "difficulty": "easy",
+  "category": "web development",
+  "exampleInput": "string",
+  "exampleOutput": "string",
+  "constraints": "string (bullet points or paragraph)",
+  "hints": ["string", "string", "string"],
+  "testCases": [
+    {
+      "input": "string",
+      "expectedOutput": "string"
+    }
+  ]
+}
+
+Additional Context:
+Keep the problem straightforward and beginner-friendly.
+
+Generate the challenge now following the JSON schema exactly.",
+}
+`;
+
+exports[`AI Service Snapshot Tests Prompt Template Snapshots should match snapshot for feedback generation prompt 1`] = `
+{
+  "system": "You are a constructive code reviewer who provides helpful, encouraging feedback.
+Focus on:
+- Correctness and bugs
+- Code quality and readability
+- Best practices
+- Performance optimization opportunities
+- Security considerations",
+  "user": "Review this JavaScript code submission for the challenge "Array Sum Calculator".
+
+Code:
+function sum(arr) { return arr.reduce((a, b) => a + b, 0); }
+
+Expected Behavior:
+Should return the sum of all numbers in the array
+
+Provide feedback in JSON format:
+{
+  "overallScore": number (0-100),
+  "correctness": { "score": number, "feedback": "string" },
+  "codeQuality": { "score": number, "feedback": "string" },
+  "suggestions": ["string"],
+  "encouragement": "string"
+}",
+}
+`;
+
+exports[`AI Service Snapshot Tests Prompt Template Snapshots should match snapshot for hint generation prompt 1`] = `
+{
+  "system": "You are a helpful mentor who provides progressive hints without giving away solutions.
+Your hints should:
+- Guide thinking without revealing the answer
+- Build on each other progressively
+- Reference relevant concepts or patterns",
+  "user": "Generate 3 progressive hints for this coding challenge:
+
+Challenge: Binary Search
+Description: Implement binary search algorithm
+Difficulty: medium
+
+Respond with JSON:
+{
+  "hints": [
+    { "level": 1, "hint": "string (gentle nudge)" },
+    { "level": 2, "hint": "string (more specific)" },
+    { "level": 3, "hint": "string (almost giving it away)" }
+  ]
+}",
+}
+`;
+
+exports[`AI Service Snapshot Tests Template Metadata Snapshots should match snapshot for template list 1`] = `
+[
+  {
+    "hasPrompt": false,
+    "hasSystemMessage": false,
+    "name": "challengeGeneration",
+  },
+  {
+    "hasPrompt": false,
+    "hasSystemMessage": false,
+    "name": "feedbackGeneration",
+  },
+  {
+    "hasPrompt": false,
+    "hasSystemMessage": false,
+    "name": "hintGeneration",
+  },
+]
+`;
