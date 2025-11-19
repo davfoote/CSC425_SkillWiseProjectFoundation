@@ -47,6 +47,14 @@
 **Definition of Done:** Endpoint saves submission to database, generates AI feedback, stores feedback in `ai_feedback` table  
 **Status:** ✅ **COMPLETED**
 
+### User Story 6: Persist AI Feedback for Later Review (Backend)
+**As a developer, I want to persist feedback so that users can review it later.**
+
+**Task:** AI feedback table with submission_id, prompt, response  
+**Tech Stack:** PostgreSQL migration, Prisma  
+**Definition of Done:** Table created with submission_id, prompt (feedback_text), response fields  
+**Status:** ✅ **COMPLETED** (Implemented in User Story 5)
+
 ---
 
 ## 🎯 Completed Features
