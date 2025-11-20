@@ -88,29 +88,70 @@ const Goals = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(to bottom, #38bdf8 0%, #60a5fa 50%, #93c5fd 100%)',
+      position: 'relative'
+    }}>
+      {/* Floating decorations */}
+      <div style={{position: 'absolute', top: '10%', left: '5%', fontSize: '60px', opacity: 0.3}}>☁️</div>
+      <div style={{position: 'absolute', top: '20%', right: '10%', fontSize: '40px', opacity: 0.3}}>⭐</div>
+      <div style={{position: 'absolute', bottom: '30%', left: '15%', fontSize: '50px', opacity: 0.3}}>✨</div>
+      <div style={{position: 'absolute', bottom: '15%', right: '20%', fontSize: '55px', opacity: 0.3}}>🎯</div>
+      
       <Navigation />
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           {/* Header */}
           <div className="mb-8">
-            <div className="flex justify-between items-center mb-4">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 flex items-center">
-                  <span className="text-4xl mr-3">🎯</span>
-                  My Goals
-                </h1>
-                <p className="text-gray-600 mt-2">
-                  Track your learning journey and achieve your objectives.
-                </p>
+            <div style={{
+              background: 'linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%)',
+              padding: '32px',
+              borderRadius: '40px',
+              marginBottom: '32px',
+              boxShadow: '0 10px 30px rgba(251,191,36,0.3)'
+            }}>
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <h1 style={{
+                    fontSize: '48px',
+                    fontWeight: '900',
+                    color: '#1e3a8a',
+                    marginBottom: '16px'
+                  }}>
+                    🎯 My Goals
+                  </h1>
+                  <p style={{fontSize: '18px', color: '#1e40af', fontWeight: '600'}}>
+                    Track your learning journey and achieve your objectives!
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowCreateForm(true)}
+                  style={{
+                    background: 'linear-gradient(135deg, #34d399 0%, #059669 100%)',
+                    color: 'white',
+                    padding: '16px 32px',
+                    borderRadius: '20px',
+                    fontSize: '16px',
+                    fontWeight: '700',
+                    border: 'none',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 15px rgba(5,150,105,0.4)',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(5,150,105,0.5)';
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 15px rgba(5,150,105,0.4)';
+                  }}
+                >
+                  + Create New Goal
+                </button>
               </div>
-              <button
-                onClick={() => setShowCreateForm(true)}
-                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-              >
-                + Create New Goal
-              </button>
             </div>
 
             {/* Success Message */}
@@ -138,22 +179,66 @@ const Goals = () => {
             )}
 
             {/* Stats Dashboard */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-              <div className="bg-white rounded-lg shadow p-6">
-                <div className="text-2xl font-bold text-gray-900">{stats.total}</div>
-                <div className="text-sm text-gray-600">Total Goals</div>
+            <div style={{display: 'flex', justifyContent: 'space-around', marginBottom: '32px', flexWrap: 'wrap', gap: '20px'}}>
+              <div style={{
+                width: '180px',
+                height: '180px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #fbbf24 0%, #d97706 100%)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 8px 25px rgba(251,191,36,0.4)',
+                color: 'white'
+              }}>
+                <div style={{fontSize: '48px', fontWeight: '900', marginBottom: '8px'}}>{stats.total}</div>
+                <div style={{fontSize: '14px', fontWeight: '600'}}>Total Goals</div>
               </div>
-              <div className="bg-white rounded-lg shadow p-6">
-                <div className="text-2xl font-bold text-green-600">{stats.completed}</div>
-                <div className="text-sm text-gray-600">Completed</div>
+              <div style={{
+                width: '180px',
+                height: '180px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #34d399 0%, #059669 100%)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 8px 25px rgba(52,211,153,0.4)',
+                color: 'white'
+              }}>
+                <div style={{fontSize: '48px', fontWeight: '900', marginBottom: '8px'}}>{stats.completed}</div>
+                <div style={{fontSize: '14px', fontWeight: '600'}}>Completed</div>
               </div>
-              <div className="bg-white rounded-lg shadow p-6">
-                <div className="text-2xl font-bold text-blue-600">{stats.inProgress}</div>
-                <div className="text-sm text-gray-600">In Progress</div>
+              <div style={{
+                width: '180px',
+                height: '180px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 8px 25px rgba(96,165,250,0.4)',
+                color: 'white'
+              }}>
+                <div style={{fontSize: '48px', fontWeight: '900', marginBottom: '8px'}}>{stats.inProgress}</div>
+                <div style={{fontSize: '14px', fontWeight: '600'}}>In Progress</div>
               </div>
-              <div className="bg-white rounded-lg shadow p-6">
-                <div className="text-2xl font-bold text-gray-600">{stats.notStarted}</div>
-                <div className="text-sm text-gray-600">Not Started</div>
+              <div style={{
+                width: '180px',
+                height: '180px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 8px 25px rgba(167,139,250,0.4)',
+                color: 'white'
+              }}>
+                <div style={{fontSize: '48px', fontWeight: '900', marginBottom: '8px'}}>{stats.notStarted}</div>
+                <div style={{fontSize: '14px', fontWeight: '600'}}>Not Started</div>
               </div>
             </div>
           </div>

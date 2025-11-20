@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api';
+// Updated: Nov 20, 2025 - Fixed backend port to 3001
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+console.log('Challenge Service API URL:', API_URL);
 
 // Create axios instance with default config
 const apiClient = axios.create({

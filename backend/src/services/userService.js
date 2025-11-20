@@ -24,9 +24,9 @@ const userService = {
 
       // Create user in database
       const createUserQuery = `
-        INSERT INTO users (email, "firstName", "lastName", password_hash, created_at, updated_at)
+        INSERT INTO users (email, first_name, last_name, password_hash, created_at, updated_at)
         VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-        RETURNING id, email, "firstName", "lastName", created_at, updated_at
+        RETURNING id, email, first_name, last_name, created_at, updated_at
       `;
 
       const userResult = await db.query(createUserQuery, [
@@ -39,8 +39,8 @@ const userService = {
       const user = {
         id: userResult.rows[0].id,
         email: userResult.rows[0].email,
-        firstName: userResult.rows[0].firstName,
-        lastName: userResult.rows[0].lastName,
+        firstName: userResult.rows[0].first_name,
+        lastName: userResult.rows[0].last_name,
         created_at: userResult.rows[0].created_at,
         updated_at: userResult.rows[0].updated_at,
       };
@@ -57,7 +57,7 @@ const userService = {
   // Find user by email
   async findUserByEmail (email) {
     try {
-      const query = 'SELECT id, email, "firstName", "lastName", password_hash, created_at, updated_at FROM users WHERE email = $1';
+      const query = 'SELECT id, email, first_name, last_name, password_hash, created_at, updated_at FROM users WHERE email = $1';
       const result = await db.query(query, [email]);
 
       if (result.rows.length === 0) {
@@ -67,8 +67,8 @@ const userService = {
       const user = {
         id: result.rows[0].id,
         email: result.rows[0].email,
-        firstName: result.rows[0].firstName,
-        lastName: result.rows[0].lastName,
+        firstName: result.rows[0].first_name,
+        lastName: result.rows[0].last_name,
         password_hash: result.rows[0].password_hash,
         created_at: result.rows[0].created_at,
         updated_at: result.rows[0].updated_at,

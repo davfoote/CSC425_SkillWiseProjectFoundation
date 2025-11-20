@@ -1,15 +1,21 @@
+/* ===================================
+   Generate Challenge Modal - Modern Design
+   =================================== */
+
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background: rgba(17, 24, 39, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  animation: fadeIn 0.2s ease-in;
+  animation: fadeIn 0.3s ease;
 }
 
 @keyframes fadeIn {
@@ -22,23 +28,24 @@
 }
 
 .modal-content {
-  background: white;
-  border-radius: 12px;
-  max-width: 700px;
+  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+  border-radius: 24px;
+  max-width: 750px;
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  animation: slideUp 0.3s ease-out;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25),
+              0 0 0 1px rgba(139, 92, 246, 0.1);
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes slideUp {
   from {
-    transform: translateY(50px);
+    transform: translateY(50px) scale(0.95);
     opacity: 0;
   }
   to {
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
     opacity: 1;
   }
 }
@@ -47,210 +54,248 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 28px 32px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 24px 24px 0 0;
 }
 
 .modal-header h2 {
   margin: 0;
-  font-size: 24px;
-  color: #1f2937;
+  font-size: 28px;
+  font-weight: 800;
+  color: white;
+  font-family: var(--font-heading, 'Space Grotesk', sans-serif);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .close-button {
-  background: none;
+  background: rgba(255, 255, 255, 0.2);
   border: none;
-  font-size: 32px;
-  color: #6b7280;
+  font-size: 28px;
+  color: white;
   cursor: pointer;
   padding: 0;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.2s;
+  border-radius: 12px;
+  transition: all 0.2s;
+  font-weight: 300;
 }
 
 .close-button:hover {
-  color: #1f2937;
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
 }
 
 .modal-body {
-  padding: 24px;
+  padding: 32px;
 }
 
 .preferences-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .form-group label {
-  font-weight: 600;
-  color: #374151;
-  font-size: 14px;
+  font-weight: 700;
+  color: #1f2937;
+  font-size: 15px;
+  font-family: var(--font-primary, 'Inter', sans-serif);
 }
 
 .form-group select,
 .form-group input {
-  padding: 10px 12px;
+  padding: 14px 16px;
   border: 2px solid #e5e7eb;
-  border-radius: 8px;
-  font-size: 14px;
-  transition: border-color 0.2s;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.2s;
+  background: white;
+  font-family: var(--font-primary, 'Inter', sans-serif);
 }
 
 .form-group select:focus,
 .form-group input:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1),
+              0 4px 12px rgba(139, 92, 246, 0.15);
 }
 
 .form-group select:disabled,
 .form-group input:disabled {
   background-color: #f3f4f6;
   cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .generate-button {
-  padding: 14px 24px;
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  padding: 16px 32px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: all 0.2s;
   margin-top: 12px;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+  font-family: var(--font-primary, 'Inter', sans-serif);
 }
 
 .generate-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
 }
 
 .generate-button:disabled {
-  background: #9ca3af;
+  background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
   cursor: not-allowed;
   transform: none;
+  opacity: 0.6;
+  box-shadow: none;
 }
 
 .error-message {
-  padding: 12px;
-  background-color: #fee2e2;
-  color: #dc2626;
-  border-radius: 8px;
+  padding: 16px;
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  color: #991b1b;
+  border-radius: 12px;
   font-size: 14px;
-  border: 1px solid #fecaca;
+  font-weight: 600;
+  border-left: 5px solid #ef4444;
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.15);
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
 }
 
 .challenge-preview {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 28px;
 }
 
 .challenge-header {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .challenge-header h3 {
   margin: 0;
-  font-size: 22px;
+  font-size: 26px;
+  font-weight: 800;
   color: #1f2937;
+  font-family: var(--font-heading, 'Space Grotesk', sans-serif);
 }
 
 .challenge-badges {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
 .difficulty-badge,
 .category-badge,
 .points-badge {
-  padding: 4px 12px;
-  border-radius: 16px;
+  padding: 6px 16px;
+  border-radius: 20px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .difficulty-badge.easy {
-  background-color: #d1fae5;
-  color: #065f46;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
 }
 
 .difficulty-badge.medium {
-  background-color: #fed7aa;
-  color: #92400e;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
 }
 
 .difficulty-badge.hard {
-  background-color: #fecaca;
-  color: #991b1b;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
 }
 
 .category-badge {
-  background-color: #dbeafe;
-  color: #1e40af;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
 }
 
 .points-badge {
-  background-color: #fef3c7;
-  color: #92400e;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
 }
 
 .challenge-description h4,
 .challenge-examples h4,
 .challenge-constraints h4,
 .challenge-hints h4 {
-  margin: 0 0 12px 0;
-  font-size: 16px;
-  color: #374151;
-  font-weight: 600;
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  color: #1f2937;
+  font-weight: 700;
+  font-family: var(--font-heading, 'Space Grotesk', sans-serif);
 }
 
 .challenge-description p {
   margin: 0;
   color: #4b5563;
-  line-height: 1.6;
+  line-height: 1.8;
   white-space: pre-wrap;
+  font-size: 15px;
 }
 
 .example-box {
-  background-color: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 16px;
+  background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .example-box strong {
   display: block;
-  margin-bottom: 8px;
-  color: #374151;
-  font-size: 14px;
+  margin-bottom: 12px;
+  color: #1f2937;
+  font-size: 15px;
+  font-weight: 700;
 }
 
 .example-box pre {
-  margin: 0 0 12px 0;
-  padding: 12px;
-  background-color: #1f2937;
+  margin: 0 0 16px 0;
+  padding: 16px;
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
   color: #f9fafb;
-  border-radius: 6px;
-  font-family: 'Courier New', monospace;
-  font-size: 13px;
+  border-radius: 10px;
+  font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+  font-size: 14px;
   overflow-x: auto;
+  line-height: 1.6;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .example-box pre:last-child {
@@ -260,80 +305,122 @@
 .challenge-constraints p {
   margin: 0;
   color: #4b5563;
-  line-height: 1.6;
+  line-height: 1.8;
+  font-size: 15px;
 }
 
 .challenge-hints ul {
   margin: 0;
-  padding-left: 20px;
+  padding-left: 24px;
 }
 
 .challenge-hints li {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   color: #4b5563;
-  line-height: 1.6;
+  line-height: 1.8;
+  font-size: 15px;
 }
 
 .modal-actions {
   display: flex;
   gap: 12px;
   justify-content: flex-end;
-  padding-top: 12px;
-  border-top: 1px solid #e5e7eb;
+  padding-top: 24px;
+  border-top: 2px solid #e5e7eb;
 }
 
 .primary-button,
 .secondary-button {
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
   border: none;
+  font-family: var(--font-primary, 'Inter', sans-serif);
 }
 
 .primary-button {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
-.primary-button:hover {
+.primary-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+}
+
+.primary-button:disabled {
+  background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+  cursor: not-allowed;
+  opacity: 0.6;
+  box-shadow: none;
 }
 
 .secondary-button {
   background: white;
-  color: #6b7280;
+  color: #374151;
   border: 2px solid #e5e7eb;
 }
 
 .secondary-button:hover {
-  background-color: #f9fafb;
-  border-color: #d1d5db;
+  background: #f9fafb;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
 }
 
+/* Scrollbar for modal */
+.modal-content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: #f9fafb;
+  border-radius: 0 24px 24px 0;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
   .modal-content {
     width: 95%;
     max-height: 95vh;
   }
 
+  .modal-header {
+    padding: 20px 24px;
+  }
+
   .modal-header h2 {
-    font-size: 20px;
+    font-size: 22px;
+  }
+
+  .modal-body {
+    padding: 24px;
   }
 
   .challenge-header h3 {
-    font-size: 18px;
+    font-size: 20px;
   }
 
   .modal-actions {
-    flex-direction: column;
+    flex-direction: column-reverse;
   }
 
   .primary-button,
   .secondary-button {
     width: 100%;
+    justify-content: center;
   }
 }

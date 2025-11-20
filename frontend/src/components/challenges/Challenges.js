@@ -159,63 +159,111 @@ const Challenges = () => {
   const uniqueCategories = [...new Set(challenges.map(c => c.category).filter(Boolean))];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(to bottom, #38bdf8 0%, #60a5fa 50%, #93c5fd 100%)',
+      position: 'relative'
+    }}>
+      {/* Floating decorations */}
+      <div style={{position: 'absolute', top: '10%', left: '5%', fontSize: '60px', opacity: 0.3}}>☁️</div>
+      <div style={{position: 'absolute', top: '20%', right: '10%', fontSize: '40px', opacity: 0.3}}>⭐</div>
+      <div style={{position: 'absolute', bottom: '30%', left: '15%', fontSize: '50px', opacity: 0.3}}>✨</div>
+      <div style={{position: 'absolute', bottom: '15%', right: '20%', fontSize: '55px', opacity: 0.3}}>💪</div>
+      
       <Navigation />
 
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <main className="max-w-7xl mx-auto py-8 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
 
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="flex justify-between items-center mb-4">
-              <div className="flex-1"></div>
-              <div className="text-6xl">💪</div>
-              <div className="flex-1 flex justify-end">
-                <button
-                  onClick={handleQuickLogout}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition-colors"
-                >
-                  🔓 Logout & Refresh Token
-                </button>
-              </div>
-            </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">Challenges</h1>
-            <p className="text-gray-600 mb-6">
-              Explore and tackle coding challenges to improve your skills
-            </p>
+          {/* Hero Header */}
+          <div className="text-center mb-10 relative">
+            <div style={{
+              background: 'linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%)',
+              padding: '40px',
+              borderRadius: '40px',
+              marginBottom: '32px',
+              boxShadow: '0 10px 30px rgba(251,191,36,0.3)'
+            }}>
+              <div style={{fontSize: '80px', marginBottom: '16px'}}>💪</div>
+              
+              <h1 style={{
+                fontSize: '48px',
+                fontWeight: '900',
+                color: '#1e3a8a',
+                marginBottom: '16px'
+              }}>
+                Challenges
+              </h1>
+              <p style={{fontSize: '18px', color: '#1e40af', fontWeight: '600', marginBottom: '32px'}}>
+                Explore and tackle coding challenges to level up your skills 🚀
+              </p>
 
-            {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-8">
-              <div className="bg-white rounded-lg shadow p-4">
-                <div className="text-2xl font-bold text-blue-600">{stats.total}</div>
-                <div className="text-sm text-gray-600">Total Challenges</div>
-              </div>
-              <div className="bg-white rounded-lg shadow p-4">
-                <div className="text-2xl font-bold text-green-600">{stats.byDifficulty.easy}</div>
-                <div className="text-sm text-gray-600">Easy</div>
-              </div>
-              <div className="bg-white rounded-lg shadow p-4">
-                <div className="text-2xl font-bold text-yellow-600">{stats.byDifficulty.medium}</div>
-                <div className="text-sm text-gray-600">Medium</div>
-              </div>
-              <div className="bg-white rounded-lg shadow p-4">
-                <div className="text-2xl font-bold text-red-600">{stats.byDifficulty.hard}</div>
-                <div className="text-sm text-gray-600">Hard</div>
+              {/* Stats Cards */}
+              <div style={{display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: '20px'}}>
+                <div style={{
+                  background: 'rgba(255,255,255,0.9)',
+                  borderRadius: '20px',
+                  boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+                  padding: '24px',
+                  minWidth: '140px',
+                  transition: 'transform 0.2s'
+                }}>
+                  <div style={{fontSize: '36px', fontWeight: '900', color: '#3b82f6', marginBottom: '4px'}}>{stats.total}</div>
+                  <div style={{fontSize: '14px', fontWeight: '600', color: '#64748b'}}>Total Challenges</div>
+                </div>
+                <div style={{
+                  background: 'rgba(255,255,255,0.9)',
+                  borderRadius: '20px',
+                  boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+                  padding: '24px',
+                  minWidth: '140px'
+                }}>
+                  <div style={{fontSize: '36px', fontWeight: '900', color: '#34d399', marginBottom: '4px'}}>{stats.byDifficulty.easy}</div>
+                  <div style={{fontSize: '14px', fontWeight: '600', color: '#64748b'}}>Easy</div>
+                </div>
+                <div style={{
+                  background: 'rgba(255,255,255,0.9)',
+                  borderRadius: '20px',
+                  boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+                  padding: '24px',
+                  minWidth: '140px'
+                }}>
+                  <div style={{fontSize: '36px', fontWeight: '900', color: '#fbbf24', marginBottom: '4px'}}>{stats.byDifficulty.medium}</div>
+                  <div style={{fontSize: '14px', fontWeight: '600', color: '#64748b'}}>Medium</div>
+                </div>
+                <div style={{
+                  background: 'rgba(255,255,255,0.9)',
+                  borderRadius: '20px',
+                  boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+                  padding: '24px',
+                  minWidth: '140px'
+                }}>
+                  <div style={{fontSize: '36px', fontWeight: '900', color: '#f87171', marginBottom: '4px'}}>{stats.byDifficulty.hard}</div>
+                  <div style={{fontSize: '14px', fontWeight: '600', color: '#64748b'}}>Hard</div>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Filters */}
-          <div className="bg-white rounded-lg shadow p-6 mb-8">
-            <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-              <div className="flex flex-col md:flex-row gap-4 items-center">
-                <span className="text-sm font-medium text-gray-700">Filter by:</span>
+          {/* Filters Section */}
+          <div style={{
+            background: 'rgba(255,255,255,0.95)',
+            borderRadius: '24px',
+            padding: '24px',
+            marginBottom: '32px',
+            boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
+          }}>
+            <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
+              <div className="flex flex-col md:flex-row gap-3 items-center flex-wrap">
+                <span style={{fontSize: '14px', fontWeight: '700', color: '#1e3a8a', display: 'flex', alignItems: 'center', gap: '8px'}}>
+                  <span style={{fontSize: '18px'}}>🔍</span> Filter by:
+                </span>
 
                 {/* Category Filter */}
                 <select
                   value={filters.category}
                   onChange={(e) => handleFilterChange('category', e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-4 py-2.5 border-2 border-purple-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/90 backdrop-blur-sm transition-all hover:border-purple-300"
                 >
                   <option value="">All Categories</option>
                   {uniqueCategories.map(category => (
@@ -227,7 +275,7 @@ const Challenges = () => {
                 <select
                   value={filters.difficulty}
                   onChange={(e) => handleFilterChange('difficulty', e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-4 py-2.5 border-2 border-purple-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/90 backdrop-blur-sm transition-all hover:border-purple-300"
                 >
                   <option value="">All Difficulties</option>
                   <option value="easy">Easy</option>
@@ -239,32 +287,72 @@ const Challenges = () => {
                 <select
                   value={filters.isActive.toString()}
                   onChange={(e) => handleFilterChange('isActive', e.target.value === 'true')}
-                  className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-4 py-2.5 border-2 border-purple-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/90 backdrop-blur-sm transition-all hover:border-purple-300"
                 >
                   <option value="true">Active Only</option>
                   <option value="">All Statuses</option>
                 </select>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex gap-3 flex-wrap justify-center">
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg text-sm font-semibold hover:from-blue-600 hover:to-blue-700 transition-all shadow-md hover:shadow-lg"
+                  style={{
+                    background: 'linear-gradient(135deg, #f472b6 0%, #db2777 100%)',
+                    color: 'white',
+                    padding: '12px 24px',
+                    borderRadius: '16px',
+                    fontSize: '14px',
+                    fontWeight: '700',
+                    border: 'none',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 15px rgba(244,114,182,0.4)',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(244,114,182,0.5)';
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 15px rgba(244,114,182,0.4)';
+                  }}
                 >
-                  🤖 Generate AI Challenge
+                  <span style={{fontSize: '18px'}}>🤖</span> Generate AI Challenge
                 </button>
                 <button
                   onClick={clearFilters}
-                  className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+                  style={{
+                    padding: '12px 24px',
+                    fontSize: '14px',
+                    fontWeight: '700',
+                    color: '#3b82f6',
+                    background: 'rgba(255,255,255,0.8)',
+                    borderRadius: '16px',
+                    border: '2px solid #3b82f6',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}
                 >
                   Clear Filters
                 </button>
                 <button
                   onClick={loadChallenges}
                   disabled={loading}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-300 transition-colors text-sm"
+                  style={{
+                    padding: '12px 24px',
+                    background: loading ? '#d1d5db' : 'linear-gradient(135deg, #34d399 0%, #059669 100%)',
+                    color: 'white',
+                    borderRadius: '16px',
+                    border: 'none',
+                    fontSize: '14px',
+                    fontWeight: '700',
+                    cursor: loading ? 'not-allowed' : 'pointer',
+                    boxShadow: loading ? 'none' : '0 4px 15px rgba(52,211,153,0.4)',
+                    transition: 'all 0.2s'
+                  }}
                 >
-                  {loading ? 'Loading...' : 'Refresh'}
+                  {loading ? '⏳ Loading...' : '🔄 Refresh'}
                 </button>
               </div>
             </div>
@@ -272,15 +360,33 @@ const Challenges = () => {
 
           {/* Error State */}
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-              <div className="flex">
-                <div className="text-red-400">⚠️</div>
-                <div className="ml-3">
-                  <h3 className="text-sm font-medium text-red-800">Error</h3>
-                  <p className="text-sm text-red-700 mt-1">{error}</p>
+            <div style={{
+              background: 'rgba(254,202,202,0.95)',
+              borderRadius: '24px',
+              padding: '24px',
+              marginBottom: '24px',
+              border: '2px solid #f87171',
+              boxShadow: '0 4px 15px rgba(248,113,113,0.3)'
+            }}>
+              <div style={{display: 'flex', alignItems: 'flex-start', gap: '16px'}}>
+                <div style={{fontSize: '40px'}}>⚠️</div>
+                <div style={{flex: 1}}>
+                  <h3 style={{fontSize: '18px', fontWeight: '900', color: '#991b1b', marginBottom: '8px'}}>Oops! Something went wrong</h3>
+                  <p style={{color: '#991b1b', marginBottom: '12px', fontWeight: '600'}}>{error}</p>
                   <button
                     onClick={loadChallenges}
-                    className="mt-2 text-sm text-red-600 hover:text-red-500 underline"
+                    style={{
+                      padding: '12px 24px',
+                      background: 'white',
+                      color: '#dc2626',
+                      borderRadius: '16px',
+                      border: 'none',
+                      fontSize: '14px',
+                      fontWeight: '700',
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                      transition: 'all 0.2s'
+                    }}
                   >
                     Try Again
                   </button>
@@ -291,45 +397,91 @@ const Challenges = () => {
 
           {/* Loading State */}
           {loading && (
-            <div className="text-center py-12">
-              <div className="text-4xl mb-4">⏳</div>
-              <p className="text-gray-600">Loading challenges...</p>
+            <div style={{textAlign: 'center', padding: '80px 0'}}>
+              <div style={{display: 'inline-block'}}>
+                <div style={{fontSize: '80px', marginBottom: '16px'}}>⏳</div>
+                <div style={{display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center'}}>
+                  <div style={{width: '12px', height: '12px', background: '#a78bfa', borderRadius: '50%', animation: 'bounce 1s infinite'}}></div>
+                  <div style={{width: '12px', height: '12px', background: '#a78bfa', borderRadius: '50%', animation: 'bounce 1s infinite', animationDelay: '150ms'}}></div>
+                  <div style={{width: '12px', height: '12px', background: '#a78bfa', borderRadius: '50%', animation: 'bounce 1s infinite', animationDelay: '300ms'}}></div>
+                </div>
+                <p style={{color: '#1e3a8a', marginTop: '16px', fontWeight: '700', fontSize: '16px'}}>Loading amazing challenges...</p>
+              </div>
             </div>
           )}
 
           {/* Empty State */}
           {!loading && !error && challenges.length === 0 && (
-            <div className="text-center py-12">
-              <div className="text-4xl mb-4">🔍</div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No challenges found</h3>
-              <p className="text-gray-600 mb-6">
-                {filters.category || filters.difficulty ?
-                  'No challenges match your current filters. Try adjusting your search criteria.' :
-                  'No challenges are available at the moment. Check back later!'
-                }
-              </p>
-              {(filters.category || filters.difficulty) && (
-                <button
-                  onClick={clearFilters}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                >
-                  Clear Filters
-                </button>
-              )}
+            <div style={{textAlign: 'center', padding: '80px 0'}}>
+              <div style={{
+                background: 'rgba(255,255,255,0.95)',
+                borderRadius: '30px',
+                padding: '48px',
+                maxWidth: '500px',
+                margin: '0 auto',
+                boxShadow: '0 10px 40px rgba(0,0,0,0.1)'
+              }}>
+                <div style={{fontSize: '80px', marginBottom: '24px'}}>🔍</div>
+                <h3 style={{fontSize: '28px', fontWeight: '900', color: '#1e3a8a', marginBottom: '16px'}}>No challenges found</h3>
+                <p style={{fontSize: '16px', color: '#3b82f6', marginBottom: '32px', fontWeight: '600'}}>
+                  {filters.category || filters.difficulty ?
+                    'No challenges match your current filters. Try adjusting your search criteria.' :
+                    'No challenges are available at the moment. Why not generate one with AI?'
+                  }
+                </p>
+                {(filters.category || filters.difficulty) ? (
+                  <button
+                    onClick={clearFilters}
+                    style={{
+                      background: 'linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)',
+                      color: 'white',
+                      padding: '16px 32px',
+                      borderRadius: '20px',
+                      border: 'none',
+                      fontSize: '16px',
+                      fontWeight: '700',
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 15px rgba(59,130,246,0.4)',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    Clear Filters
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    style={{
+                      background: 'linear-gradient(135deg, #f472b6 0%, #db2777 100%)',
+                      color: 'white',
+                      padding: '16px 32px',
+                      borderRadius: '20px',
+                      border: 'none',
+                      fontSize: '16px',
+                      fontWeight: '700',
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 15px rgba(244,114,182,0.4)',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    <span style={{fontSize: '18px'}}>🤖</span> Generate AI Challenge
+                  </button>
+                )}
+              </div>
             </div>
           )}
 
           {/* Challenges Grid */}
           {!loading && !error && challenges.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {challenges.map((challenge) => (
-                <ChallengeCard
-                  key={challenge.id}
-                  challenge={challenge}
-                  onChallengeClick={handleChallengeClick}
-                  onProgressUpdate={handleProgressUpdate}
-                  onSubmitForFeedback={handleSubmitForFeedback}
-                />
+            <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px'}}>
+              {challenges.map((challenge, index) => (
+                <div key={challenge.id}>
+                  <ChallengeCard
+                    challenge={challenge}
+                    onChallengeClick={handleChallengeClick}
+                    onProgressUpdate={handleProgressUpdate}
+                    onSubmitForFeedback={handleSubmitForFeedback}
+                  />
+                </div>
               ))}
             </div>
           )}
