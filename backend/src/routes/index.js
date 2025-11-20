@@ -23,6 +23,7 @@ const userRoutes = require('./users');
 const goalRoutes = require('./goals');
 const challengeRoutes = require('./challenges');
 const aiRoutes = require('./ai');
+const debugRoutes = require('./debug');
 // TODO: Import other route modules as they are implemented
 // const progressRoutes = require('./progress');
 // const submissionRoutes = require('./submissions');
@@ -46,6 +47,7 @@ router.get('/', (req, res) => {
       reviews: '/api/reviews - Peer review system',
       leaderboard: '/api/leaderboard - Rankings and achievements',
       health: '/api/health - Health check',
+      debug: '/api/debug - Debug endpoints (dev only)',
     },
     documentation: '/api/docs',
     timestamp: new Date().toISOString(),
@@ -58,6 +60,15 @@ router.use('/users', userRoutes);
 router.use('/goals', goalRoutes);
 router.use('/challenges', challengeRoutes);
 router.use('/ai', aiRoutes);
+
+// Debug routes (only in development/test environments)
+if (process.env.NODE_ENV !== 'production') {
+  console.log('🐛 Mounting debug routes at /api/debug');
+  router.use('/debug', debugRoutes);
+} else {
+  console.log('⚠️  Debug routes disabled in production');
+}
+
 // TODO: Mount other API routes as they are implemented
 // router.use('/progress', progressRoutes);
 // router.use('/submissions', submissionRoutes);

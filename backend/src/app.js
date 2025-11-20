@@ -1,4 +1,9 @@
 // TODO: Main Express application setup with middleware and routing
+
+// Sentry must be initialized FIRST before other imports
+const Sentry = require('@sentry/node');
+const { ProfilingIntegration } = require('@sentry/profiling-node');
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -15,6 +20,26 @@ const routes = require('./routes/index');
 
 // Create Express app
 const app = express();
+
+// Initialize Sentry for error tracking
+if (process.env.SENTRY_DSN_BACKEND) {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN_BACKEND,
+    environment: process.env.NODE_ENV || 'development',
+    integrations: [
+      new Sentry.Integrations.Http({ tracing: true }),
+      new Sentry.Integrations.Express({ app }),
+      new ProfilingIntegration(),
+    ],
+    tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
+    profilesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
+  });
+
+  // Sentry request handler must be the first middleware
+  app.use(Sentry.Handlers.requestHandler());
+  // Sentry tracing middleware
+  app.use(Sentry.Handlers.tracingHandler());
+}
 
 // Create logger
 const logger = pino({
@@ -111,6 +136,16 @@ app.get('/healthz', (req, res) => {
 
 // Mount API routes
 app.use('/api', routes);
+
+// Sentry error handler must be before other error handlers
+if (process.env.SENTRY_DSN_BACKEND) {
+  app.use(Sentry.Handlers.errorHandler({
+    shouldHandleError(error) {
+      // Capture all errors
+      return true;
+    },
+  }));
+}
 
 // 404 handler for unmatched routes
 app.use('*', (req, res) => {

@@ -10,6 +10,7 @@ import Challenges from './components/challenges/Challenges';
 import Progress from './components/progress/Progress';
 import ProgressBarDemo from './components/progress/ProgressBarDemo';
 import Profile from './components/profile/Profile';
+import ErrorTestButton from './components/ErrorTestButton';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -164,6 +165,7 @@ function App () {
     <AuthProvider>
       <Router>
         <AppContent />
+        <ErrorTestButton />
       </Router>
     </AuthProvider>
   );
