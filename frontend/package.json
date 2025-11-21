@@ -20,6 +20,8 @@
     "tailwindcss": "^4.1.14",
     "web-vitals": "^2.1.4",
     "zod": "^4.1.12"
+    ,"@sentry/react": "^7.67.0",
+    "@sentry/tracing": "^7.67.0"
   },
   "devDependencies": {
     "eslint": "^9.39.1",

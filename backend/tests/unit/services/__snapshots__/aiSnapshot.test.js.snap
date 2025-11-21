@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AI response snapshots generateChallenge returns deterministic parsed challenge (snapshot) 1`] = `{
+  "title": "Sum Two Numbers",
+  "description": "Given two integers, return their sum.",
+  "difficulty_level": "easy",
+  "category": "algorithms",
+  "examples": [
+    "Input: 1 2 Output: 3"
+  ],
+  "tags": [
+    "math",
+    "beginner"
+  ],
+  "learning_objectives": [
+    "addition"
+  ]
+}
+`;
+
+exports[`AI response snapshots generateFeedback returns deterministic parsed feedback (snapshot) 1`] = `{
+  "summary": "Well-structured solution with minor edge-case issues.",
+  "strengths": [
+    "Correct algorithm",
+    "Clear variable names"
+  ],
+  "weaknesses": [
+    "No input validation"
+  ],
+  "suggestions": [
+    "Add edge-case tests",
+    "Validate inputs"
+  ],
+  "score": 85
+}
+`;

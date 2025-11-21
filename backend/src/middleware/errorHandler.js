@@ -88,6 +88,16 @@ const sendErrorProd = (err, req, res) => {
     ip: req.ip,
   });
 
+  // Capture exception in Sentry if available
+  try {
+    const Sentry = require('@sentry/node');
+    if (Sentry && Sentry.captureException) {
+      Sentry.captureException(err);
+    }
+  } catch (sentryErr) {
+    logger.error('Sentry capture failed', { error: sentryErr.message });
+  }
+
   return res.status(500).json({
     status: 'error',
     message: 'Something went wrong!',

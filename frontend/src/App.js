@@ -10,6 +10,8 @@ import Challenges from './components/challenges/Challenges';
 import Progress from './components/progress/Progress';
 import ProgressBarDemo from './components/progress/ProgressBarDemo';
 import Profile from './components/profile/Profile';
+import SubmissionForm from './components/submissions/SubmissionForm';
+import SentryTest from './components/SentryTest';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -141,6 +143,24 @@ const AppContent = () => {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/submit-feedback"
+          element={
+            <ProtectedRoute>
+              <SubmissionForm />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/sentry-test"
+          element={
+            <ProtectedRoute>
+              <SentryTest />
             </ProtectedRoute>
           }
         />

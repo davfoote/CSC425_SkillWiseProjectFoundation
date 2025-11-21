@@ -183,6 +183,18 @@ export const challengeService = {
       throw error;
     }
   },
+
+  // Generate a challenge using AI endpoint
+  generateChallenge: async (options = {}) => {
+    try {
+      const response = await apiClient.post('/ai/generateChallenge', options);
+      // Return the backend's payload (support both { data: ... } and raw)
+      return response.data || response;
+    } catch (error) {
+      console.error('Error generating challenge:', error);
+      throw new Error(error.response?.data?.message || 'Failed to generate challenge');
+    }
+  },
 };
 
 export default challengeService;

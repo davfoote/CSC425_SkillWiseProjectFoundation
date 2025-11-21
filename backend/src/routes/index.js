@@ -22,6 +22,9 @@ const authRoutes = require('./auth');
 const userRoutes = require('./users');
 const goalRoutes = require('./goals');
 const challengeRoutes = require('./challenges');
+const aiRoutes = require('./ai');
+const debugRoutes = require('./debug');
+const aiRoutes = require('./ai');
 // TODO: Import other route modules as they are implemented
 // const progressRoutes = require('./progress');
 // const submissionRoutes = require('./submissions');
@@ -57,6 +60,8 @@ router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
 router.use('/goals', goalRoutes);
 router.use('/challenges', challengeRoutes);
+router.use('/ai', aiRoutes);
+router.use('/debug', debugRoutes);
 // TODO: Mount other API routes as they are implemented
 // router.use('/progress', progressRoutes);
 // router.use('/submissions', submissionRoutes);

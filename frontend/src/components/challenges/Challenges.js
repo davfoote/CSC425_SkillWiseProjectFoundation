@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navigation from '../layout/Navigation';
 import ChallengeCard from './ChallengeCard';
 import challengeService from '../../services/challengeService';
+import GenerateChallengeModal from './GenerateChallengeModal';
 import progressService from '../../services/progressService';
 
 const Challenges = () => {
@@ -112,6 +113,43 @@ const Challenges = () => {
     });
   };
 
+  // Generate challenge states
+  const [isGenModalOpen, setIsGenModalOpen] = useState(false);
+  const [generatedChallenge, setGeneratedChallenge] = useState(null);
+  const [genLoading, setGenLoading] = useState(false);
+  const [genError, setGenError] = useState('');
+
+  const openGenerateModal = async () => {
+    setIsGenModalOpen(true);
+    // Trigger generation immediately when opening
+    await handleGenerateChallenge();
+  };
+
+  const closeGenerateModal = () => {
+    setIsGenModalOpen(false);
+    setGeneratedChallenge(null);
+    setGenError('');
+  };
+
+  const handleGenerateChallenge = async () => {
+    try {
+      setGenLoading(true);
+      setGenError('');
+      setGeneratedChallenge(null);
+
+      const resp = await challengeService.generateChallenge();
+      // Support different response shapes
+      const payload = resp.data || resp.challenge || resp || {};
+
+      setGeneratedChallenge(payload);
+    } catch (err) {
+      console.error('Error generating challenge:', err);
+      setGenError(err.message || 'Failed to generate challenge.');
+    } finally {
+      setGenLoading(false);
+    }
+  };
+
   // Get unique categories for filter dropdown
   const uniqueCategories = [...new Set(challenges.map(c => c.category).filter(Boolean))];
 
@@ -206,6 +244,13 @@ const Challenges = () => {
                 >
                   {loading ? 'Loading...' : 'Refresh'}
                 </button>
+
+                <button
+                  onClick={openGenerateModal}
+                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm"
+                >
+                  Generate Challenge
+                </button>
               </div>
             </div>
           </div>
@@ -274,6 +319,15 @@ const Challenges = () => {
           )}
         </div>
       </main>
+
+      <GenerateChallengeModal
+        isOpen={isGenModalOpen}
+        onClose={closeGenerateModal}
+        generated={generatedChallenge}
+        loading={genLoading}
+        error={genError}
+        onRegenerate={handleGenerateChallenge}
+      />
     </div>
   );
 };

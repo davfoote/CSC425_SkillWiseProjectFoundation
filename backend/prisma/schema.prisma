@@ -87,3 +87,40 @@ model Challenge {
 
   @@map("challenges")
 }
+
+// AI logs for prompt/response auditing
+model AiLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int?     @map("user_id")
+  prompt    String   @db.Text
+  response  String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("ai_logs")
+}
+
+// User submissions for AI feedback
+model Submission {
+  id        Int      @id @default(autoincrement())
+  userId    Int?     @map("user_id")
+  filename  String?  @map("filename")
+  content   String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+
+  aiFeedback AiFeedback[]
+
+  @@map("submissions")
+}
+
+// AI feedback stored for submissions
+model AiFeedback {
+  id          Int      @id @default(autoincrement())
+  submissionId Int     @map("submission_id")
+  submission  Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  userId      Int?     @map("user_id")
+  feedback    String   @db.Text
+  rawResponse String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("ai_feedbacks")
+}

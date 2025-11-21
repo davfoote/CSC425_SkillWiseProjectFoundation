@@ -6,6 +6,8 @@ const rateLimit = require('express-rate-limit');
 const pino = require('pino');
 const pinoHttp = require('pino-http');
 const cookieParser = require('cookie-parser');
+const Sentry = require('@sentry/node');
+const Tracing = require('@sentry/tracing');
 
 // Import middleware
 const errorHandler = require('./middleware/errorHandler');
@@ -29,6 +31,19 @@ const logger = pino({
     },
   },
 });
+
+// Initialize Sentry if DSN is present
+if (process.env.SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    environment: process.env.NODE_ENV || 'development',
+    tracesSampleRate: parseFloat(process.env.SENTRY_TRACES_SAMPLE_RATE || '0.1'),
+  });
+
+  // Request handler must be first middleware for Sentry
+  app.use(Sentry.Handlers.requestHandler());
+  app.use(Sentry.Handlers.tracingHandler());
+}
 
 // Add request logging middleware
 app.use(pinoHttp({

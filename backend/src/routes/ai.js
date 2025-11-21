@@ -1,19 +1,23 @@
 // TODO: Implement AI routes
+
 const express = require('express');
 const router = express.Router();
 const aiController = require('../controllers/aiController');
 const auth = require('../middleware/auth');
+const { optionalAuth } = require('../middleware/jwtAuth');
+const multer = require('multer');
 
-// TODO: Add POST /feedback route for generating AI feedback
-router.post('/feedback', auth, aiController.generateFeedback);
+// Use memory storage so files are available in req.file.buffer
+const upload = multer({ storage: multer.memoryStorage() });
 
-// TODO: Add GET /hints/:challengeId route for getting hints
+// POST: Generate a challenge (optional auth — logs user if provided)
+router.post('/generateChallenge', optionalAuth, aiController.generateChallenge);
+
+// Submit for feedback (accepts file or text). Provide both /submitForFeedback and /feedback
+router.post('/submitForFeedback', optionalAuth, upload.single('file'), aiController.submitForFeedback);
+router.post('/feedback', auth, upload.single('file'), aiController.submitForFeedback);
 router.get('/hints/:challengeId', auth, aiController.getHints);
-
-// TODO: Add GET /suggestions route for challenge suggestions
 router.get('/suggestions', auth, aiController.suggestChallenges);
-
-// TODO: Add GET /analysis route for progress analysis
 router.get('/analysis', auth, aiController.analyzeProgress);
 
 module.exports = router;
