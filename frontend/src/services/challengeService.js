@@ -49,12 +49,28 @@ export const challengeService = {
       const queryString = params.toString();
       const url = `/challenges${queryString ? `?${queryString}` : ''}`;
 
+      console.log('Calling API:', url);
       const response = await apiClient.get(url);
+      console.log('API Response:', response);
+      console.log('Response data:', response.data);
+      
       // Handle backend response format: { success: true, count: X, data: [...] }
-      return response.data.data || response.data;
+      if (response.data && response.data.data) {
+        return response.data.data;
+      }
+      
+      // Fallback to response.data if it's already an array
+      if (Array.isArray(response.data)) {
+        return response.data;
+      }
+      
+      // If all else fails, return empty array
+      console.warn('Unexpected response format:', response.data);
+      return [];
     } catch (error) {
       console.error('Error fetching challenges:', error);
-      throw new Error(error.response?.data?.message || 'Failed to fetch challenges');
+      console.error('Error response:', error.response);
+      throw error;
     }
   },
 

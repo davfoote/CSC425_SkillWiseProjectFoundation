@@ -158,7 +158,7 @@ const aiController = {
         attemptNumber,
       });
 
-      // Step 3: Generate AI feedback (mock for now - can be replaced with real AI)
+      // Step 3: Generate AI feedback
       const hasRealApiKey = process.env.OPENAI_API_KEY && 
                             !process.env.OPENAI_API_KEY.includes('dummy') &&
                             process.env.OPENAI_API_KEY.length > 20;
@@ -166,13 +166,29 @@ const aiController = {
       let feedbackText, overallScore, suggestions, strengths, improvements;
 
       if (hasRealApiKey) {
-        // TODO: Call aiService.generateFeedback() when implemented
-        logger.info('🤖 Would call real AI API here');
-        feedbackText = 'AI-generated feedback would appear here';
-        overallScore = 85;
-        suggestions = ['Use AI service', 'Implement real feedback'];
-        strengths = ['Good structure'];
-        improvements = ['Add error handling'];
+        // Call real AI service
+        logger.info('🤖 Generating real AI feedback');
+        try {
+          const aiResult = await aiService.generateFeedback(codeSubmission, {
+            challengeTitle,
+            challengeDescription,
+            language,
+          });
+
+          feedbackText = aiResult.feedback.feedbackText;
+          overallScore = aiResult.feedback.overallScore;
+          suggestions = aiResult.feedback.suggestions;
+          strengths = aiResult.feedback.strengths;
+          improvements = aiResult.feedback.improvements;
+        } catch (error) {
+          logger.error('❌ AI feedback generation failed, falling back to mock:', error.message);
+          // Fallback to mock feedback if AI fails
+          feedbackText = `Your ${language} solution for "${challengeTitle}" shows good understanding. The code is well-structured and handles the main test cases correctly.`;
+          overallScore = 75;
+          suggestions = ['Consider edge cases', 'Add error handling', 'Optimize performance'];
+          strengths = ['Clean code structure', 'Good variable naming'];
+          improvements = ['Add input validation', 'Consider time complexity'];
+        }
       } else {
         // Mock feedback
         logger.info('🎭 Using mock AI feedback (no OpenAI API key configured)');

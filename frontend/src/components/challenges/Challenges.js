@@ -42,22 +42,45 @@ const Challenges = () => {
       setLoading(true);
       setError('');
 
+      // Check if user is authenticated
+      const token = localStorage.getItem('authToken');
+      console.log('Auth token exists:', !!token);
+      if (!token) {
+        console.log('No auth token found, redirecting to login');
+        navigate('/login');
+        return;
+      }
+
       // Create filter object for API call
       const apiFilters = {};
       if (filters.category) apiFilters.category = filters.category;
       if (filters.difficulty) apiFilters.difficulty = filters.difficulty;
       if (filters.isActive !== undefined) apiFilters.isActive = filters.isActive;
 
+      console.log('Fetching challenges with filters:', apiFilters);
       const response = await challengeService.getChallenges(apiFilters);
+      console.log('Challenge service returned:', response);
 
-      // Handle both array response and object with data property
-      const challengesData = Array.isArray(response) ? response : response.challenges || [];
+      // Response should already be an array from the service
+      const challengesData = Array.isArray(response) ? response : [];
+      console.log('Challenges data:', challengesData);
 
       setChallenges(challengesData);
       calculateStats(challengesData);
 
     } catch (err) {
-      console.error('Error loading challenges:', err);
+      console.error('Error loading challenges - FULL ERROR:', err);
+      console.error('Error response:', err.response);
+      console.error('Error message:', err.message);
+      
+      // If auth error, redirect to login
+      if (err.response?.status === 401 || err.message?.includes('401')) {
+        console.log('Authentication error, redirecting to login');
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userId');
+        navigate('/login');
+        return;
+      }
       setError(err.message || 'Failed to load challenges. Please try again.');
       setChallenges([]);
     } finally {
@@ -247,51 +270,113 @@ const Challenges = () => {
 
           {/* Filters Section */}
           <div style={{
-            background: 'rgba(255,255,255,0.95)',
-            borderRadius: '24px',
-            padding: '24px',
+            background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+            borderRadius: '30px',
+            padding: '32px',
             marginBottom: '32px',
-            boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
+            boxShadow: '0 8px 25px rgba(251,191,36,0.3)'
           }}>
+            <div style={{marginBottom: '24px', textAlign: 'center'}}>
+              <h3 style={{fontSize: '24px', fontWeight: '900', color: '#1e3a8a', marginBottom: '8px'}}>
+                🔍 Find Your Perfect Challenge
+              </h3>
+              <p style={{fontSize: '14px', color: '#1e40af', fontWeight: '600'}}>
+                Filter by category, difficulty, or status to discover challenges that match your goals
+              </p>
+            </div>
+
             <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
               <div className="flex flex-col md:flex-row gap-3 items-center flex-wrap">
-                <span style={{fontSize: '14px', fontWeight: '700', color: '#1e3a8a', display: 'flex', alignItems: 'center', gap: '8px'}}>
-                  <span style={{fontSize: '18px'}}>🔍</span> Filter by:
-                </span>
-
                 {/* Category Filter */}
-                <select
-                  value={filters.category}
-                  onChange={(e) => handleFilterChange('category', e.target.value)}
-                  className="px-4 py-2.5 border-2 border-purple-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/90 backdrop-blur-sm transition-all hover:border-purple-300"
-                >
-                  <option value="">All Categories</option>
-                  {uniqueCategories.map(category => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
-                </select>
+                <div>
+                  <label style={{display: 'block', fontSize: '12px', fontWeight: '700', color: '#1e3a8a', marginBottom: '6px'}}>
+                    📚 Category
+                  </label>
+                  <select
+                    value={filters.category}
+                    onChange={(e) => handleFilterChange('category', e.target.value)}
+                    style={{
+                      padding: '12px 16px',
+                      border: '2px solid #a78bfa',
+                      borderRadius: '16px',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      outline: 'none',
+                      background: 'white',
+                      cursor: 'pointer',
+                      minWidth: '160px',
+                      color: '#1e3a8a',
+                      transition: 'all 0.2s'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = '#7c3aed'}
+                    onBlur={(e) => e.target.style.borderColor = '#a78bfa'}
+                  >
+                    <option value="">All Categories</option>
+                    {uniqueCategories.map(category => (
+                      <option key={category} value={category}>{category}</option>
+                    ))}
+                  </select>
+                </div>
 
                 {/* Difficulty Filter */}
-                <select
-                  value={filters.difficulty}
-                  onChange={(e) => handleFilterChange('difficulty', e.target.value)}
-                  className="px-4 py-2.5 border-2 border-purple-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/90 backdrop-blur-sm transition-all hover:border-purple-300"
-                >
-                  <option value="">All Difficulties</option>
-                  <option value="easy">Easy</option>
-                  <option value="medium">Medium</option>
-                  <option value="hard">Hard</option>
-                </select>
+                <div>
+                  <label style={{display: 'block', fontSize: '12px', fontWeight: '700', color: '#1e3a8a', marginBottom: '6px'}}>
+                    ⚡ Difficulty
+                  </label>
+                  <select
+                    value={filters.difficulty}
+                    onChange={(e) => handleFilterChange('difficulty', e.target.value)}
+                    style={{
+                      padding: '12px 16px',
+                      border: '2px solid #f472b6',
+                      borderRadius: '16px',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      outline: 'none',
+                      background: 'white',
+                      cursor: 'pointer',
+                      minWidth: '160px',
+                      color: '#1e3a8a',
+                      transition: 'all 0.2s'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = '#db2777'}
+                    onBlur={(e) => e.target.style.borderColor = '#f472b6'}
+                  >
+                    <option value="">All Difficulties</option>
+                    <option value="easy">🟢 Easy</option>
+                    <option value="medium">🟡 Medium</option>
+                    <option value="hard">🔴 Hard</option>
+                  </select>
+                </div>
 
                 {/* Status Filter */}
-                <select
-                  value={filters.isActive.toString()}
-                  onChange={(e) => handleFilterChange('isActive', e.target.value === 'true')}
-                  className="px-4 py-2.5 border-2 border-purple-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/90 backdrop-blur-sm transition-all hover:border-purple-300"
-                >
-                  <option value="true">Active Only</option>
-                  <option value="">All Statuses</option>
-                </select>
+                <div>
+                  <label style={{display: 'block', fontSize: '12px', fontWeight: '700', color: '#1e3a8a', marginBottom: '6px'}}>
+                    ✅ Status
+                  </label>
+                  <select
+                    value={filters.isActive.toString()}
+                    onChange={(e) => handleFilterChange('isActive', e.target.value === 'true')}
+                    style={{
+                      padding: '12px 16px',
+                      border: '2px solid #34d399',
+                      borderRadius: '16px',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      outline: 'none',
+                      background: 'white',
+                      cursor: 'pointer',
+                      minWidth: '160px',
+                      color: '#1e3a8a',
+                      transition: 'all 0.2s'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = '#059669'}
+                    onBlur={(e) => e.target.style.borderColor = '#34d399'}
+                  >
+                    <option value="true">Active Only</option>
+                    <option value="">All Statuses</option>
+                  </select>
+                </div>
               </div>
 
               <div className="flex gap-3 flex-wrap justify-center">
@@ -300,9 +385,9 @@ const Challenges = () => {
                   style={{
                     background: 'linear-gradient(135deg, #f472b6 0%, #db2777 100%)',
                     color: 'white',
-                    padding: '12px 24px',
-                    borderRadius: '16px',
-                    fontSize: '14px',
+                    padding: '14px 28px',
+                    borderRadius: '18px',
+                    fontSize: '15px',
                     fontWeight: '700',
                     border: 'none',
                     cursor: 'pointer',
@@ -318,34 +403,42 @@ const Challenges = () => {
                     e.currentTarget.style.boxShadow = '0 4px 15px rgba(244,114,182,0.4)';
                   }}
                 >
-                  <span style={{fontSize: '18px'}}>🤖</span> Generate AI Challenge
+                  🤖 Generate AI Challenge
                 </button>
                 <button
                   onClick={clearFilters}
                   style={{
-                    padding: '12px 24px',
-                    fontSize: '14px',
+                    padding: '14px 28px',
+                    fontSize: '15px',
                     fontWeight: '700',
-                    color: '#3b82f6',
-                    background: 'rgba(255,255,255,0.8)',
-                    borderRadius: '16px',
-                    border: '2px solid #3b82f6',
+                    color: '#7c3aed',
+                    background: 'white',
+                    borderRadius: '18px',
+                    border: '2px solid #a78bfa',
                     cursor: 'pointer',
                     transition: 'all 0.2s'
                   }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.background = '#faf5ff';
+                    e.currentTarget.style.borderColor = '#7c3aed';
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.background = 'white';
+                    e.currentTarget.style.borderColor = '#a78bfa';
+                  }}
                 >
-                  Clear Filters
+                  🔄 Clear Filters
                 </button>
                 <button
                   onClick={loadChallenges}
                   disabled={loading}
                   style={{
-                    padding: '12px 24px',
+                    padding: '14px 28px',
                     background: loading ? '#d1d5db' : 'linear-gradient(135deg, #34d399 0%, #059669 100%)',
                     color: 'white',
-                    borderRadius: '16px',
+                    borderRadius: '18px',
                     border: 'none',
-                    fontSize: '14px',
+                    fontSize: '15px',
                     fontWeight: '700',
                     cursor: loading ? 'not-allowed' : 'pointer',
                     boxShadow: loading ? 'none' : '0 4px 15px rgba(52,211,153,0.4)',
@@ -472,9 +565,15 @@ const Challenges = () => {
 
           {/* Challenges Grid */}
           {!loading && !error && challenges.length > 0 && (
-            <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px'}}>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+              gap: '24px',
+              justifyItems: 'center',
+              width: '100%'
+            }}>
               {challenges.map((challenge, index) => (
-                <div key={challenge.id}>
+                <div key={challenge.id} style={{width: '100%', maxWidth: '400px'}}>
                   <ChallengeCard
                     challenge={challenge}
                     onChallengeClick={handleChallengeClick}

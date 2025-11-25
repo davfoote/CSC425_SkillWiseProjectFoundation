@@ -106,7 +106,7 @@ const ProgressBar = ({
       <div className="flex items-center justify-between mb-2">
         <span className={`font-medium text-gray-700 ${config.fontSize}`}>{title}</span>
         <span className={`font-bold ${config.fontSize}`} style={{ color: progressColor }}>
-          {normalizedPercentage}%
+          {' '}{normalizedPercentage}%
         </span>
       </div>
 
@@ -123,8 +123,8 @@ const ProgressBar = ({
 
       {showStats && (
         <div className="flex justify-between mt-2 text-sm text-gray-600">
-          <span>Completed: {completed}</span>
-          <span>Total: {total}</span>
+          <span>Completed: {' '}{completed}</span>
+          <span>Total: {' '}{total}</span>
         </div>
       )}
     </div>
@@ -175,8 +175,8 @@ const ProgressBar = ({
 
       {showStats && (
         <div className="flex justify-between mt-2 text-sm text-gray-600">
-          <span>Completed: {completed}</span>
-          <span>Total: {total}</span>
+          <span>Completed: {' '}{completed}</span>
+          <span>Total: {' '}{total}</span>
         </div>
       )}
     </div>

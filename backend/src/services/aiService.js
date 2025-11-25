@@ -112,8 +112,82 @@ const aiService = {
 
   // Generate feedback using AI
   generateFeedback: async (submissionText, challengeContext) => {
-    // Implementation needed
-    throw new Error('Not implemented');
+    const startTime = Date.now();
+    
+    try {
+      const { 
+        challengeTitle = 'Coding Challenge',
+        challengeDescription = '',
+        language = 'JavaScript'
+      } = challengeContext;
+
+      logger.info('🤖 AI Feedback Generation Request:', {
+        challengeTitle,
+        language,
+        codeLength: submissionText.length,
+        timestamp: new Date().toISOString(),
+      });
+
+      const promptConfig = getPromptConfig('codeFeedback', {
+        challengeTitle,
+        challengeDescription,
+        language,
+        submissionText,
+      });
+
+      logger.info('📤 Sending code for feedback to OpenAI:', {
+        model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
+        promptLength: promptConfig.user.length,
+      });
+
+      const completion = await openai.chat.completions.create({
+        model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: promptConfig.system,
+          },
+          {
+            role: 'user',
+            content: promptConfig.user,
+          },
+        ],
+        temperature: 0.7,
+        max_tokens: parseInt(process.env.OPENAI_MAX_TOKENS) || 2000,
+      });
+
+      const responseText = completion.choices[0].message.content;
+      
+      logger.info('📥 Received feedback from OpenAI:', {
+        responseLength: responseText.length,
+        tokensUsed: completion.usage?.total_tokens || 0,
+      });
+      
+      // Parse JSON response
+      const feedbackData = JSON.parse(responseText);
+      
+      logger.info('✅ Feedback generated successfully:', {
+        score: feedbackData.overallScore,
+        executionTime: `${Date.now() - startTime}ms`,
+      });
+
+      return {
+        success: true,
+        feedback: {
+          feedbackText: feedbackData.summary || feedbackData.feedbackText,
+          overallScore: feedbackData.overallScore || 75,
+          suggestions: feedbackData.suggestions || [],
+          strengths: feedbackData.strengths || [],
+          improvements: feedbackData.improvements || [],
+        },
+      };
+    } catch (error) {
+      logger.error('❌ Error generating feedback:', {
+        error: error.message,
+        stack: error.stack,
+      });
+      throw new Error('Failed to generate feedback from AI: ' + error.message);
+    }
   },
 
   // Generate hints for challenges

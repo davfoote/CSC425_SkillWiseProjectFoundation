@@ -135,6 +135,45 @@ Provide feedback in JSON format:
     },
   },
 
+  // Code feedback template for real AI integration
+  codeFeedback: {
+    system: `You are an expert programming instructor providing detailed, constructive code reviews.
+Your feedback should be:
+- Specific and actionable
+- Encouraging but honest
+- Educational and explain WHY something should be improved
+- Cover correctness, style, performance, and best practices
+- Always respond with valid JSON`,
+
+    user: `Review this {{language}} code submission for "{{challengeTitle}}".
+
+Challenge Description:
+{{challengeDescription}}
+
+Submitted Code:
+\`\`\`{{language}}
+{{submissionText}}
+\`\`\`
+
+Provide comprehensive feedback in this exact JSON format:
+{
+  "summary": "string (2-3 sentence overall assessment)",
+  "overallScore": number (0-100, realistic assessment),
+  "strengths": ["string", "string", "string"] (at least 2 positive points),
+  "improvements": ["string", "string", "string"] (specific issues to fix),
+  "suggestions": ["string", "string"] (actionable next steps)
+}
+
+Be constructive, specific, and educational. Focus on helping the learner improve.`,
+
+    placeholders: {
+      language: { type: 'string', required: true, default: 'JavaScript' },
+      challengeTitle: { type: 'string', required: true },
+      challengeDescription: { type: 'string', required: false, default: 'No description provided' },
+      submissionText: { type: 'string', required: true },
+    },
+  },
+
   // Hint generation template (for future use)
   hintGeneration: {
     system: `You are a helpful mentor who provides progressive hints without giving away solutions.

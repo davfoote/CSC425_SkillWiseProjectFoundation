@@ -60,47 +60,99 @@ const ChallengeCard = ({ challenge, onChallengeClick, onProgressUpdate, onSubmit
 
   return (
     <div
-      className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6 cursor-pointer border border-gray-100 hover:border-purple-300 overflow-hidden hover-lift"
+      style={{
+        background: 'rgba(255,255,255,0.95)',
+        borderRadius: '30px',
+        boxShadow: '0 8px 25px rgba(0,0,0,0.1)',
+        padding: '28px',
+        cursor: 'pointer',
+        transition: 'all 0.3s',
+        position: 'relative',
+        overflow: 'hidden'
+      }}
+      onMouseOver={(e) => {
+        e.currentTarget.style.transform = 'translateY(-8px)';
+        e.currentTarget.style.boxShadow = '0 12px 35px rgba(0,0,0,0.15)';
+      }}
+      onMouseOut={(e) => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.1)';
+      }}
       onClick={() => onChallengeClick && onChallengeClick(challenge)}
     >
-      {/* Gradient Overlay on Hover */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      
       {/* Content */}
-      <div className="relative z-10">
+      <div style={{position: 'relative', zIndex: 10}}>
         {/* Header with Status and Difficulty */}
-        <div className="flex justify-between items-start mb-4">
-          <div className="flex items-center space-x-2">
-            <span className="text-2xl">{statusInfo.icon}</span>
-            <span className={`px-3 py-1 rounded-full text-xs font-bold ${statusInfo.color} shadow-sm`}>
+        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '20px'}}>
+          <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+            <span style={{fontSize: '28px'}}>{statusInfo.icon}</span>
+            <span style={{
+              padding: '6px 14px',
+              borderRadius: '20px',
+              fontSize: '12px',
+              fontWeight: '700',
+              background: statusInfo.text === 'Available' ? 'linear-gradient(135deg, #34d399 0%, #059669 100%)' : '#e5e7eb',
+              color: statusInfo.text === 'Available' ? 'white' : '#6b7280',
+              boxShadow: statusInfo.text === 'Available' ? '0 4px 12px rgba(52,211,153,0.3)' : 'none'
+            }}>
               {statusInfo.text}
             </span>
           </div>
-          <div className="flex items-center space-x-2 bg-gray-50 px-3 py-1.5 rounded-full">
-            <div
-              className={`w-2.5 h-2.5 rounded-full ${getDifficultyColor(challenge.difficulty_level)} shadow-sm`}
-              title={`${challenge.difficulty_level || 'medium'} difficulty`}
-            ></div>
-            <span className="text-xs font-bold text-gray-700 capitalize">
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            background: getDifficultyColor(challenge.difficulty_level).replace('bg-', '') === 'green-500' ? 'linear-gradient(135deg, #34d399 0%, #10b981 100%)' :
+                       getDifficultyColor(challenge.difficulty_level).replace('bg-', '') === 'yellow-500' ? 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)' :
+                       'linear-gradient(135deg, #f87171 0%, #dc2626 100%)',
+            padding: '8px 16px',
+            borderRadius: '20px',
+            color: 'white',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+          }}>
+            <span style={{fontSize: '14px', fontWeight: '900', textTransform: 'capitalize'}}>
               {challenge.difficulty_level || 'medium'}
             </span>
           </div>
         </div>
 
         {/* Title */}
-        <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-purple-600 transition-colors duration-200" style={{ fontFamily: 'var(--font-heading)' }}>
+        <h3 style={{
+          fontSize: '22px',
+          fontWeight: '900',
+          color: '#1e3a8a',
+          marginBottom: '12px',
+          lineHeight: '1.3'
+        }}>
           {challenge.title || 'Untitled Challenge'}
         </h3>
 
         {/* Description */}
-        <p className="text-gray-600 text-sm mb-4 line-clamp-3 leading-relaxed">
+        <p style={{
+          color: '#64748b',
+          fontSize: '14px',
+          marginBottom: '16px',
+          lineHeight: '1.6',
+          display: '-webkit-box',
+          WebkitLineClamp: 3,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden'
+        }}>
           {challenge.description || 'No description available.'}
         </p>
 
-        {/* Category and Tags */}
+        {/* Category */}
         {challenge.category && (
-          <div className="mb-3">
-            <span className="inline-block bg-gradient-primary text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-md">
+          <div style={{marginBottom: '16px'}}>
+            <span style={{
+              background: 'linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%)',
+              color: 'white',
+              padding: '8px 16px',
+              borderRadius: '16px',
+              fontSize: '13px',
+              fontWeight: '700',
+              boxShadow: '0 4px 12px rgba(167,139,250,0.4)'
+            }}>
               📚 {challenge.category}
             </span>
           </div>
@@ -108,18 +160,25 @@ const ChallengeCard = ({ challenge, onChallengeClick, onProgressUpdate, onSubmit
 
         {/* Tags */}
         {challenge.tags && challenge.tags.length > 0 && (
-          <div className="mb-4">
-            <div className="flex flex-wrap gap-2">
+          <div style={{marginBottom: '20px'}}>
+            <div style={{display: 'flex', flexWrap: 'wrap', gap: '8px'}}>
               {challenge.tags.slice(0, 3).map((tag, index) => (
                 <span
                   key={index}
-                  className="inline-block bg-purple-100 text-purple-700 px-2.5 py-1 rounded-lg text-xs font-semibold"
+                  style={{
+                    background: 'rgba(167,139,250,0.15)',
+                    color: '#7c3aed',
+                    padding: '6px 12px',
+                    borderRadius: '12px',
+                    fontSize: '12px',
+                    fontWeight: '700'
+                  }}
                 >
                   #{tag}
                 </span>
               ))}
               {challenge.tags.length > 3 && (
-                <span className="text-xs text-gray-500 font-medium flex items-center">
+                <span style={{fontSize: '12px', color: '#64748b', fontWeight: '600', display: 'flex', alignItems: 'center'}}>
                   +{challenge.tags.length - 3} more
                 </span>
               )}
@@ -128,23 +187,58 @@ const ChallengeCard = ({ challenge, onChallengeClick, onProgressUpdate, onSubmit
         )}
 
         {/* Footer with Time and Points */}
-        <div className="flex justify-between items-center pt-3 border-t border-gray-200">
-          <div className="flex items-center space-x-4 text-xs text-gray-600 font-medium">
-            <div className="flex items-center space-x-1.5 bg-gray-50 px-2.5 py-1.5 rounded-lg">
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          paddingTop: '16px',
+          borderTop: '2px solid #e5e7eb',
+          marginBottom: '16px'
+        }}>
+          <div style={{display: 'flex', alignItems: 'center', gap: '12px', fontSize: '13px'}}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              background: '#f1f5f9',
+              padding: '8px 12px',
+              borderRadius: '12px',
+              fontWeight: '700',
+              color: '#475569'
+            }}>
               <span>⏱️</span>
               <span>{formatTime(challenge.estimated_time_minutes)}</span>
             </div>
             {challenge.points_reward && (
-              <div className="flex items-center space-x-1.5 bg-yellow-50 text-yellow-700 px-2.5 py-1.5 rounded-lg">
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+                padding: '8px 12px',
+                borderRadius: '12px',
+                fontWeight: '900',
+                color: '#92400e'
+              }}>
                 <span>🏆</span>
-                <span className="font-bold">{challenge.points_reward} pts</span>
+                <span>{challenge.points_reward} pts</span>
               </div>
             )}
           </div>
 
           {/* Peer Review Indicator */}
           {challenge.requires_peer_review && (
-            <div className="flex items-center space-x-1.5 text-xs text-purple-600 bg-purple-50 px-2.5 py-1.5 rounded-lg font-semibold">
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              fontSize: '13px',
+              color: '#7c3aed',
+              background: 'rgba(167,139,250,0.15)',
+              padding: '8px 12px',
+              borderRadius: '12px',
+              fontWeight: '700'
+            }}>
               <span>👥</span>
               <span>Peer Review</span>
             </div>
@@ -152,42 +246,101 @@ const ChallengeCard = ({ challenge, onChallengeClick, onProgressUpdate, onSubmit
         </div>
 
         {/* Completion Status and Buttons */}
-        <div className="mt-4 pt-4 border-t border-gray-200 space-y-2">
+        <div style={{marginTop: '20px', paddingTop: '20px', borderTop: '2px solid #e5e7eb', display: 'flex', flexDirection: 'column', gap: '12px'}}>
         {/* Submit for Feedback Button */}
         <button
           onClick={(e) => {
             e.stopPropagation();
             onSubmitForFeedback && onSubmitForFeedback(challenge);
           }}
-          className="w-full bg-gradient-primary text-white py-2.5 px-4 rounded-xl hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-200 text-sm font-bold flex items-center justify-center space-x-2 hover:-translate-y-0.5"
+          style={{
+            width: '100%',
+            background: 'linear-gradient(135deg, #f472b6 0%, #db2777 100%)',
+            color: 'white',
+            padding: '14px 16px',
+            borderRadius: '18px',
+            border: 'none',
+            fontSize: '14px',
+            fontWeight: '700',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            boxShadow: '0 4px 15px rgba(244,114,182,0.4)',
+            transition: 'all 0.2s'
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 6px 20px rgba(244,114,182,0.5)';
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 4px 15px rgba(244,114,182,0.4)';
+          }}
         >
-          <span className="text-lg">🤖</span>
+          <span style={{fontSize: '18px'}}>🤖</span>
           <span>Submit for AI Feedback</span>
         </button>
 
         {/* Mark Complete Button */}
         {isCompleted ? (
-          <div className="flex items-center justify-center space-x-2 text-green-600 bg-gradient-success rounded-xl py-2.5 shadow-md text-white font-bold">
-            <span className="text-lg">✅</span>
-            <span className="text-sm">Completed!</span>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            background: 'linear-gradient(135deg, #34d399 0%, #059669 100%)',
+            borderRadius: '18px',
+            padding: '14px',
+            color: 'white',
+            fontWeight: '700',
+            boxShadow: '0 4px 15px rgba(52,211,153,0.4)'
+          }}>
+            <span style={{fontSize: '18px'}}>✅</span>
+            <span style={{fontSize: '14px'}}>Completed!</span>
           </div>
         ) : (
           <button
             onClick={handleMarkComplete}
             disabled={isLoading}
-            className="w-full bg-white border-2 border-purple-300 text-purple-600 py-2.5 px-4 rounded-xl hover:bg-purple-50 hover:border-purple-400 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
+            style={{
+              width: '100%',
+              background: 'white',
+              border: '2px solid #a78bfa',
+              color: '#7c3aed',
+              padding: '14px 16px',
+              borderRadius: '18px',
+              fontSize: '14px',
+              fontWeight: '700',
+              cursor: isLoading ? 'not-allowed' : 'pointer',
+              opacity: isLoading ? 0.5 : 1,
+              transition: 'all 0.2s'
+            }}
+            onMouseOver={(e) => {
+              if (!isLoading) {
+                e.currentTarget.style.background = '#faf5ff';
+                e.currentTarget.style.borderColor = '#7c3aed';
+              }
+            }}
+            onMouseOut={(e) => {
+              if (!isLoading) {
+                e.currentTarget.style.background = 'white';
+                e.currentTarget.style.borderColor = '#a78bfa';
+              }
+            }}
           >
             {isLoading ? (
-              <span className="flex items-center justify-center space-x-2">
-                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+              <span style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'}}>
+                <svg style={{animation: 'spin 1s linear infinite', height: '16px', width: '16px'}} viewBox="0 0 24 24">
                   <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" opacity="0.25" />
                   <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" opacity="0.75" />
                 </svg>
                 <span>Completing...</span>
               </span>
             ) : (
-              <span className="flex items-center justify-center space-x-2">
-                <span className="text-lg">✓</span>
+              <span style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'}}>
+                <span style={{fontSize: '18px'}}>✓</span>
                 <span>Mark Complete</span>
               </span>
             )}
@@ -197,9 +350,17 @@ const ChallengeCard = ({ challenge, onChallengeClick, onProgressUpdate, onSubmit
 
       {/* Max Attempts Indicator */}
       {challenge.max_attempts && (
-        <div className="mt-3 pt-3 border-t border-gray-200">
-          <div className="text-xs text-gray-500 text-center font-medium bg-gray-50 py-2 rounded-lg">
-            📋 Max attempts: <span className="font-bold text-gray-700">{challenge.max_attempts}</span>
+        <div style={{marginTop: '16px', paddingTop: '16px', borderTop: '2px solid #e5e7eb'}}>
+          <div style={{
+            fontSize: '12px',
+            color: '#64748b',
+            textAlign: 'center',
+            fontWeight: '700',
+            background: '#f1f5f9',
+            padding: '10px',
+            borderRadius: '12px'
+          }}>
+            📋 Max attempts: <span style={{fontWeight: '900', color: '#1e3a8a'}}>{challenge.max_attempts}</span>
           </div>
         </div>
       )}

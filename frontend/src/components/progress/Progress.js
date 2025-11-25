@@ -125,13 +125,16 @@ const Progress = () => {
             marginBottom: '32px'
           }}>
             <h2 style={{
-              fontSize: '32px',
-              fontWeight: '900',
-              color: '#1e3a8a',
+              fontSize: '28px',
+              fontWeight: 'bold',
               marginBottom: '32px',
-              textAlign: 'center'
-            }}>Overall Progress</h2>
-            <div style={{display: 'flex', justifyContent: 'center'}}>
+              background: 'linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%)',
+              padding: '16px 24px',
+              borderRadius: '16px',
+              textAlign: 'center',
+              boxShadow: '0 4px 12px rgba(251, 191, 36, 0.2)'
+            }}>📊 Overall Progress</h2>
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%'}}>
               <ProgressBar
                 percentage={progressData.overall.percentage}
                 total={progressData.overall.total}
@@ -143,9 +146,9 @@ const Progress = () => {
               />
             </div>
             <div style={{marginTop: '24px', textAlign: 'center'}}>
-              <p style={{color: '#6b7280'}}>
-                You've completed <span style={{fontWeight: '600'}}>{progressData.overall.completed}</span> out of{' '}
-                <span style={{fontWeight: '600'}}>{progressData.overall.total}</span> total items
+              <p style={{color: '#1e3a8a', fontSize: '20px', fontWeight: '600'}}>
+                You've completed <span style={{fontWeight: '900', color: '#059669', fontSize: '24px'}}>{progressData.overall.completed}</span> out of{' '}
+                <span style={{fontWeight: '900', color: '#3b82f6', fontSize: '24px'}}>{progressData.overall.total}</span> total items
               </p>
             </div>
           </div>
@@ -155,12 +158,24 @@ const Progress = () => {
 
             {/* Goals Progress */}
             <div style={{
-              background: 'linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%)',
-              borderRadius: '24px',
-              boxShadow: '0 8px 25px rgba(251,191,36,0.3)',
+              background: 'linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%)',
+              borderRadius: '30px',
+              boxShadow: '0 8px 24px rgba(192, 132, 252, 0.3)',
+              transition: 'all 0.3s ease',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-8px)';
+              e.currentTarget.style.boxShadow = '0 12px 32px rgba(192, 132, 252, 0.4)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 8px 24px rgba(192, 132, 252, 0.3)';
+            }}>
+            <div style={{
               padding: '32px'
             }}>
-              <h3 style={{fontSize: '24px', fontWeight: '900', color: '#1e3a8a', marginBottom: '24px'}}>📎 Goals Progress</h3>
+              <h3 style={{fontSize: '24px', fontWeight: 'bold', marginBottom: '20px', color: 'white', textShadow: '0 2px 4px rgba(0,0,0,0.1)'}}>🎯 Goals Progress</h3>
               <ProgressBar
                 percentage={progressData.goals.percentage}
                 total={progressData.goals.total}
@@ -171,26 +186,37 @@ const Progress = () => {
                 animated={true}
                 color="#10B981"
               />
-              <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
-                <div className="text-center p-3 bg-green-50 rounded-lg">
-                  <div className="font-bold text-green-600 text-lg">{progressData.goals.completed}</div>
-                  <div className="text-green-800">Completed</div>
+              <div style={{marginTop: '24px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px'}}>
+                <div style={{textAlign: 'center', padding: '20px', background: 'rgba(255,255,255,0.3)', borderRadius: '20px'}}>
+                  <div style={{fontWeight: '900', color: 'white', fontSize: '32px', textShadow: '0 2px 4px rgba(0,0,0,0.2)'}}>{progressData.goals.completed}</div>
+                  <div style={{color: 'white', fontWeight: '700', fontSize: '16px', marginTop: '8px'}}>✅ Completed</div>
                 </div>
-                <div className="text-center p-3 bg-blue-50 rounded-lg">
-                  <div className="font-bold text-blue-600 text-lg">{progressData.goals.total - progressData.goals.completed}</div>
-                  <div className="text-blue-800">In Progress</div>
+                <div style={{textAlign: 'center', padding: '20px', background: 'rgba(255,255,255,0.3)', borderRadius: '20px'}}>
+                  <div style={{fontWeight: '900', color: 'white', fontSize: '32px', textShadow: '0 2px 4px rgba(0,0,0,0.2)'}}>{progressData.goals.total - progressData.goals.completed}</div>
+                  <div style={{color: 'white', fontWeight: '700', fontSize: '16px', marginTop: '8px'}}>🎯 In Progress</div>
                 </div>
               </div>
+            </div>
             </div>
 
             {/* Challenges Progress */}
             <div style={{
-              background: 'linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%)',
-              borderRadius: '24px',
-              boxShadow: '0 8px 25px rgba(167,139,250,0.3)',
-              padding: '32px'
+              background: 'linear-gradient(135deg, #fce7f3 0%, #f472b6 100%)',
+              borderRadius: '30px',
+              boxShadow: '0 8px 24px rgba(244, 114, 182, 0.3)',
+              padding: '32px',
+              transition: 'all 0.3s ease',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-8px)';
+              e.currentTarget.style.boxShadow = '0 12px 32px rgba(244, 114, 182, 0.4)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 8px 24px rgba(244, 114, 182, 0.3)';
             }}>
-              <h3 style={{fontSize: '24px', fontWeight: '900', color: 'white', marginBottom: '24px'}}>🏆 Challenges Progress</h3>
+              <h3 style={{fontSize: '24px', fontWeight: 'bold', marginBottom: '20px', color: 'white', textShadow: '0 2px 4px rgba(0,0,0,0.1)'}}>🏆 Challenges Progress</h3>
               <ProgressBar
                 percentage={progressData.challenges.percentage}
                 total={progressData.challenges.total}
@@ -201,187 +227,17 @@ const Progress = () => {
                 animated={true}
                 color="#3B82F6"
               />
-              <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
-                <div className="text-center p-3 bg-blue-50 rounded-lg">
-                  <div className="font-bold text-blue-600 text-lg">{progressData.challenges.completed}</div>
-                  <div className="text-blue-800">Completed</div>
+              <div style={{marginTop: '24px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px'}}>
+                <div style={{textAlign: 'center', padding: '20px', background: 'rgba(255,255,255,0.3)', borderRadius: '20px'}}>
+                  <div style={{fontWeight: '900', color: 'white', fontSize: '32px', textShadow: '0 2px 4px rgba(0,0,0,0.2)'}}>{progressData.challenges.completed}</div>
+                  <div style={{color: 'white', fontWeight: '700', fontSize: '16px', marginTop: '8px'}}>✅ Completed</div>
                 </div>
-                <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <div className="font-bold text-gray-600 text-lg">{progressData.challenges.total - progressData.challenges.completed}</div>
-                  <div className="text-gray-800">Remaining</div>
+                <div style={{textAlign: 'center', padding: '20px', background: 'rgba(255,255,255,0.3)', borderRadius: '20px'}}>
+                  <div style={{fontWeight: '900', color: 'white', fontSize: '32px', textShadow: '0 2px 4px rgba(0,0,0,0.2)'}}>{progressData.challenges.total - progressData.challenges.completed}</div>
+                  <div style={{color: 'white', fontWeight: '700', fontSize: '16px', marginTop: '8px'}}>📋 Remaining</div>
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Progress Visualization Demos */}
-          <div style={{
-            background: 'rgba(255,255,255,0.95)',
-            borderRadius: '30px',
-            boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
-            padding: '40px',
-            marginBottom: '32px'
-          }}>
-            <h3 style={{
-              fontSize: '28px',
-              fontWeight: '900',
-              color: '#1e3a8a',
-              marginBottom: '32px',
-              textAlign: 'center'
-            }}>📊 Progress Visualization Options</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-
-              {/* Circular Progress - Medium */}
-              <div className="text-center">
-                <h4 className="font-semibold text-gray-700 mb-3">Circular Progress</h4>
-                <div className="flex justify-center">
-                  <ProgressBar
-                    percentage={progressData.overall.percentage}
-                    title="Overall"
-                    type="circular"
-                    size="medium"
-                    animated={true}
-                  />
-                </div>
-              </div>
-
-              {/* Bar Chart Progress */}
-              <div className="text-center">
-                <h4 className="font-semibold text-gray-700 mb-3">Bar Chart</h4>
-                <ProgressBar
-                  percentage={progressData.goals.percentage}
-                  total={progressData.goals.total}
-                  completed={progressData.goals.completed}
-                  title="Goals"
-                  type="bar"
-                  showStats={false}
-                  color="#10B981"
-                />
-              </div>
-
-              {/* Mini Progress */}
-              <div className="text-center">
-                <h4 className="font-semibold text-gray-700 mb-3">Mini Progress</h4>
-                <div className="space-y-3">
-                  <ProgressBar
-                    percentage={progressData.goals.percentage}
-                    type="mini"
-                    color="#10B981"
-                  />
-                  <ProgressBar
-                    percentage={progressData.challenges.percentage}
-                    type="mini"
-                    color="#3B82F6"
-                  />
-                  <ProgressBar
-                    percentage={progressData.overall.percentage}
-                    type="mini"
-                    color="#F59E0B"
-                  />
-                </div>
-              </div>
-
-              {/* Linear Progress */}
-              <div className="text-center">
-                <h4 className="font-semibold text-gray-700 mb-3">Linear Progress</h4>
-                <ProgressBar
-                  percentage={progressData.challenges.percentage}
-                  total={progressData.challenges.total}
-                  completed={progressData.challenges.completed}
-                  title="Challenges"
-                  type="linear"
-                  showStats={false}
-                  color="#3B82F6"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Interactive Demo */}
-          <div style={{
-            background: 'linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%)',
-            borderRadius: '30px',
-            padding: '40px',
-            marginBottom: '32px',
-            boxShadow: '0 10px 30px rgba(251,191,36,0.3)'
-          }}>
-            <h3 style={{
-              fontSize: '28px',
-              fontWeight: '900',
-              color: '#1e3a8a',
-              marginBottom: '16px',
-              textAlign: 'center'
-            }}>🎯 Interactive Demo</h3>
-            <p style={{
-              fontSize: '16px',
-              color: '#1e40af',
-              fontWeight: '600',
-              marginBottom: '24px',
-              textAlign: 'center'
-            }}>
-              Click the button below to simulate completing a challenge and see the progress bar update in real-time!
-            </p>
-
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '16px',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              background: 'rgba(255,255,255,0.95)',
-              borderRadius: '24px',
-              padding: '24px',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
-            }}>
-              <div className="flex-1 mb-4 sm:mb-0">
-                <ProgressBar
-                  percentage={progressData.challenges.percentage}
-                  total={progressData.challenges.total}
-                  completed={progressData.challenges.completed}
-                  title="Challenges Progress"
-                  type="linear"
-                  showStats={true}
-                  animated={true}
-                />
-              </div>
-
-              <button
-                onClick={handleMarkChallengeComplete}
-                style={{
-                  background: 'linear-gradient(135deg, #34d399 0%, #059669 100%)',
-                  color: 'white',
-                  padding: '16px 32px',
-                  borderRadius: '20px',
-                  border: 'none',
-                  fontSize: '16px',
-                  fontWeight: '700',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 15px rgba(52,211,153,0.4)',
-                  transition: 'all 0.2s',
-                  marginTop: '16px'
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 6px 20px rgba(52,211,153,0.5)';
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 15px rgba(52,211,153,0.4)';
-                }}
-              >
-                ✓ Complete Challenge
-              </button>
-            </div>
-
-            <p style={{
-              fontSize: '14px',
-              color: '#1e40af',
-              marginTop: '16px',
-              textAlign: 'center',
-              fontWeight: '600'
-            }}>
-              * This is a demo. In the actual implementation, progress updates automatically when you complete real challenges.
-            </p>
           </div>
 
           {/* Refresh Button */}
@@ -390,28 +246,28 @@ const Progress = () => {
               onClick={loadProgressData}
               disabled={loading}
               style={{
-                background: loading ? '#d1d5db' : 'linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)',
+                background: loading ? '#d1d5db' : 'linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%)',
                 color: 'white',
-                padding: '16px 32px',
-                borderRadius: '20px',
+                padding: '16px 48px',
+                borderRadius: '16px',
                 border: 'none',
-                fontSize: '16px',
+                fontSize: '18px',
                 fontWeight: '700',
                 cursor: loading ? 'not-allowed' : 'pointer',
-                boxShadow: loading ? 'none' : '0 4px 15px rgba(59,130,246,0.4)',
+                boxShadow: loading ? 'none' : '0 4px 12px rgba(124, 58, 237, 0.3)',
                 transition: 'all 0.2s',
                 opacity: loading ? 0.6 : 1
               }}
               onMouseOver={(e) => {
                 if (!loading) {
                   e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 6px 20px rgba(59,130,246,0.5)';
+                  e.currentTarget.style.boxShadow = '0 6px 16px rgba(124, 58, 237, 0.4)';
                 }
               }}
               onMouseOut={(e) => {
                 if (!loading) {
                   e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 15px rgba(59,130,246,0.4)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(124, 58, 237, 0.3)';
                 }
               }}
             >

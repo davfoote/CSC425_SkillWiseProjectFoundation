@@ -23,9 +23,27 @@ const Goals = () => {
     try {
       setLoading(true);
       setError('');
+      
+      // Check if user is authenticated
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        console.log('No auth token found, redirecting to login');
+        window.location.href = '/login';
+        return;
+      }
+      
       const fetchedGoals = await goalService.getGoals();
       setGoals(Array.isArray(fetchedGoals.data) ? fetchedGoals.data : []);
     } catch (err) {
+      console.error('Error loading goals:', err);
+      // If auth error, redirect to login
+      if (err.response?.status === 401 || err.message?.includes('401')) {
+        console.log('Authentication error, redirecting to login');
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userId');
+        window.location.href = '/login';
+        return;
+      }
       setError(err.message || 'Failed to load goals');
       setGoals([]);
     } finally {
@@ -156,12 +174,18 @@ const Goals = () => {
 
             {/* Success Message */}
             {successMessage && (
-              <div className="mb-4 bg-green-50 border border-green-200 rounded-md p-4">
-                <div className="flex">
-                  <svg className="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <p className="ml-3 text-sm text-green-800">{successMessage}</p>
+              <div style={{
+                marginBottom: '24px',
+                background: 'linear-gradient(135deg, #d1fae5 0%, #34d399 100%)',
+                border: '3px solid #059669',
+                borderRadius: '20px',
+                padding: '24px',
+                boxShadow: '0 8px 24px rgba(52, 211, 153, 0.4)',
+                animation: 'slideDown 0.3s ease-out'
+              }}>
+                <div style={{display: 'flex', alignItems: 'center'}}>
+                  <div style={{fontSize: '32px', marginRight: '16px'}}>🎉</div>
+                  <p style={{fontSize: '20px', fontWeight: '700', color: 'white', textShadow: '0 2px 4px rgba(0,0,0,0.1)'}}>{successMessage}</p>
                 </div>
               </div>
             )}
@@ -265,17 +289,54 @@ const Goals = () => {
               <p className="text-gray-600 mt-2">Loading your goals...</p>
             </div>
           ) : goals.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-6xl mb-4">🎯</div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">No Goals Yet</h2>
-              <p className="text-gray-600 mb-8">
+            <div style={{
+              textAlign: 'center',
+              padding: '80px 40px',
+              background: 'rgba(255,255,255,0.95)',
+              borderRadius: '40px',
+              boxShadow: '0 10px 40px rgba(0,0,0,0.1)'
+            }}>
+              <div style={{fontSize: '120px', marginBottom: '24px'}}>🎯</div>
+              <h2 style={{
+                fontSize: '36px',
+                fontWeight: '900',
+                color: '#1e3a8a',
+                marginBottom: '16px'
+              }}>
+                No Goals Yet
+              </h2>
+              <p style={{
+                fontSize: '18px',
+                color: '#3b82f6',
+                marginBottom: '40px',
+                fontWeight: '600'
+              }}>
                 Start your learning journey by creating your first goal!
               </p>
               <button
                 onClick={() => setShowCreateForm(true)}
-                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                style={{
+                  background: 'linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%)',
+                  color: 'white',
+                  padding: '20px 48px',
+                  borderRadius: '25px',
+                  fontSize: '18px',
+                  fontWeight: '700',
+                  border: 'none',
+                  cursor: 'pointer',
+                  boxShadow: '0 6px 20px rgba(167,139,250,0.5)',
+                  transition: 'all 0.2s'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-3px)';
+                  e.currentTarget.style.boxShadow = '0 8px 25px rgba(167,139,250,0.6)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 6px 20px rgba(167,139,250,0.5)';
+                }}
               >
-                Create Your First Goal
+                ✨ Create Your First Goal
               </button>
             </div>
           ) : (

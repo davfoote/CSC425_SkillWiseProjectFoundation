@@ -29,67 +29,132 @@ const GoalCard = ({ goal, onEdit, onDelete, onUpdateProgress }) => {
   };
 
   return (
-    <div className={`bg-white rounded-lg shadow-md p-6 border-l-4 ${
-      goal.is_completed
-        ? 'border-green-500'
-        : isOverdue()
-          ? 'border-red-500'
-          : 'border-blue-500'
-    }`}>
-      <div className="flex justify-between items-start mb-4">
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">{goal.title}</h3>
-          <p className="text-gray-600 text-sm line-clamp-2">{goal.description}</p>
-        </div>
-
-        <div className="flex items-center space-x-2 ml-4">
-          {goal.is_public && (
-            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-              Public
-            </span>
-          )}
-          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(goal.difficulty_level)}`}>
-            {goal.difficulty_level.charAt(0).toUpperCase() + goal.difficulty_level.slice(1)}
-          </span>
-        </div>
+    <div style={{
+      background: 'white',
+      borderRadius: '30px',
+      padding: '32px',
+      boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+      borderLeft: `8px solid ${goal.is_completed ? '#34d399' : isOverdue() ? '#f87171' : '#60a5fa'}`,
+      transition: 'all 0.3s ease',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column'
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.transform = 'translateY(-8px)';
+      e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.15)';
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.transform = 'translateY(0)';
+      e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)';
+    }}>
+      {/* Title and Description */}
+      <div style={{marginBottom: '24px'}}>
+        <h3 style={{fontSize: '28px', fontWeight: '900', color: '#1e3a8a', marginBottom: '12px', lineHeight: '1.2'}}>{goal.title}</h3>
+        <p style={{color: '#6b7280', fontSize: '16px', lineHeight: '1.6'}}>{goal.description}</p>
       </div>
 
-      {/* Category and Points */}
-      <div className="flex justify-between items-center mb-4">
-        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
-          {goal.category}
+      {/* Badges Row */}
+      <div style={{display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '24px'}}>
+        {goal.is_public && (
+          <span style={{
+            padding: '10px 18px',
+            borderRadius: '20px',
+            fontSize: '14px',
+            fontWeight: '700',
+            background: 'linear-gradient(135deg, #dbeafe 0%, #60a5fa 100%)',
+            color: 'white',
+            textShadow: '0 1px 2px rgba(0,0,0,0.1)',
+            whiteSpace: 'nowrap'
+          }}>
+            🌐 Public
+          </span>
+        )}
+        <span style={{
+          padding: '10px 18px',
+          borderRadius: '20px',
+          fontSize: '14px',
+          fontWeight: '700',
+          background: goal.difficulty_level === 'easy' 
+            ? 'linear-gradient(135deg, #d1fae5 0%, #34d399 100%)'
+            : goal.difficulty_level === 'hard'
+            ? 'linear-gradient(135deg, #fecaca 0%, #f87171 100%)'
+            : 'linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%)',
+          color: 'white',
+          textShadow: '0 1px 2px rgba(0,0,0,0.1)',
+          whiteSpace: 'nowrap'
+        }}>
+          {goal.difficulty_level === 'easy' ? '😊' : goal.difficulty_level === 'hard' ? '💪' : '🎯'} {goal.difficulty_level.charAt(0).toUpperCase() + goal.difficulty_level.slice(1)}
         </span>
-        <span className="text-sm font-medium text-gray-600">
-          {goal.points_reward} points
+        <span style={{
+          padding: '10px 18px',
+          borderRadius: '20px',
+          fontSize: '14px',
+          fontWeight: '700',
+          background: 'linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%)',
+          color: 'white',
+          textShadow: '0 1px 2px rgba(0,0,0,0.1)',
+          whiteSpace: 'nowrap'
+        }}>
+          📚 {goal.category}
+        </span>
+        <span style={{
+          padding: '10px 18px',
+          borderRadius: '20px',
+          fontSize: '14px',
+          fontWeight: '700',
+          background: 'linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%)',
+          color: 'white',
+          textShadow: '0 1px 2px rgba(0,0,0,0.1)',
+          whiteSpace: 'nowrap'
+        }}>
+          ⭐ {goal.points_reward} points
         </span>
       </div>
 
       {/* Progress Bar */}
-      <div className="mb-4">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-sm font-medium text-gray-700">Progress</span>
-          <span className="text-sm text-gray-600">{goal.progress_percentage}%</span>
+      <div style={{marginBottom: '24px'}}>
+        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px'}}>
+          <span style={{fontSize: '16px', fontWeight: '700', color: '#374151'}}>Progress</span>
+          <span style={{fontSize: '20px', fontWeight: '900', color: '#3b82f6'}}>{goal.progress_percentage}%</span>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div style={{width: '100%', height: '12px', background: '#e5e7eb', borderRadius: '10px', overflow: 'hidden'}}>
           <div
-            className={`h-2 rounded-full ${getProgressColor(goal.progress_percentage)}`}
-            style={{ width: `${goal.progress_percentage}%` }}
+            style={{
+              height: '100%',
+              borderRadius: '10px',
+              background: goal.progress_percentage >= 80 
+                ? 'linear-gradient(90deg, #34d399 0%, #059669 100%)'
+                : goal.progress_percentage >= 50
+                ? 'linear-gradient(90deg, #fbbf24 0%, #d97706 100%)'
+                : 'linear-gradient(90deg, #60a5fa 0%, #3b82f6 100%)',
+              width: `${goal.progress_percentage}%`,
+              transition: 'width 0.3s ease'
+            }}
           />
         </div>
       </div>
 
-      {/* Dates and Status */}
-      <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+      {/* Dates */}
+      <div style={{
+        display: 'grid', 
+        gridTemplateColumns: '1fr 1fr', 
+        gap: '16px', 
+        marginBottom: '24px',
+        padding: '20px',
+        background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
+        borderRadius: '20px'
+      }}>
         <div>
-          <span className="text-gray-600">Target Date:</span>
-          <div className={`font-medium ${isOverdue() ? 'text-red-600' : 'text-gray-900'}`}>
+          <div style={{fontSize: '12px', color: '#6b7280', fontWeight: '600', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px'}}>🎯 Target</div>
+          <div style={{fontSize: '16px', fontWeight: '900', color: isOverdue() ? '#f87171' : '#1e3a8a'}}>
             {formatDate(goal.target_completion_date)}
-            {isOverdue() && <span className="text-red-500 ml-1">(Overdue)</span>}
           </div>
+          {isOverdue() && <div style={{fontSize: '12px', color: '#f87171', fontWeight: '700', marginTop: '4px'}}>⚠️ Overdue</div>}
         </div>
         <div>
-          <span className="text-gray-600">Created:</span>
-          <div className="font-medium text-gray-900">
+          <div style={{fontSize: '12px', color: '#6b7280', fontWeight: '600', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px'}}>📅 Created</div>
+          <div style={{fontSize: '16px', fontWeight: '900', color: '#1e3a8a'}}>
             {formatDate(goal.created_at)}
           </div>
         </div>
@@ -97,39 +162,103 @@ const GoalCard = ({ goal, onEdit, onDelete, onUpdateProgress }) => {
 
       {/* Completion Status */}
       {goal.is_completed && (
-        <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-md">
-          <div className="flex items-center">
-            <svg className="h-5 w-5 text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-            </svg>
-            <span className="text-sm text-green-800 font-medium">
-              Completed on {formatDate(goal.completion_date)}
+        <div style={{
+          marginBottom: '24px',
+          padding: '20px',
+          background: 'linear-gradient(135deg, #d1fae5 0%, #34d399 100%)',
+          borderRadius: '20px',
+          border: '3px solid #059669'
+        }}>
+          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+            <div style={{fontSize: '28px', marginRight: '12px'}}>✅</div>
+            <span style={{fontSize: '16px', color: 'white', fontWeight: '700', textShadow: '0 1px 2px rgba(0,0,0,0.1)'}}>
+              Completed {formatDate(goal.completion_date)}
             </span>
           </div>
         </div>
       )}
 
-      {/* Action Buttons */}
-      <div className="flex flex-wrap gap-2">
+      {/* Action Buttons - pushed to bottom */}
+      <div style={{display: 'flex', flexWrap: 'wrap', gap: '12px', marginTop: 'auto'}}>
         {!goal.is_completed && (
           <button
             onClick={() => onUpdateProgress(goal)}
-            className="px-3 py-1 text-sm bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-md transition-colors"
+            style={{
+              padding: '12px 24px',
+              fontSize: '14px',
+              fontWeight: '700',
+              background: 'linear-gradient(135deg, #dbeafe 0%, #60a5fa 100%)',
+              color: 'white',
+              borderRadius: '16px',
+              border: 'none',
+              cursor: 'pointer',
+              boxShadow: '0 4px 12px rgba(96, 165, 250, 0.3)',
+              transition: 'all 0.2s',
+              textShadow: '0 1px 2px rgba(0,0,0,0.1)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 6px 16px rgba(96, 165, 250, 0.4)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(96, 165, 250, 0.3)';
+            }}
           >
-            Update Progress
+            📊 Update Progress
           </button>
         )}
         <button
           onClick={() => onEdit(goal)}
-          className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors"
+          style={{
+            padding: '12px 24px',
+            fontSize: '14px',
+            fontWeight: '700',
+            background: 'linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%)',
+            color: 'white',
+            borderRadius: '16px',
+            border: 'none',
+            cursor: 'pointer',
+            boxShadow: '0 4px 12px rgba(192, 132, 252, 0.3)',
+            transition: 'all 0.2s',
+            textShadow: '0 1px 2px rgba(0,0,0,0.1)'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 6px 16px rgba(192, 132, 252, 0.4)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(192, 132, 252, 0.3)';
+          }}
         >
-          Edit
+          ✏️ Edit
         </button>
         <button
           onClick={() => onDelete(goal)}
-          className="px-3 py-1 text-sm bg-red-100 hover:bg-red-200 text-red-700 rounded-md transition-colors"
+          style={{
+            padding: '12px 24px',
+            fontSize: '14px',
+            fontWeight: '700',
+            background: 'linear-gradient(135deg, #fecaca 0%, #f87171 100%)',
+            color: 'white',
+            borderRadius: '16px',
+            border: 'none',
+            cursor: 'pointer',
+            boxShadow: '0 4px 12px rgba(248, 113, 113, 0.3)',
+            transition: 'all 0.2s',
+            textShadow: '0 1px 2px rgba(0,0,0,0.1)'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 6px 16px rgba(248, 113, 113, 0.4)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(248, 113, 113, 0.3)';
+          }}
         >
-          Delete
+          🗑️ Delete
         </button>
       </div>
     </div>
