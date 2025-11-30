@@ -1,392 +1,145 @@
-# SkillWise Project Foundation
+# SkillWise — Project Foundation
 
-A containerized learning platform with AI-powered challenges and peer review system.
+SkillWise is a containerized learning platform focused on AI-assisted challenge creation, submission-based learning, and a peer-review workflow. This repository contains the frontend React app, backend API, database migrations, tests, and deployment tooling used in course projects and demonstrations.
 
-## 🚀 **LATEST: CI/CD Pipeline Complete!** ✅
+This README is a concise project overview — for full documentation see the `docs/` folder linked below.
 
-**User Story 8 Achievement**: Full GitHub Actions CI/CD implementation
-- ✅ **Automated Quality Gates**: Lint + Unit Tests + E2E Tests
-- ✅ **16/16 Authentication Tests Passing** (0.766s execution)
-- ✅ **615 → 0 Linting Errors Fixed** (100% improvement)
-- ✅ **Production-Ready CI Pipeline** 
+---
 
-🎯 **[View CI Pipeline Documentation →](CI_PIPELINE_GUIDE.md)**
+## Quick Links
+- **Full Setup & Configuration:** `docs/SETUP.md`
+- **Docker Guide:** `docs/DOCKER_SETUP.md`
+- **Project Overview:** `docs/PROJECT_OVERVIEW.md`
+- **User Stories & Tests:** `docs/USER_STORIES_IMPLEMENTATION.md` and `USER_STORY_7_TESTING_COMPLETE.md`
 
-## 🎉 **Previous: Comprehensive Testing Suite Complete!** ✅
+---
 
-**User Story 7 Achievement**: Full unit and E2E testing implementation
-- ✅ **Complete E2E Framework Ready** (Cypress)  
-- ✅ **Production-Ready Quality Assurance**
+## Getting Started — Quick Start
 
-📊 **[View Testing Documentation →](USER_STORY_7_TESTING_COMPLETE.md)**
+Recommended: use Docker Compose to run the full stack (frontend + backend + DB + cache).
 
-## Quick Start with Docker 🐳
-
-Get the entire application stack running with one command:
-
-```bash
-# Clone and start the application
+```powershell
+# from repository root
 git clone <repository-url>
 cd CSC425_SkillWiseProjectFoundation
 docker compose up --build
-```
 
-**Services Available:**
-- 🌐 **Frontend**: http://localhost:3000 (React)
-- 🔧 **Backend API**: http://localhost:5000 (Node.js/Express)
-- 🗄️ **Database**: PostgreSQL on port 5432
-- 🔄 **Redis Cache**: Port 6379
-
-For detailed Docker setup instructions, see [DOCKER_SETUP.md](docs/DOCKER_SETUP.md)
-
-## 🧪 **Testing Commands**
-
-```bash
-# Run all unit tests
-cd backend && npm test
-
-# Run authentication tests specifically  
-cd backend && npx jest tests/unit/auth.test.js --verbose
-
-# Run E2E tests
-npm run test:e2e
-
-# Run all tests
-npm run test:all
-```
-
-## Technology Stack
-
-- **Node.js (LTS)** with Express.js
-- **React** frontend with modern hooks
-- **PostgreSQL** database with Docker
-- **Redis** for caching and sessions
-- **JWT** authentication with httpOnly cookies
-- **bcrypt** for password hashing
-- **Zod** for request validation
-- **pino** for logging
-- **Docker** for containerized development
-
-## Project Structure
-
-```
-CSC425_SkillWiseProjectFoundation/
-├── docker-compose.yml          # 🐳 Multi-service container orchestration
-├── frontend/                   # React application
-│   ├── Dockerfile.dev         # Frontend container configuration
-│   ├── package.json
-│   └── src/
-├── backend/                    # Node.js API server
-│   ├── Dockerfile.dev         # Backend container configuration
-│   ├── .env.docker           # Container environment variables
-│   ├── src/
-│   ├── controllers/
-│   │   ├── authController.js
-│   │   ├── userController.js
-│   │   ├── goalController.js
-│   │   ├── challengeController.js
-│   │   ├── progressController.js
-│   │   ├── submissionController.js
-│   │   ├── aiController.js
-│   │   ├── peerReviewController.js
-│   │   └── leaderboardController.js
-│   ├── middleware/
-│   │   ├── auth.js
-│   │   ├── validation.js
-│   │   ├── errorHandler.js
-│   │   ├── rateLimiter.js
-│   │   ├── logger.js
-│   │   └── cors.js
-│   ├── models/
-│   │   ├── User.js
-│   │   ├── Goal.js
-│   │   ├── Challenge.js
-│   │   ├── Progress.js
-│   │   ├── Submission.js
-│   │   ├── AIFeedback.js
-│   │   ├── PeerReview.js
-│   │   └── Leaderboard.js
-│   ├── routes/
-│   │   ├── auth.js
-│   │   ├── users.js
-│   │   ├── goals.js
-│   │   ├── challenges.js
-│   │   ├── progress.js
-│   │   ├── submissions.js
-│   │   ├── ai.js
-│   │   ├── reviews.js
-│   │   └── leaderboard.js
-│   ├── services/
-│   │   ├── authService.js
-│   │   ├── goalService.js
-│   │   ├── challengeService.js
-│   │   ├── progressService.js
-│   │   ├── aiService.js
-│   │   ├── emailService.js
-│   │   └── leaderboardService.js
-│   ├── database/
-│   │   ├── connection.js
-│   │   ├── migrations/
-│   │   │   ├── 001_create_users.sql
-│   │   │   ├── 002_create_goals.sql
-│   │   │   ├── 003_create_challenges.sql
-│   │   │   ├── 004_create_progress.sql
-│   │   │   ├── 005_create_submissions.sql
-│   │   │   ├── 006_create_ai_feedback.sql
-│   │   │   ├── 007_create_peer_reviews.sql
-│   │   │   └── 008_create_leaderboard.sql
-│   │   └── seeds/
-│   │       ├── users.js
-│   │       ├── goals.js
-│   │       └── challenges.js
-│   ├── utils/
-│   │   ├── jwt.js
-│   │   ├── validators.js
-│   │   ├── helpers.js
-│   │   ├── constants.js
-│   │   └── errors.js
-│   ├── config/
-│   │   ├── database.js
-│   │   ├── auth.js
-│   │   ├── ai.js
-│   │   └── server.js
-│   └── app.js
-├── tests/
-│   ├── unit/
-│   │   ├── controllers/
-│   │   ├── services/
-│   │   ├── middleware/
-│   │   └── utils/
-│   ├── integration/
-│   │   ├── auth.test.js
-│   │   ├── goals.test.js
-│   │   ├── challenges.test.js
-│   │   └── ai.test.js
-│   └── fixtures/
-│       ├── users.json
-│       ├── goals.json
-│       └── challenges.json
-├── docs/
-│   ├── api/
-│   │   ├── swagger.yaml
-│   │   └── endpoints.md
-│   └── database/
-│       ├── schema.md
-│       └── relationships.md
-├── scripts/
-│   ├── migrate.js
-│   ├── seed.js
-│   └── deploy.js
-├── package.json
-├── package-lock.json
-├── .env.example
-├── .gitignore
-├── Dockerfile
-├── docker-compose.yml
-├── server.js
-└── README.md
-```
-
-## Development Setup
-
-### Option 1: Docker (Recommended) 🐳
-
-**Prerequisites:**
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed
-
-**Start Development:**
-```bash
-# Start all services
-docker compose up --build
-
-# Run in background
+# run in background
 docker compose up -d --build
 
-# View logs
+# view combined logs
 docker compose logs -f
 
-# Stop all services
+# stop and remove
 docker compose down
 ```
 
-### Option 2: Local Development
+Service endpoints (local development):
+- Frontend: `http://localhost:3000`
+- Backend API: see `backend/.env` or `backend/config/server.js` (commonly `3001`)
+- Postgres: `localhost:5432`
 
-**Prerequisites:**
-- Node.js 18+ and npm
-- PostgreSQL 15+ installed locally
+If you prefer not to use Docker, follow the manual development instructions in `docs/SETUP.md`.
 
-**Backend Setup:**
-```bash
+---
+
+## How to Run Locally (Manual)
+
+Backend (API)
+
+```powershell
 cd backend
 npm install
 cp .env.example .env
-# Edit .env with your database credentials
+# edit .env to point to your DB and secrets
 npm run migrate
 npm run seed
 npm run dev
 ```
 
-**Frontend Setup:**
-```bash
+Frontend (React)
+
+```powershell
 cd frontend
 npm install
+# create frontend/.env as needed
 npm start
 ```
 
-## Implemented Features ✅
+---
 
-**User Stories Completed:**
-- ✅ User Story 1: Authentication System (JWT + bcrypt)
-- ✅ User Story 2: Goal Management (CRUD operations)
-- ✅ User Story 3: Progress Tracking (Milestones + timeline)
-- ✅ User Story 4: Challenge System (Manual + AI generation)
-- ✅ User Story 5: AI Integration (OpenAI API)
-- ✅ User Story 6: Database Schema (PostgreSQL + migrations)
-- ✅ User Story 7: Authentication Testing (Comprehensive test suite)
-- ✅ User Story 8: Containerized Environment (Docker + Compose)
+## Tests
 
-For detailed implementation status, see [docs/USER_STORIES_IMPLEMENTATION.md](docs/USER_STORIES_IMPLEMENTATION.md)
+Run backend tests (Jest):
 
-## Documentation 📚
+```powershell
+cd backend
+npm test
+```
 
-- [Project Overview](docs/PROJECT_OVERVIEW.md)
-- [Setup Instructions](docs/SETUP.md)
-- [Database Schema](docs/DATABASE_SCHEMA.md)
-- [API Endpoints](docs/api/API_ENDPOINTS.md)
-- [Docker Setup Guide](docs/DOCKER_SETUP.md)
-- [User Stories Implementation](docs/USER_STORIES_IMPLEMENTATION.md)
+Run frontend tests or open Cypress for E2E:
 
-## API Endpoints Structure
+```powershell
+cd frontend
+npm test
+npm run cypress:open
+```
 
-### Authentication Routes (`/api/auth`)
+---
 
-- `POST /register` - User registration
-- `POST /login` - User login
-- `POST /logout` - User logout
-- `POST /refresh` - Refresh access token
-- `GET /profile` - Get user profile
-- `PUT /profile` - Update user profile
+## Repository Structure (high level)
 
-### Goals Routes (`/api/goals`)
+- `backend/` — Node.js/Express API, migrations, services, controllers, tests
+- `frontend/` — React single-page app, UI components, tests
+- `database/` — SQL migration files and example data
+- `docs/` — Detailed documentation: setup, API, DB diagrams, user story notes
+- `cypress/` — E2E test specs and support files
+- `scripts/` — helper scripts (migrate, seed, deploy)
 
-- `GET /` - Get user's goals
-- `POST /` - Create new goal
-- `GET /:id` - Get specific goal
-- `PUT /:id` - Update goal
-- `DELETE /:id` - Delete goal
+Refer to `docs/PROJECT_STRUCTURE.md` for a deeper tree and file descriptions.
 
-### Challenges Routes (`/api/challenges`)
+---
 
-- `GET /` - Get challenges for a goal
-- `POST /` - Create new challenge
-- `GET /:id` - Get specific challenge
-- `PUT /:id` - Update challenge
-- `DELETE /:id` - Delete challenge
+## Implemented Features (summary)
 
-### Progress Routes (`/api/progress`)
+- Authentication (JWT + refresh tokens)
+- Goal and Challenge management (CRUD)
+- Progress tracking and dashboard endpoints
+- Submission + Peer review workflows
+- AI integration for challenge generation and feedback (OpenAI integration)
+- Database migrations and seed scripts
+- Unit, integration, and E2E tests (Jest + Cypress)
+- Containerized development via Docker Compose
 
-- `GET /goals/:goalId` - Get progress for a goal
-- `POST /` - Update progress
-- `GET /dashboard` - Get dashboard data
+See `docs/USER_STORIES_IMPLEMENTATION.md` for feature-level details and status.
 
-### Submissions Routes (`/api/submissions`)
+---
 
-- `POST /` - Submit work for challenge
-- `GET /challenge/:challengeId` - Get submissions for challenge
-- `GET /:id` - Get specific submission
-- `PUT /:id/review` - Add peer review
+## Contributing
 
-### AI Routes (`/api/ai`)
+- Please read `CONTRIBUTING.md` (if present) and follow the repo `CODE_OF_CONDUCT`.
+- Use branches named `feature/<short-description>` or `fix/<short-description>`.
+- Run linters and tests locally before opening PRs.
 
-- `POST /generate-challenges` - Generate challenges for goal
-- `POST /feedback` - Get AI feedback on submission
-- `POST /explain` - Get explanation for concept
+If you'd like, I can add a `CONTRIBUTING.md` or a short script to standardize local development commands.
 
-### Leaderboard Routes (`/api/leaderboard`)
+---
 
-- `GET /` - Get leaderboard data
-- `GET /user/:userId` - Get user ranking
+## Troubleshooting & Support
 
-## Database Schema Design
+Common issues and resolutions are documented in `docs/SETUP.md` and `TESTING_GUIDE.md`.
 
-### Core Tables
+If you hit environment-specific issues, check:
+- `backend/.env` and `frontend/.env` for correct variables
+- Docker containers status with `docker compose ps`
 
-- **users** - User authentication and profile data
-- **refresh_tokens** - JWT refresh token storage
-- **goals** - Learning goals with timelines
-- **challenges** - Individual challenges within goals
-- **progress** - User progress tracking
-- **submissions** - User work submissions
-- **ai_feedback** - AI-generated feedback
-- **peer_reviews** - Peer review data
-- **leaderboard** - User rankings and scores
+---
 
-## Key Features to Implement
+## Contact / Maintainers
 
-### Authentication System
+Maintained by the course project team. For questions, open an issue or contact the repository owner.
 
-- JWT access/refresh token pattern
-- Password hashing with bcrypt
-- httpOnly cookie security
-- Rate limiting on auth endpoints
+---
 
-### Goal Management
+License: see `LICENSE` (if included in repo) or add one as appropriate for your project.
 
-- CRUD operations for learning goals
-- Timeline and milestone tracking
-- Goal categorization and tagging
-
-### Challenge System
-
-- Manual challenge creation
-- AI-generated challenges
-- Submission tracking and validation
-
-### AI Integration
-
-- OpenAI API integration
-- Prompt template management
-- Rate limiting and error handling
-- Response caching
-
-### Progress Tracking
-
-- Milestone completion tracking
-- Progress percentage calculation
-- Activity timeline
-
-### Peer Review System
-
-- Review assignment logic
-- Rating and feedback system
-- Review quality scoring
-
-### Leaderboard
-
-- Point calculation system
-- Ranking algorithms
-- Achievement badges
-
-## Security Considerations
-
-- Input validation with Zod
-- SQL injection prevention
-- XSS protection
-- CORS configuration
-- Rate limiting
-- Environment variable management
-
-## Testing Strategy
-
-- Unit tests for services and utilities
-- Integration tests for API endpoints
-- Database transaction testing
-- AI service mocking
-- Authentication flow testing
-
-## Logging and Monitoring
-
-- Structured logging with pino
-- Error tracking and alerting
-- Performance monitoring
-- API usage analytics
