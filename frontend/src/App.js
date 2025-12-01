@@ -54,19 +54,7 @@ const AppContent = () => {
           element={
             isAuthenticated() ?
               <Navigate to="/dashboard" replace /> :
-              <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-4xl mx-auto">
-                  <div className="text-center mb-8">
-                    <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                    Welcome to SkillWise
-                    </h1>
-                    <p className="text-lg text-gray-600">
-                    Sign in to your account
-                    </p>
-                  </div>
-                  <LoginForm onLoginSuccess={handleLoginSuccess} />
-                </div>
-              </div>
+              <LoginForm onLoginSuccess={handleLoginSuccess} />
           }
         />
 
@@ -75,14 +63,30 @@ const AppContent = () => {
           element={
             isAuthenticated() ?
               <Navigate to="/dashboard" replace /> :
-              <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-4xl mx-auto">
-                  <div className="text-center mb-8">
-                    <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                    Welcome to SkillWise
+              <div style={{
+                minHeight: '100vh',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'linear-gradient(135deg, #38bdf8 0%, #60a5fa 50%, #93c5fd 100%)',
+                padding: '20px'
+              }}>
+                <div style={{maxWidth: '1200px', width: '100%'}}>
+                  <div style={{
+                    textAlign: 'center',
+                    marginBottom: '48px',
+                    padding: '32px',
+                    background: 'linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%)',
+                    borderRadius: '32px',
+                    border: '4px solid #f59e0b',
+                    boxShadow: '0 20px 60px rgba(0,0,0,0.2)'
+                  }}>
+                    <div style={{fontSize: '72px', marginBottom: '16px'}}>🎓</div>
+                    <h1 style={{fontSize: '56px', fontWeight: '900', color: '#1e3a8a', marginBottom: '12px', lineHeight: '1.1'}}>
+                      Welcome to SkillWise
                     </h1>
-                    <p className="text-lg text-gray-600">
-                    Your AI-powered learning platform
+                    <p style={{fontSize: '24px', color: '#6b7280', fontWeight: '700'}}>
+                      🚀 Your AI-powered learning platform
                     </p>
                   </div>
                   <SignupForm />
