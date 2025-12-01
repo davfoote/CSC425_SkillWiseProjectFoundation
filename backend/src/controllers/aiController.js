@@ -29,43 +29,193 @@ const aiController = {
       }
 
       // Check if we have a real OpenAI API key
-      const hasRealApiKey = process.env.OPENAI_API_KEY && 
-                            !process.env.OPENAI_API_KEY.includes('dummy') &&
-                            process.env.OPENAI_API_KEY.length > 20;
+      let hasRealApiKey = process.env.OPENAI_API_KEY && 
+                          !process.env.OPENAI_API_KEY.includes('dummy') &&
+                          process.env.OPENAI_API_KEY.length > 20;
 
       let result;
       
       if (hasRealApiKey) {
-        // Generate challenge using AI
-        result = await aiService.generateChallenge({
-          difficulty,
-          category,
-          language,
-          topic,
-        });
-      } else {
+        // Try to generate challenge using AI
+        try {
+          result = await aiService.generateChallenge({
+            difficulty,
+            category,
+            language,
+            topic,
+          });
+        } catch (error) {
+          // If API fails (quota exceeded, network error, etc), fall back to mock
+          logger.warn('⚠️ AI challenge generation failed, using mock challenge:', {
+            error: error.message,
+            errorCode: error.status || error.code,
+          });
+          hasRealApiKey = false; // Force mock path below
+        }
+      }
+      
+      if (!hasRealApiKey || !result) {
         // Return mock challenge when no real API key
         logger.info('🎭 Using mock challenge (no OpenAI API key configured)');
+        
+        // Mock challenge templates based on category and difficulty
+        const mockChallenges = {
+          algorithms: {
+            easy: {
+              title: 'Find the Maximum Number',
+              description: 'Write a function that takes an array of numbers and returns the maximum value. Handle edge cases like empty arrays.',
+              testCases: [
+                { input: '[1, 5, 3, 9, 2]', expected: '9' },
+                { input: '[10]', expected: '10' },
+                { input: '[]', expected: 'null or undefined' },
+              ],
+              hints: [
+                'You can use Math.max() with the spread operator',
+                'Don\'t forget to handle empty arrays',
+                'Consider using reduce() for practice',
+              ],
+              starterCode: `function findMax(numbers) {\n  // Your code here\n  // Return the maximum number from the array\n  return 0;\n}`,
+            },
+            medium: {
+              title: 'Two Sum Problem',
+              description: 'Given an array of integers and a target sum, return the indices of two numbers that add up to the target. You may assume each input has exactly one solution.',
+              testCases: [
+                { input: 'nums=[2,7,11,15], target=9', expected: '[0,1]' },
+                { input: 'nums=[3,2,4], target=6', expected: '[1,2]' },
+                { input: 'nums=[3,3], target=6', expected: '[0,1]' },
+              ],
+              hints: [
+                'Think about using a hash map to store seen numbers',
+                'For each number, check if (target - number) exists in the map',
+                'Time complexity can be O(n) with the right approach',
+              ],
+              starterCode: `function twoSum(nums, target) {\n  // Your code here\n  // Return array of two indices\n  return [];\n}`,
+            },
+            hard: {
+              title: 'Merge K Sorted Lists',
+              description: 'You are given an array of k linked-lists, each sorted in ascending order. Merge all the linked-lists into one sorted linked-list and return it.',
+              testCases: [
+                { input: '[[1,4,5],[1,3,4],[2,6]]', expected: '[1,1,2,3,4,4,5,6]' },
+                { input: '[]', expected: '[]' },
+                { input: '[[]]', expected: '[]' },
+              ],
+              hints: [
+                'Consider using a min-heap or priority queue',
+                'You could also use divide and conquer approach',
+                'Compare this to merging two sorted lists',
+              ],
+              starterCode: `function mergeKLists(lists) {\n  // Your code here\n  // Return merged sorted list\n  return null;\n}`,
+            },
+          },
+          'data-structures': {
+            easy: {
+              title: 'Implement a Stack',
+              description: 'Create a Stack class with push, pop, peek, and isEmpty methods. Use an array as the underlying data structure.',
+              testCases: [
+                { input: 'push(1), push(2), pop()', expected: '2' },
+                { input: 'push(5), peek()', expected: '5' },
+                { input: 'isEmpty() on empty stack', expected: 'true' },
+              ],
+              hints: [
+                'Use an array to store the elements',
+                'Remember that stacks are LIFO (Last In, First Out)',
+                'Consider what to return when popping from an empty stack',
+              ],
+              starterCode: `class Stack {\n  constructor() {\n    this.items = [];\n  }\n\n  push(element) {\n    // Your code here\n  }\n\n  pop() {\n    // Your code here\n  }\n}`,
+            },
+            medium: {
+              title: 'Binary Search Tree Operations',
+              description: 'Implement insert and search operations for a Binary Search Tree. Handle duplicate values appropriately.',
+              testCases: [
+                { input: 'insert(5), insert(3), search(3)', expected: 'true' },
+                { input: 'insert(10), insert(5), insert(15), search(7)', expected: 'false' },
+              ],
+              hints: [
+                'Remember BST property: left < root < right',
+                'Use recursion for cleaner code',
+                'Consider balanced vs unbalanced trees',
+              ],
+              starterCode: `class TreeNode {\n  constructor(val) {\n    this.val = val;\n    this.left = null;\n    this.right = null;\n  }\n}\n\nclass BST {\n  insert(val) {\n    // Your code here\n  }\n}`,
+            },
+            hard: {
+              title: 'LRU Cache Implementation',
+              description: 'Design and implement a data structure for Least Recently Used (LRU) cache with O(1) time complexity for both get and put operations.',
+              testCases: [
+                { input: 'put(1,1), put(2,2), get(1), put(3,3), get(2)', expected: 'get(1)=1, get(2)=-1' },
+              ],
+              hints: [
+                'Use a combination of hash map and doubly linked list',
+                'Hash map provides O(1) lookup',
+                'Doubly linked list maintains LRU order',
+              ],
+              starterCode: `class LRUCache {\n  constructor(capacity) {\n    // Your code here\n  }\n\n  get(key) {\n    // Your code here\n  }\n\n  put(key, value) {\n    // Your code here\n  }\n}`,
+            },
+          },
+          'web-development': {
+            easy: {
+              title: 'Create a Button Component',
+              description: 'Build a reusable Button component in React with props for text, onClick handler, and optional styling variants (primary, secondary).',
+              testCases: [
+                { input: '<Button text="Click me" onClick={handler} />', expected: 'Renders clickable button' },
+                { input: '<Button variant="primary" />', expected: 'Applies primary styles' },
+              ],
+              hints: [
+                'Use props to make the component flexible',
+                'Consider using conditional styling',
+                'Don\'t forget accessibility attributes',
+              ],
+              starterCode: `import React from 'react';\n\nfunction Button({ text, onClick, variant = 'primary' }) {\n  // Your code here\n  return (\n    <button>\n      {text}\n    </button>\n  );\n}\n\nexport default Button;`,
+            },
+            medium: {
+              title: 'Form Validation Hook',
+              description: 'Create a custom React hook called useFormValidation that validates form fields in real-time and returns error messages.',
+              testCases: [
+                { input: 'email validation', expected: 'Returns error for invalid email' },
+                { input: 'required field', expected: 'Returns error when field is empty' },
+              ],
+              hints: [
+                'Use useState to track field values and errors',
+                'Use useEffect to trigger validation',
+                'Return validation functions from the hook',
+              ],
+              starterCode: `import { useState } from 'react';\n\nfunction useFormValidation(initialValues, validationRules) {\n  // Your code here\n  const [values, setValues] = useState(initialValues);\n  const [errors, setErrors] = useState({});\n\n  return { values, errors };\n}`,
+            },
+            hard: {
+              title: 'Virtual Scrolling Component',
+              description: 'Implement a virtualized list component that efficiently renders only visible items from a large dataset (10,000+ items).',
+              testCases: [
+                { input: '10000 items, viewport shows 20', expected: 'Only renders ~20 DOM nodes' },
+                { input: 'Scroll to bottom', expected: 'Updates rendered items smoothly' },
+              ],
+              hints: [
+                'Calculate which items are visible based on scroll position',
+                'Use position: absolute for item positioning',
+                'Add buffer items above and below viewport',
+              ],
+              starterCode: `import React, { useState, useRef } from 'react';\n\nfunction VirtualList({ items, itemHeight, containerHeight }) {\n  // Your code here\n  return (\n    <div style={{ height: containerHeight, overflow: 'auto' }}>\n      {/* Render visible items */}\n    </div>\n  );\n}`,
+            },
+          },
+        };
+
+        // Get the appropriate mock challenge
+        const selectedCategory = category || 'algorithms';
+        const selectedDifficulty = difficulty || 'medium';
+        const categoryTemplates = mockChallenges[selectedCategory] || mockChallenges.algorithms;
+        const template = categoryTemplates[selectedDifficulty] || categoryTemplates.medium;
+
         result = {
           success: true,
           challenge: {
-            title: `${difficulty || 'Medium'} ${category || 'Algorithms'} Challenge: ${topic || 'Array Manipulation'}`,
-            description: `Practice your ${language || 'JavaScript'} skills with this ${difficulty || 'medium'} difficulty challenge focusing on ${topic || 'array operations'}.`,
-            difficulty: difficulty || 'medium',
-            category: category || 'algorithms',
+            title: template.title,
+            description: template.description,
+            difficulty: selectedDifficulty,
+            category: selectedCategory,
             language: language || 'JavaScript',
-            estimatedTime: difficulty === 'easy' ? 15 : difficulty === 'hard' ? 60 : 30,
-            points: difficulty === 'easy' ? 10 : difficulty === 'hard' ? 50 : 25,
-            testCases: [
-              { input: '[1, 2, 3]', expected: 'Depends on implementation' },
-              { input: '[4, 5, 6]', expected: 'Depends on implementation' },
-            ],
-            hints: [
-              'Think about the time complexity of your solution',
-              'Consider edge cases like empty arrays',
-              'Can you optimize the space complexity?',
-            ],
-            starterCode: `function solve${category || 'Problem'}(input) {\n  // Your code here\n  return input;\n}`,
+            estimatedTime: selectedDifficulty === 'easy' ? 15 : selectedDifficulty === 'hard' ? 60 : 30,
+            points: selectedDifficulty === 'easy' ? 10 : selectedDifficulty === 'hard' ? 50 : 25,
+            testCases: template.testCases,
+            hints: template.hints,
+            starterCode: template.starterCode,
           },
         };
       }
