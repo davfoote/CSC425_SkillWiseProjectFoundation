@@ -27,76 +27,129 @@ const Navigation = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className="bg-white shadow-lg border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          {/* Logo and Brand */}
+    <nav style={{
+      background: 'linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)',
+      borderBottom: '4px solid rgba(255,255,255,0.3)',
+      position: 'sticky',
+      top: 0,
+      zIndex: 50,
+      boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+    }}>
+      <div className="w-full px-6 lg:px-12">
+        <div className="flex justify-between items-center h-20">
+          {/* Large App Name */}
           <div className="flex items-center">
-            <div className="flex-shrink-0 flex items-center">
-              <span className="text-2xl font-bold text-blue-600">SkillWise</span>
-            </div>
+            <h1 style={{
+              fontSize: '36px',
+              fontWeight: '900',
+              color: 'white',
+              textShadow: '2px 2px 4px rgba(0,0,0,0.2)'
+            }}>
+              SkillWise
+            </h1>
           </div>
 
-          {/* Navigation Links */}
-          <div className="hidden md:flex items-center space-x-8">
+          {/* Navigation Links - Centered */}
+          <div className="hidden md:flex items-center space-x-2 flex-1 justify-center px-8">
             {navigationItems.map((item) => (
               <button
                 key={item.name}
                 onClick={() => navigate(item.path)}
-                className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                  isActive(item.path)
-                    ? 'bg-blue-100 text-blue-700 border-b-2 border-blue-500'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                }`}
+                style={{
+                  padding: '10px 20px',
+                  borderRadius: '12px',
+                  fontSize: '15px',
+                  fontWeight: '600',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  background: isActive(item.path) 
+                    ? 'rgba(255,255,255,0.95)' 
+                    : 'rgba(255,255,255,0.15)',
+                  color: isActive(item.path) ? '#1e40af' : 'white',
+                  boxShadow: isActive(item.path) ? '0 4px 12px rgba(0,0,0,0.15)' : 'none'
+                }}
+                onMouseOver={(e) => {
+                  if (!isActive(item.path)) {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.25)';
+                  }
+                }}
+                onMouseOut={(e) => {
+                  if (!isActive(item.path)) {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
+                  }
+                }}
               >
-                <span className="text-lg">{item.icon}</span>
-                <span>{item.name}</span>
+                {item.name}
               </button>
             ))}
           </div>
 
-          {/* User Menu */}
-          <div className="flex items-center space-x-4">
-            <div className="hidden md:flex items-center space-x-3">
-              <div className="text-right">
-                <p className="text-sm font-medium text-gray-700">
-                  {user?.firstName} {user?.lastName}
-                </p>
-                <p className="text-xs text-gray-500">{user?.email}</p>
-              </div>
-              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                <span className="text-white text-sm font-medium">
+          {/* User Menu - Clean and Simple */}
+          <div className="flex items-center space-x-3">
+            <div style={{
+              background: 'rgba(255,255,255,0.95)',
+              borderRadius: '50px',
+              padding: '8px 20px 8px 8px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
+            }}>
+              <div style={{
+                width: '40px',
+                height: '40px',
+                background: 'linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 2px 8px rgba(139, 92, 246, 0.3)'
+              }}>
+                <span style={{
+                  color: 'white',
+                  fontSize: '16px',
+                  fontWeight: '700'
+                }}>
                   {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
                 </span>
+              </div>
+              <div style={{textAlign: 'left'}}>
+                <p style={{
+                  fontSize: '14px',
+                  fontWeight: '700',
+                  color: '#1e3a8a',
+                  margin: 0
+                }}>
+                  {user?.firstName}
+                </p>
               </div>
             </div>
             <button
               onClick={handleLogout}
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-200"
+              style={{
+                background: 'rgba(255,255,255,0.2)',
+                color: 'white',
+                padding: '10px 20px',
+                borderRadius: '12px',
+                fontSize: '14px',
+                fontWeight: '600',
+                border: '2px solid rgba(255,255,255,0.3)',
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.95)';
+                e.currentTarget.style.color = '#1e40af';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
+                e.currentTarget.style.color = 'white';
+              }}
             >
               Logout
             </button>
           </div>
-        </div>
-      </div>
-
-      {/* Mobile Navigation */}
-      <div className="md:hidden">
-        <div className="px-2 pt-2 pb-3 space-y-1 bg-gray-50">
-          {navigationItems.map((item) => (
-            <button
-              key={item.name}
-              onClick={() => navigate(item.path)}
-              className={`flex items-center space-x-3 w-full px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
-                isActive(item.path)
-                  ? 'bg-blue-100 text-blue-700'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-              }`}
-            >
-              <span className="text-lg">{item.icon}</span>
-              <span>{item.name}</span>
-            </button>
-          ))}
         </div>
       </div>
     </nav>

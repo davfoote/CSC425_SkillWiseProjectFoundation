@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import challengeService from '../../services/challengeService';
 
-const ChallengeCard = ({ challenge, onChallengeClick, onProgressUpdate }) => {
+const ChallengeCard = ({ challenge, onChallengeClick, onProgressUpdate, onSubmitForFeedback }) => {
   // Determine status display
   const getStatusInfo = (challenge) => {
     if (!challenge.is_active) {
@@ -60,116 +60,287 @@ const ChallengeCard = ({ challenge, onChallengeClick, onProgressUpdate }) => {
 
   return (
     <div
-      className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 cursor-pointer border border-gray-200 hover:border-blue-300"
+      style={{
+        background: 'rgba(255,255,255,0.95)',
+        borderRadius: '30px',
+        boxShadow: '0 8px 25px rgba(0,0,0,0.1)',
+        padding: '28px',
+        cursor: 'pointer',
+        transition: 'all 0.3s',
+        position: 'relative',
+        overflow: 'hidden'
+      }}
+      onMouseOver={(e) => {
+        e.currentTarget.style.transform = 'translateY(-8px)';
+        e.currentTarget.style.boxShadow = '0 12px 35px rgba(0,0,0,0.15)';
+      }}
+      onMouseOut={(e) => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.1)';
+      }}
       onClick={() => onChallengeClick && onChallengeClick(challenge)}
     >
-      {/* Header with Status and Difficulty */}
-      <div className="flex justify-between items-start mb-4">
-        <div className="flex items-center space-x-2">
-          <span className="text-lg">{statusInfo.icon}</span>
-          <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusInfo.color}`}>
-            {statusInfo.text}
-          </span>
+      {/* Content */}
+      <div style={{position: 'relative', zIndex: 10}}>
+        {/* Header with Status and Difficulty */}
+        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '20px'}}>
+          <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+            <span style={{fontSize: '28px'}}>{statusInfo.icon}</span>
+            <span style={{
+              padding: '6px 14px',
+              borderRadius: '20px',
+              fontSize: '12px',
+              fontWeight: '700',
+              background: statusInfo.text === 'Available' ? 'linear-gradient(135deg, #34d399 0%, #059669 100%)' : '#e5e7eb',
+              color: statusInfo.text === 'Available' ? 'white' : '#6b7280',
+              boxShadow: statusInfo.text === 'Available' ? '0 4px 12px rgba(52,211,153,0.3)' : 'none'
+            }}>
+              {statusInfo.text}
+            </span>
+          </div>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            background: getDifficultyColor(challenge.difficulty_level).replace('bg-', '') === 'green-500' ? 'linear-gradient(135deg, #34d399 0%, #10b981 100%)' :
+                       getDifficultyColor(challenge.difficulty_level).replace('bg-', '') === 'yellow-500' ? 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)' :
+                       'linear-gradient(135deg, #f87171 0%, #dc2626 100%)',
+            padding: '8px 16px',
+            borderRadius: '20px',
+            color: 'white',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+          }}>
+            <span style={{fontSize: '14px', fontWeight: '900', textTransform: 'capitalize'}}>
+              {challenge.difficulty_level || 'medium'}
+            </span>
+          </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <div
-            className={`w-3 h-3 rounded-full ${getDifficultyColor(challenge.difficulty_level)}`}
-            title={`${challenge.difficulty_level || 'medium'} difficulty`}
-          ></div>
-          <span className="text-xs text-gray-500 capitalize">
-            {challenge.difficulty_level || 'medium'}
-          </span>
-        </div>
-      </div>
 
-      {/* Title */}
-      <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-        {challenge.title || 'Untitled Challenge'}
-      </h3>
+        {/* Title */}
+        <h3 style={{
+          fontSize: '22px',
+          fontWeight: '900',
+          color: '#1e3a8a',
+          marginBottom: '12px',
+          lineHeight: '1.3'
+        }}>
+          {challenge.title || 'Untitled Challenge'}
+        </h3>
 
-      {/* Description */}
-      <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-        {challenge.description || 'No description available.'}
-      </p>
+        {/* Description */}
+        <p style={{
+          color: '#64748b',
+          fontSize: '14px',
+          marginBottom: '16px',
+          lineHeight: '1.6',
+          display: '-webkit-box',
+          WebkitLineClamp: 3,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden'
+        }}>
+          {challenge.description || 'No description available.'}
+        </p>
 
-      {/* Category and Tags */}
-      {challenge.category && (
-        <div className="mb-3">
-          <span className="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">
-            📚 {challenge.category}
-          </span>
-        </div>
-      )}
+        {/* Category */}
+        {challenge.category && (
+          <div style={{marginBottom: '16px'}}>
+            <span style={{
+              background: 'linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%)',
+              color: 'white',
+              padding: '8px 16px',
+              borderRadius: '16px',
+              fontSize: '13px',
+              fontWeight: '700',
+              boxShadow: '0 4px 12px rgba(167,139,250,0.4)'
+            }}>
+              📚 {challenge.category}
+            </span>
+          </div>
+        )}
 
-      {/* Tags */}
-      {challenge.tags && challenge.tags.length > 0 && (
-        <div className="mb-3">
-          <div className="flex flex-wrap gap-1">
-            {challenge.tags.slice(0, 3).map((tag, index) => (
-              <span
-                key={index}
-                className="inline-block bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs"
-              >
-                #{tag}
-              </span>
-            ))}
-            {challenge.tags.length > 3 && (
-              <span className="text-xs text-gray-500">
-                +{challenge.tags.length - 3} more
-              </span>
+        {/* Tags */}
+        {challenge.tags && challenge.tags.length > 0 && (
+          <div style={{marginBottom: '20px'}}>
+            <div style={{display: 'flex', flexWrap: 'wrap', gap: '8px'}}>
+              {challenge.tags.slice(0, 3).map((tag, index) => (
+                <span
+                  key={index}
+                  style={{
+                    background: 'rgba(167,139,250,0.15)',
+                    color: '#7c3aed',
+                    padding: '6px 12px',
+                    borderRadius: '12px',
+                    fontSize: '12px',
+                    fontWeight: '700'
+                  }}
+                >
+                  #{tag}
+                </span>
+              ))}
+              {challenge.tags.length > 3 && (
+                <span style={{fontSize: '12px', color: '#64748b', fontWeight: '600', display: 'flex', alignItems: 'center'}}>
+                  +{challenge.tags.length - 3} more
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Footer with Time and Points */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          paddingTop: '16px',
+          borderTop: '2px solid #e5e7eb',
+          marginBottom: '16px'
+        }}>
+          <div style={{display: 'flex', alignItems: 'center', gap: '12px', fontSize: '13px'}}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              background: '#f1f5f9',
+              padding: '8px 12px',
+              borderRadius: '12px',
+              fontWeight: '700',
+              color: '#475569'
+            }}>
+              <span>⏱️</span>
+              <span>{formatTime(challenge.estimated_time_minutes)}</span>
+            </div>
+            {challenge.points_reward && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+                padding: '8px 12px',
+                borderRadius: '12px',
+                fontWeight: '900',
+                color: '#92400e'
+              }}>
+                <span>🏆</span>
+                <span>{challenge.points_reward} pts</span>
+              </div>
             )}
           </div>
-        </div>
-      )}
 
-      {/* Footer with Time and Points */}
-      <div className="flex justify-between items-center pt-3 border-t border-gray-100">
-        <div className="flex items-center space-x-4 text-xs text-gray-500">
-          <div className="flex items-center space-x-1">
-            <span>⏱️</span>
-            <span>{formatTime(challenge.estimated_time_minutes)}</span>
-          </div>
-          {challenge.points_reward && (
-            <div className="flex items-center space-x-1">
-              <span>🏆</span>
-              <span>{challenge.points_reward} pts</span>
+          {/* Peer Review Indicator */}
+          {challenge.requires_peer_review && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              fontSize: '13px',
+              color: '#7c3aed',
+              background: 'rgba(167,139,250,0.15)',
+              padding: '8px 12px',
+              borderRadius: '12px',
+              fontWeight: '700'
+            }}>
+              <span>👥</span>
+              <span>Peer Review</span>
             </div>
           )}
         </div>
 
-        {/* Peer Review Indicator */}
-        {challenge.requires_peer_review && (
-          <div className="flex items-center space-x-1 text-xs text-purple-600">
-            <span>👥</span>
-            <span>Peer Review</span>
-          </div>
-        )}
-      </div>
+        {/* Completion Status and Buttons */}
+        <div style={{marginTop: '20px', paddingTop: '20px', borderTop: '2px solid #e5e7eb', display: 'flex', flexDirection: 'column', gap: '12px'}}>
+        {/* Submit for Feedback Button */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onSubmitForFeedback && onSubmitForFeedback(challenge);
+          }}
+          style={{
+            width: '100%',
+            background: 'linear-gradient(135deg, #f472b6 0%, #db2777 100%)',
+            color: 'white',
+            padding: '14px 16px',
+            borderRadius: '18px',
+            border: 'none',
+            fontSize: '14px',
+            fontWeight: '700',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            boxShadow: '0 4px 15px rgba(244,114,182,0.4)',
+            transition: 'all 0.2s'
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 6px 20px rgba(244,114,182,0.5)';
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 4px 15px rgba(244,114,182,0.4)';
+          }}
+        >
+          <span style={{fontSize: '18px'}}>🤖</span>
+          <span>Submit for AI Feedback</span>
+        </button>
 
-      {/* Completion Status and Button */}
-      <div className="mt-3 pt-3 border-t border-gray-100">
+        {/* Mark Complete Button */}
         {isCompleted ? (
-          <div className="flex items-center justify-center space-x-2 text-green-600 bg-green-50 rounded-lg py-2">
-            <span>✅</span>
-            <span className="text-sm font-medium">Completed!</span>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            background: 'linear-gradient(135deg, #34d399 0%, #059669 100%)',
+            borderRadius: '18px',
+            padding: '14px',
+            color: 'white',
+            fontWeight: '700',
+            boxShadow: '0 4px 15px rgba(52,211,153,0.4)'
+          }}>
+            <span style={{fontSize: '18px'}}>✅</span>
+            <span style={{fontSize: '14px'}}>Completed!</span>
           </div>
         ) : (
           <button
             onClick={handleMarkComplete}
             disabled={isLoading}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+            style={{
+              width: '100%',
+              background: 'white',
+              border: '2px solid #a78bfa',
+              color: '#7c3aed',
+              padding: '14px 16px',
+              borderRadius: '18px',
+              fontSize: '14px',
+              fontWeight: '700',
+              cursor: isLoading ? 'not-allowed' : 'pointer',
+              opacity: isLoading ? 0.5 : 1,
+              transition: 'all 0.2s'
+            }}
+            onMouseOver={(e) => {
+              if (!isLoading) {
+                e.currentTarget.style.background = '#faf5ff';
+                e.currentTarget.style.borderColor = '#7c3aed';
+              }
+            }}
+            onMouseOut={(e) => {
+              if (!isLoading) {
+                e.currentTarget.style.background = 'white';
+                e.currentTarget.style.borderColor = '#a78bfa';
+              }
+            }}
           >
             {isLoading ? (
-              <span className="flex items-center justify-center space-x-2">
-                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                  <path fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              <span style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'}}>
+                <svg style={{animation: 'spin 1s linear infinite', height: '16px', width: '16px'}} viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" opacity="0.25" />
+                  <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" opacity="0.75" />
                 </svg>
                 <span>Completing...</span>
               </span>
             ) : (
-              <span className="flex items-center justify-center space-x-2">
-                <span>✓</span>
+              <span style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'}}>
+                <span style={{fontSize: '18px'}}>✓</span>
                 <span>Mark Complete</span>
               </span>
             )}
@@ -179,12 +350,21 @@ const ChallengeCard = ({ challenge, onChallengeClick, onProgressUpdate }) => {
 
       {/* Max Attempts Indicator */}
       {challenge.max_attempts && (
-        <div className="mt-2 pt-2 border-t border-gray-100">
-          <div className="text-xs text-gray-500 text-center">
-            Max attempts: {challenge.max_attempts}
+        <div style={{marginTop: '16px', paddingTop: '16px', borderTop: '2px solid #e5e7eb'}}>
+          <div style={{
+            fontSize: '12px',
+            color: '#64748b',
+            textAlign: 'center',
+            fontWeight: '700',
+            background: '#f1f5f9',
+            padding: '10px',
+            borderRadius: '12px'
+          }}>
+            📋 Max attempts: <span style={{fontWeight: '900', color: '#1e3a8a'}}>{challenge.max_attempts}</span>
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 };

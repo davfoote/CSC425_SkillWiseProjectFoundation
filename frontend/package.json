@@ -6,6 +6,7 @@
     "@headlessui/react": "^2.2.9",
     "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^5.2.2",
+    "@sentry/react": "^10.27.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
@@ -22,11 +23,11 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "eslint": "^9.39.1",
     "@babel/eslint-parser": "^7.28.5",
     "@babel/preset-react": "^7.28.5",
-    "eslint-plugin-react": "^7.37.5",
-    "@eslint/js": "^8.57.1"
+    "@eslint/js": "^8.57.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react": "^7.37.5"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -35,12 +36,6 @@
     "eject": "react-scripts eject",
     "lint": "cd .. && npm run lint",
     "lint:fix": "cd .. && npm run lint:fix"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [

@@ -73,116 +73,293 @@ const SignupForm = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-        Create Your Account
-      </h2>
+    <div style={{
+      maxWidth: '520px',
+      width: '100%',
+      margin: '0 auto',
+      background: 'white',
+      borderRadius: '32px',
+      padding: '48px',
+      boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
+      border: '4px solid #a78bfa'
+    }}>
+      <div style={{
+        textAlign: 'center',
+        marginBottom: '32px',
+        padding: '24px',
+        background: 'linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%)',
+        borderRadius: '24px',
+        border: '3px solid #9333ea'
+      }}>
+        <div style={{fontSize: '64px', marginBottom: '12px'}}>🚀</div>
+        <h2 style={{fontSize: '32px', fontWeight: '900', color: '#1e3a8a', marginBottom: '8px'}}>
+          Create Your Account
+        </h2>
+        <p style={{fontSize: '16px', color: '#6b7280', fontWeight: '600'}}>
+          Join SkillWise and start learning today!
+        </p>
+      </div>
 
       {submitSuccess && (
-        <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
-          Account created successfully! You can now log in.
+        <div style={{
+          marginBottom: '24px',
+          padding: '20px',
+          background: 'linear-gradient(135deg, #d1fae5 0%, #34d399 100%)',
+          border: '3px solid #059669',
+          borderRadius: '20px',
+          color: '#065f46',
+          fontSize: '15px',
+          fontWeight: '600',
+          textAlign: 'center'
+        }}>
+          ✅ Account created successfully! You can now log in.
         </div>
       )}
 
       {submitError && (
-        <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-          {submitError}
+        <div style={{
+          marginBottom: '24px',
+          padding: '20px',
+          background: 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)',
+          border: '3px solid #ef4444',
+          borderRadius: '20px',
+          color: '#991b1b',
+          fontSize: '15px',
+          fontWeight: '600',
+          textAlign: 'center'
+        }}>
+          ⚠️ {submitError}
         </div>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} style={{marginBottom: '32px'}}>
         {/* First Name */}
-        <div>
-          <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
-            First Name
+        <div style={{marginBottom: '20px'}}>
+          <label htmlFor="firstName" style={{
+            display: 'block',
+            fontSize: '15px',
+            fontWeight: '700',
+            color: '#374151',
+            marginBottom: '8px'
+          }}>
+            👤 First Name
           </label>
           <input
             id="firstName"
             type="text"
             {...register('firstName')}
-            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.firstName ? 'border-red-500' : 'border-gray-300'
-            }`}
+            style={{
+              width: '100%',
+              padding: '14px 18px',
+              fontSize: '15px',
+              border: errors.firstName ? '3px solid #ef4444' : '3px solid #e5e7eb',
+              borderRadius: '14px',
+              outline: 'none',
+              transition: 'all 0.3s ease',
+              boxSizing: 'border-box'
+            }}
+            onFocus={(e) => {
+              if (!errors.firstName) {
+                e.target.style.border = '3px solid #a78bfa';
+                e.target.style.boxShadow = '0 0 0 4px rgba(167, 139, 250, 0.1)';
+              }
+            }}
+            onBlur={(e) => {
+              if (!errors.firstName) {
+                e.target.style.border = '3px solid #e5e7eb';
+                e.target.style.boxShadow = 'none';
+              }
+            }}
             placeholder="Enter your first name"
           />
           {errors.firstName && (
-            <p className="mt-1 text-sm text-red-600">{errors.firstName.message}</p>
+            <p style={{marginTop: '6px', fontSize: '13px', color: '#ef4444', fontWeight: '600'}}>
+              ⚠️ {errors.firstName.message}
+            </p>
           )}
         </div>
 
         {/* Last Name */}
-        <div>
-          <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
-            Last Name
+        <div style={{marginBottom: '20px'}}>
+          <label htmlFor="lastName" style={{
+            display: 'block',
+            fontSize: '15px',
+            fontWeight: '700',
+            color: '#374151',
+            marginBottom: '8px'
+          }}>
+            👤 Last Name
           </label>
           <input
             id="lastName"
             type="text"
             {...register('lastName')}
-            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.lastName ? 'border-red-500' : 'border-gray-300'
-            }`}
+            style={{
+              width: '100%',
+              padding: '14px 18px',
+              fontSize: '15px',
+              border: errors.lastName ? '3px solid #ef4444' : '3px solid #e5e7eb',
+              borderRadius: '14px',
+              outline: 'none',
+              transition: 'all 0.3s ease',
+              boxSizing: 'border-box'
+            }}
+            onFocus={(e) => {
+              if (!errors.lastName) {
+                e.target.style.border = '3px solid #a78bfa';
+                e.target.style.boxShadow = '0 0 0 4px rgba(167, 139, 250, 0.1)';
+              }
+            }}
+            onBlur={(e) => {
+              if (!errors.lastName) {
+                e.target.style.border = '3px solid #e5e7eb';
+                e.target.style.boxShadow = 'none';
+              }
+            }}
             placeholder="Enter your last name"
           />
           {errors.lastName && (
-            <p className="mt-1 text-sm text-red-600">{errors.lastName.message}</p>
+            <p style={{marginTop: '6px', fontSize: '13px', color: '#ef4444', fontWeight: '600'}}>
+              ⚠️ {errors.lastName.message}
+            </p>
           )}
         </div>
 
         {/* Email */}
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-            Email Address
+        <div style={{marginBottom: '20px'}}>
+          <label htmlFor="email" style={{
+            display: 'block',
+            fontSize: '15px',
+            fontWeight: '700',
+            color: '#374151',
+            marginBottom: '8px'
+          }}>
+            📧 Email Address
           </label>
           <input
             id="email"
             type="email"
             {...register('email')}
-            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.email ? 'border-red-500' : 'border-gray-300'
-            }`}
-            placeholder="Enter your email"
+            style={{
+              width: '100%',
+              padding: '14px 18px',
+              fontSize: '15px',
+              border: errors.email ? '3px solid #ef4444' : '3px solid #e5e7eb',
+              borderRadius: '14px',
+              outline: 'none',
+              transition: 'all 0.3s ease',
+              boxSizing: 'border-box'
+            }}
+            onFocus={(e) => {
+              if (!errors.email) {
+                e.target.style.border = '3px solid #a78bfa';
+                e.target.style.boxShadow = '0 0 0 4px rgba(167, 139, 250, 0.1)';
+              }
+            }}
+            onBlur={(e) => {
+              if (!errors.email) {
+                e.target.style.border = '3px solid #e5e7eb';
+                e.target.style.boxShadow = 'none';
+              }
+            }}
+            placeholder="you@example.com"
           />
           {errors.email && (
-            <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+            <p style={{marginTop: '6px', fontSize: '13px', color: '#ef4444', fontWeight: '600'}}>
+              ⚠️ {errors.email.message}
+            </p>
           )}
         </div>
 
         {/* Password */}
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-            Password
+        <div style={{marginBottom: '20px'}}>
+          <label htmlFor="password" style={{
+            display: 'block',
+            fontSize: '15px',
+            fontWeight: '700',
+            color: '#374151',
+            marginBottom: '8px'
+          }}>
+            🔒 Password
           </label>
           <input
             id="password"
             type="password"
             {...register('password')}
-            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.password ? 'border-red-500' : 'border-gray-300'
-            }`}
-            placeholder="Create a password"
+            style={{
+              width: '100%',
+              padding: '14px 18px',
+              fontSize: '15px',
+              border: errors.password ? '3px solid #ef4444' : '3px solid #e5e7eb',
+              borderRadius: '14px',
+              outline: 'none',
+              transition: 'all 0.3s ease',
+              boxSizing: 'border-box'
+            }}
+            onFocus={(e) => {
+              if (!errors.password) {
+                e.target.style.border = '3px solid #a78bfa';
+                e.target.style.boxShadow = '0 0 0 4px rgba(167, 139, 250, 0.1)';
+              }
+            }}
+            onBlur={(e) => {
+              if (!errors.password) {
+                e.target.style.border = '3px solid #e5e7eb';
+                e.target.style.boxShadow = 'none';
+              }
+            }}
+            placeholder="Create a strong password"
           />
           {errors.password && (
-            <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
+            <p style={{marginTop: '6px', fontSize: '13px', color: '#ef4444', fontWeight: '600'}}>
+              ⚠️ {errors.password.message}
+            </p>
           )}
         </div>
 
         {/* Confirm Password */}
-        <div>
-          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-            Confirm Password
+        <div style={{marginBottom: '28px'}}>
+          <label htmlFor="confirmPassword" style={{
+            display: 'block',
+            fontSize: '15px',
+            fontWeight: '700',
+            color: '#374151',
+            marginBottom: '8px'
+          }}>
+            🔒 Confirm Password
           </label>
           <input
             id="confirmPassword"
             type="password"
             {...register('confirmPassword')}
-            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
-            }`}
+            style={{
+              width: '100%',
+              padding: '14px 18px',
+              fontSize: '15px',
+              border: errors.confirmPassword ? '3px solid #ef4444' : '3px solid #e5e7eb',
+              borderRadius: '14px',
+              outline: 'none',
+              transition: 'all 0.3s ease',
+              boxSizing: 'border-box'
+            }}
+            onFocus={(e) => {
+              if (!errors.confirmPassword) {
+                e.target.style.border = '3px solid #a78bfa';
+                e.target.style.boxShadow = '0 0 0 4px rgba(167, 139, 250, 0.1)';
+              }
+            }}
+            onBlur={(e) => {
+              if (!errors.confirmPassword) {
+                e.target.style.border = '3px solid #e5e7eb';
+                e.target.style.boxShadow = 'none';
+              }
+            }}
             placeholder="Confirm your password"
           />
           {errors.confirmPassword && (
-            <p className="mt-1 text-sm text-red-600">{errors.confirmPassword.message}</p>
+            <p style={{marginTop: '6px', fontSize: '13px', color: '#ef4444', fontWeight: '600'}}>
+              ⚠️ {errors.confirmPassword.message}
+            </p>
           )}
         </div>
 
@@ -190,23 +367,70 @@ const SignupForm = () => {
         <button
           type="submit"
           disabled={isSubmitting}
-          className={`w-full py-2 px-4 rounded-md text-white font-medium ${
-            isSubmitting
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500'
-          } transition duration-200`}
+          style={{
+            width: '100%',
+            padding: '18px',
+            fontSize: '18px',
+            fontWeight: '900',
+            color: 'white',
+            background: isSubmitting 
+              ? 'linear-gradient(135deg, #9ca3af 0%, #6b7280 100%)'
+              : 'linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%)',
+            border: 'none',
+            borderRadius: '20px',
+            cursor: isSubmitting ? 'not-allowed' : 'pointer',
+            transition: 'all 0.3s ease',
+            textShadow: '0 1px 2px rgba(0,0,0,0.1)',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+          }}
+          onMouseEnter={(e) => {
+            if (!isSubmitting) {
+              e.target.style.transform = 'translateY(-2px)';
+              e.target.style.boxShadow = '0 8px 20px rgba(0,0,0,0.2)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!isSubmitting) {
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+            }
+          }}
         >
-          {isSubmitting ? 'Creating Account...' : 'Create Account'}
+          {isSubmitting ? '⏳ Creating Account...' : '✨ Create Account'}
         </button>
       </form>
 
-      <div className="mt-6 text-center">
-        <p className="text-sm text-gray-600">
-          Already have an account?{' '}
-          <a href="/login" className="text-blue-600 hover:text-blue-500 font-medium">
-            Sign in here
-          </a>
+      <div style={{
+        textAlign: 'center',
+        padding: '20px',
+        background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
+        borderRadius: '20px',
+        border: '2px solid #bae6fd'
+      }}>
+        <p style={{fontSize: '15px', color: '#475569', fontWeight: '600', marginBottom: '8px'}}>
+          Already have an account?
         </p>
+        <a 
+          href="/login" 
+          style={{
+            fontSize: '16px',
+            color: '#0ea5e9',
+            fontWeight: '900',
+            textDecoration: 'none',
+            display: 'inline-block',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.color = '#0284c7';
+            e.target.style.transform = 'scale(1.05)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.color = '#0ea5e9';
+            e.target.style.transform = 'scale(1)';
+          }}
+        >
+          🔑 Sign in here
+        </a>
       </div>
     </div>
   );

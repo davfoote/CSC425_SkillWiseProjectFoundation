@@ -71,64 +71,125 @@ const GoalCreationForm = ({ onGoalCreated, onCancel }) => {
   };
 
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6 max-w-2xl mx-auto">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Create New Goal</h2>
-        <p className="text-gray-600">
-          Set a new learning goal to track your progress and achievements.
+    <div style={{
+      background: 'rgba(255,255,255,0.95)',
+      boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
+      borderRadius: '30px',
+      padding: '40px',
+      maxWidth: '800px',
+      margin: '0 auto'
+    }}>
+      <div style={{marginBottom: '32px'}}>
+        <h2 style={{
+          fontSize: '32px',
+          fontWeight: '900',
+          color: '#1e3a8a',
+          marginBottom: '8px'
+        }}>🎯 Create New Goal</h2>
+        <p style={{
+          fontSize: '16px',
+          color: '#3b82f6',
+          fontWeight: '600'
+        }}>
+          Set a new learning goal to track your progress and achievements!
         </p>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} style={{display: 'flex', flexDirection: 'column', gap: '24px'}}>
         {/* Title Field */}
         <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-            Goal Title <span className="text-red-500">*</span>
+          <label htmlFor="title" style={{
+            display: 'block',
+            fontSize: '14px',
+            fontWeight: '700',
+            color: '#1e3a8a',
+            marginBottom: '8px'
+          }}>
+            Goal Title <span style={{color: '#ef4444'}}>*</span>
           </label>
           <input
             type="text"
             id="title"
             {...register('title')}
-            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-              errors.title ? 'border-red-500' : 'border-gray-300'
-            }`}
+            style={{
+              width: '100%',
+              padding: '12px 16px',
+              border: errors.title ? '2px solid #ef4444' : '2px solid #e5e7eb',
+              borderRadius: '16px',
+              fontSize: '16px',
+              outline: 'none',
+              transition: 'all 0.2s'
+            }}
+            onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+            onBlur={(e) => e.target.style.borderColor = errors.title ? '#ef4444' : '#e5e7eb'}
             placeholder="e.g., Learn React Hooks"
           />
           {errors.title && (
-            <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>
+            <p style={{marginTop: '4px', fontSize: '14px', color: '#ef4444', fontWeight: '600'}}>{errors.title.message}</p>
           )}
         </div>
 
         {/* Description Field */}
         <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-            Description <span className="text-red-500">*</span>
+          <label htmlFor="description" style={{
+            display: 'block',
+            fontSize: '14px',
+            fontWeight: '700',
+            color: '#1e3a8a',
+            marginBottom: '8px'
+          }}>
+            Description <span style={{color: '#ef4444'}}>*</span>
           </label>
           <textarea
             id="description"
             rows={4}
             {...register('description')}
-            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-              errors.description ? 'border-red-500' : 'border-gray-300'
-            }`}
+            style={{
+              width: '100%',
+              padding: '12px 16px',
+              border: errors.description ? '2px solid #ef4444' : '2px solid #e5e7eb',
+              borderRadius: '16px',
+              fontSize: '16px',
+              outline: 'none',
+              transition: 'all 0.2s',
+              fontFamily: 'inherit'
+            }}
+            onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+            onBlur={(e) => e.target.style.borderColor = errors.description ? '#ef4444' : '#e5e7eb'}
             placeholder="Describe what you want to achieve and how you plan to do it..."
           />
           {errors.description && (
-            <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
+            <p style={{marginTop: '4px', fontSize: '14px', color: '#ef4444', fontWeight: '600'}}>{errors.description.message}</p>
           )}
         </div>
 
         {/* Category Field */}
         <div>
-          <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
-            Category <span className="text-red-500">*</span>
+          <label htmlFor="category" style={{
+            display: 'block',
+            fontSize: '14px',
+            fontWeight: '700',
+            color: '#1e3a8a',
+            marginBottom: '8px'
+          }}>
+            Category <span style={{color: '#ef4444'}}>*</span>
           </label>
           <select
             id="category"
             {...register('category')}
-            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-              errors.category ? 'border-red-500' : 'border-gray-300'
-            }`}
+            style={{
+              width: '100%',
+              padding: '12px 16px',
+              border: errors.category ? '2px solid #ef4444' : '2px solid #e5e7eb',
+              borderRadius: '16px',
+              fontSize: '16px',
+              outline: 'none',
+              transition: 'all 0.2s',
+              background: 'white',
+              cursor: 'pointer'
+            }}
+            onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+            onBlur={(e) => e.target.style.borderColor = errors.category ? '#ef4444' : '#e5e7eb'}
           >
             <option value="">Select a category</option>
             <option value="Programming">Programming</option>
@@ -142,118 +203,204 @@ const GoalCreationForm = ({ onGoalCreated, onCancel }) => {
             <option value="Other">Other</option>
           </select>
           {errors.category && (
-            <p className="mt-1 text-sm text-red-600">{errors.category.message}</p>
+            <p style={{marginTop: '4px', fontSize: '14px', color: '#ef4444', fontWeight: '600'}}>{errors.category.message}</p>
           )}
         </div>
 
         {/* Difficulty Level Field */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
-            Difficulty Level <span className="text-red-500">*</span>
+          <label style={{
+            display: 'block',
+            fontSize: '14px',
+            fontWeight: '700',
+            color: '#1e3a8a',
+            marginBottom: '12px'
+          }}>
+            Difficulty Level <span style={{color: '#ef4444'}}>*</span>
           </label>
-          <div className="grid grid-cols-3 gap-4">
+          <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px'}}>
             {[
-              { value: 'easy', label: 'Easy', description: 'Beginner friendly', points: '100 pts', color: 'green' },
-              { value: 'medium', label: 'Medium', description: 'Some experience needed', points: '200 pts', color: 'yellow' },
-              { value: 'hard', label: 'Hard', description: 'Advanced challenge', points: '300 pts', color: 'red' },
+              { value: 'easy', label: 'Easy', description: 'Beginner friendly', points: '100 pts', gradient: 'linear-gradient(135deg, #34d399 0%, #059669 100%)' },
+              { value: 'medium', label: 'Medium', description: 'Some experience', points: '200 pts', gradient: 'linear-gradient(135deg, #fbbf24 0%, #d97706 100%)' },
+              { value: 'hard', label: 'Hard', description: 'Advanced challenge', points: '300 pts', gradient: 'linear-gradient(135deg, #f87171 0%, #dc2626 100%)' },
             ].map((level) => (
-              <label key={level.value} className="cursor-pointer">
+              <label key={level.value} style={{cursor: 'pointer'}}>
                 <input
                   type="radio"
                   value={level.value}
                   {...register('difficulty_level')}
-                  className="sr-only"
+                  style={{display: 'none'}}
                 />
-                <div className={`border-2 rounded-lg p-4 text-center transition-all ${
-                  register('difficulty_level').value === level.value ||
-                  (!register('difficulty_level').value && level.value === 'medium')
-                    ? `border-${level.color}-500 bg-${level.color}-50`
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}>
-                  <div className={`text-lg font-semibold text-${level.color}-600`}>{level.label}</div>
-                  <div className="text-sm text-gray-600">{level.description}</div>
-                  <div className={`text-xs font-medium text-${level.color}-700`}>{level.points}</div>
+                <div style={{
+                  background: level.gradient,
+                  borderRadius: '20px',
+                  padding: '20px',
+                  textAlign: 'center',
+                  color: 'white',
+                  boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+                  transition: 'transform 0.2s',
+                  opacity: 0.7
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                  e.currentTarget.style.opacity = '1';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.opacity = '0.7';
+                }}>
+                  <div style={{fontSize: '18px', fontWeight: '900', marginBottom: '4px'}}>{level.label}</div>
+                  <div style={{fontSize: '13px', opacity: 0.9, marginBottom: '4px'}}>{level.description}</div>
+                  <div style={{fontSize: '12px', fontWeight: '700'}}>{level.points}</div>
                 </div>
               </label>
             ))}
           </div>
           {errors.difficulty_level && (
-            <p className="mt-1 text-sm text-red-600">{errors.difficulty_level.message}</p>
+            <p style={{marginTop: '8px', fontSize: '14px', color: '#ef4444', fontWeight: '600'}}>{errors.difficulty_level.message}</p>
           )}
         </div>
 
         {/* Target Completion Date */}
         <div>
-          <label htmlFor="target_completion_date" className="block text-sm font-medium text-gray-700 mb-1">
-            Target Completion Date <span className="text-red-500">*</span>
+          <label htmlFor="target_completion_date" style={{
+            display: 'block',
+            fontSize: '14px',
+            fontWeight: '700',
+            color: '#1e3a8a',
+            marginBottom: '8px'
+          }}>
+            Target Completion Date <span style={{color: '#ef4444'}}>*</span>
           </label>
           <input
             type="date"
             id="target_completion_date"
             {...register('target_completion_date')}
             min={getMinDate()}
-            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-              errors.target_completion_date ? 'border-red-500' : 'border-gray-300'
-            }`}
+            style={{
+              width: '100%',
+              padding: '12px 16px',
+              border: errors.target_completion_date ? '2px solid #ef4444' : '2px solid #e5e7eb',
+              borderRadius: '16px',
+              fontSize: '16px',
+              outline: 'none',
+              transition: 'all 0.2s'
+            }}
+            onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+            onBlur={(e) => e.target.style.borderColor = errors.target_completion_date ? '#ef4444' : '#e5e7eb'}
           />
           {errors.target_completion_date && (
-            <p className="mt-1 text-sm text-red-600">{errors.target_completion_date.message}</p>
+            <p style={{marginTop: '4px', fontSize: '14px', color: '#ef4444', fontWeight: '600'}}>{errors.target_completion_date.message}</p>
           )}
         </div>
 
         {/* Public Goal Toggle */}
-        <div className="flex items-center space-x-3">
+        <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
           <input
             type="checkbox"
             id="is_public"
             {...register('is_public')}
-            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            style={{
+              width: '18px',
+              height: '18px',
+              cursor: 'pointer',
+              accentColor: '#3b82f6'
+            }}
           />
-          <label htmlFor="is_public" className="text-sm text-gray-700">
+          <label htmlFor="is_public" style={{
+            fontSize: '14px',
+            color: '#1e3a8a',
+            fontWeight: '600',
+            cursor: 'pointer'
+          }}>
             Make this goal public (visible to other users)
           </label>
         </div>
 
         {/* Submit Error */}
         {submitError && (
-          <div className="bg-red-50 border border-red-200 rounded-md p-4">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div className="ml-3">
-                <p className="text-sm text-red-800">{submitError}</p>
-              </div>
+          <div style={{
+            background: 'rgba(254,202,202,0.9)',
+            border: '2px solid #f87171',
+            borderRadius: '16px',
+            padding: '16px'
+          }}>
+            <div style={{display: 'flex', alignItems: 'flex-start', gap: '12px'}}>
+              <div style={{fontSize: '24px'}}>⚠️</div>
+              <p style={{fontSize: '14px', color: '#991b1b', fontWeight: '600', margin: 0}}>{submitError}</p>
             </div>
           </div>
         )}
 
         {/* Form Actions */}
-        <div className="flex flex-col sm:flex-row gap-3 pt-4">
+        <div style={{display: 'flex', gap: '12px', paddingTop: '16px'}}>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full sm:w-auto px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+            style={{
+              flex: 1,
+              padding: '16px 32px',
+              background: isSubmitting ? '#d1d5db' : 'linear-gradient(135deg, #34d399 0%, #059669 100%)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '20px',
+              fontSize: '16px',
+              fontWeight: '700',
+              cursor: isSubmitting ? 'not-allowed' : 'pointer',
+              boxShadow: isSubmitting ? 'none' : '0 4px 15px rgba(52,211,153,0.4)',
+              transition: 'all 0.2s'
+            }}
+            onMouseOver={(e) => {
+              if (!isSubmitting) {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 6px 20px rgba(52,211,153,0.5)';
+              }
+            }}
+            onMouseOut={(e) => {
+              if (!isSubmitting) {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 15px rgba(52,211,153,0.4)';
+              }
+            }}
           >
             {isSubmitting ? (
-              <div className="flex items-center justify-center">
-                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'}}>
+                <svg style={{animation: 'spin 1s linear infinite', width: '20px', height: '20px'}} fill="none" viewBox="0 0 24 24">
+                  <circle style={{opacity: 0.25}} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path style={{opacity: 0.75}} fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
                 Creating Goal...
               </div>
             ) : (
-              'Create Goal'
+              '✨ Create Goal'
             )}
           </button>
           <button
             type="button"
             onClick={onCancel}
             disabled={isSubmitting}
-            className="w-full sm:w-auto px-6 py-2 bg-gray-300 hover:bg-gray-400 disabled:bg-gray-200 text-gray-700 font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+            style={{
+              flex: 1,
+              padding: '16px 32px',
+              background: 'rgba(209,213,219,0.8)',
+              color: '#374151',
+              border: '2px solid #d1d5db',
+              borderRadius: '20px',
+              fontSize: '16px',
+              fontWeight: '700',
+              cursor: isSubmitting ? 'not-allowed' : 'pointer',
+              transition: 'all 0.2s'
+            }}
+            onMouseOver={(e) => {
+              if (!isSubmitting) {
+                e.currentTarget.style.background = 'rgba(156,163,175,0.8)';
+              }
+            }}
+            onMouseOut={(e) => {
+              if (!isSubmitting) {
+                e.currentTarget.style.background = 'rgba(209,213,219,0.8)';
+              }
+            }}
           >
             Cancel
           </button>

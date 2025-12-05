@@ -13,8 +13,11 @@ COPY package*.json ./
 # Install dependencies including dev dependencies
 RUN npm install
 
-# Copy source code
+# Copy source code (but exclude node_modules)
 COPY . .
+
+# Generate Prisma Client with correct binary targets inside the container
+RUN npx prisma generate
 
 # Create logs directory
 RUN mkdir -p logs
